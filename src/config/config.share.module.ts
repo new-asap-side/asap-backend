@@ -24,10 +24,10 @@ function mapToEnvs(): string[] {
     if(_.includes(useProductionEnvs, process.env.NODE_ENV)) {
         return ['.env']
     } else if (process.env.NODE_ENV == 'dev') {
-        return ['.dev.env']
+        return ['.env.dev']
     } else if(process.env.NODE_ENV == 'local') {
-        return ['.local.env']
+        return ['.env.local']
     } else if(process.env.NODE_ENV == 'test') {
-        return ['.test.env']
+        return ['.env.test']
     }
 }
