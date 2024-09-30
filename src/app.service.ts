@@ -16,7 +16,8 @@ export class AppService {
   ) {
   }
 
-  public getHello() {
-    return 'hello'
+  public getHealth() {
+    return 'good'
   }
+
 }
