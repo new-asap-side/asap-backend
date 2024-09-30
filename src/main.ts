@@ -35,6 +35,7 @@ async function bootstrap() {
 
   app.enableCors();
   app.enableShutdownHooks();
+
   setupDocs(app)
 
   await app.listen(3000);
