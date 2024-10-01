@@ -29,15 +29,18 @@ jobs:
           script: |
             whoami
             docker pull tslee1996y/asap-back:latest
-            docker stop asapserver || true
-            docker rm asapserver || true
-            docker run -d \
+            
+            # 기존 서비스를 제거
+            docker service rm asapserver || true
+
+            # 새로운 Docker Swarm 서비스 생성
+            docker service create \
             --name asapserver \
-            -p 80:3000 \
-            -e NODE_ENV=${{ secrets.NODE_ENV }} \
-            -e DB_HOST=${{ secrets.DB_HOST }} \
-            -e DB_PORT=${{ secrets.DB_PORT }} \
-            -e DB_PW=${{ secrets.DB_PW }} \
-            -e DB_USER=${{ secrets.DB_USER }} \
-            -e DB_DATABASE=${{ secrets.DB_DATABASE }} \
+            --publish 80:3000 \
+            --env NODE_ENV=${{ secrets.NODE_ENV }} \
+            --env DB_HOST=${{ secrets.DB_HOST }} \
+            --env DB_PORT=${{ secrets.DB_PORT }} \
+            --env DB_PW=${{ secrets.DB_PW }} \
+            --env DB_USER=${{ secrets.DB_USER }} \
+            --env DB_DATABASE=${{ secrets.DB_DATABASE }} \
             tslee1996y/asap-back:latest
