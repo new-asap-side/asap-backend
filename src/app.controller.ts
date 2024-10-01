@@ -12,4 +12,9 @@ export class AppController {
   getHealth(): string {
     return this.appService.getHealth();
   }
+
+  @Get()
+  getTest(): string {
+    return this.appService.getTest();
+  }
 }

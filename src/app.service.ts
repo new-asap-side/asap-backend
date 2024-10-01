@@ -20,4 +20,10 @@ export class AppService {
     return 'good'
   }
 
+  public getTest() {
+    return 'test'
+  }
+
+
+
 }
