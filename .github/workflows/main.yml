@@ -33,7 +33,7 @@ jobs:
             docker rm asapserver || true
             docker run -d \
             --name asapserver \
-            -p 8080:3000 \
+            -p 80:3000 \
             -e NODE_ENV=${{ secrets.NODE_ENV }} \
             -e DB_HOST=${{ secrets.DB_HOST }} \
             -e DB_PORT=${{ secrets.DB_PORT }} \
