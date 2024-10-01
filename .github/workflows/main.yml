@@ -7,6 +7,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3.3.0
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Build and push Docker image
+        run: |
+          docker build -t tslee1996y/asap-back:latest .
+          docker push tslee1996y/asap-back:latest
 
       - name: execute remote ssh
         uses: appleboy/ssh-action@master
@@ -17,3 +28,16 @@ jobs:
           port: ${{ secrets.REMOTE_SSH_PORT }}
           script: |
             whoami
+            docker pull tslee1996y/asap-back:latest
+            docker stop asapserver || true
+            docker rm asapserver || true
+            docker run -d \
+            --name asapserver \
+            -p 8080:3000 \
+            -e NODE_ENV=${{ secrets.NODE_ENV }} \
+            -e DB_HOST=${{ secrets.DB_HOST }} \
+            -e DB_PORT=${{ secrets.DB_PORT }} \
+            -e DB_PW=${{ secrets.DB_PW }} \
+            -e DB_USER=${{ secrets.DB_USER }} \
+            -e DB_DATABASE=${{ secrets.DB_DATABASE }} \
+            tslee1996y/asap-back:latest
