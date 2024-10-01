@@ -37,6 +37,7 @@ jobs:
             docker service create \
             --name asapserver \
             --publish 80:3000 \
+            --publish 443:3000 \
             --env NODE_ENV=${{ secrets.NODE_ENV }} \
             --env DB_HOST=${{ secrets.DB_HOST }} \
             --env DB_PORT=${{ secrets.DB_PORT }} \
