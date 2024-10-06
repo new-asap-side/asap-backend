@@ -5,6 +5,8 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: production  # 환경 이름을 지정
     steps:
       - uses: actions/checkout@v3.3.0
       
