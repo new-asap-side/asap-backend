@@ -44,4 +44,6 @@ jobs:
             --env DB_PW=${{ secrets.DB_PW }} \
             --env DB_USER=${{ secrets.DB_USER }} \
             --env DB_DATABASE=${{ secrets.DB_DATABASE }} \
+            --env KAKAO_API_KEY=${{ secrets.KAKAO_API_KEY }} \
+            --env CODE_REDIRECT_URI=${{ secrets.CODE_REDIRECT_URI }} \
             tslee1996y/asap-back:latest
