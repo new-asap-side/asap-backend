@@ -21,6 +21,8 @@ export class AuthKakaoService {
         const kakaoUser = this.userRepo.create();
         kakaoUser.kakao_id = kakaoId;
         await this.userRepo.save(kakaoUser);
+
+        return { kakao_id: kakaoUser.kakao_id }
     }
 
     private async getAccessToken(apikey: string, redirectUri: string, code: string) {

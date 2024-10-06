@@ -11,9 +11,6 @@ import { BaseEntity } from '@entity/base';
 
 @Entity('user')
 export class User extends BaseEntity {
-    @PrimaryGeneratedColumn()
-    id: number;
-
     @Column({ unique: true, nullable: true })
     kakao_id: string;
 
@@ -28,12 +25,6 @@ export class User extends BaseEntity {
 
     @Column({nullable: true})
     score: string;
-
-    @CreateDateColumn({type: 'timestamp'})
-    created_at: Date;
-
-    @UpdateDateColumn({type: 'timestamp'})
-    updated_at: Date;
 
     @OneToMany(() => UserGroup, (userGroup) => userGroup.user)
     userGroups: UserGroup[];

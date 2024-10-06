@@ -10,6 +10,8 @@
     "format": "prettier --write \\\"src/**/*.ts\\\" \\\"test/**/*.ts\\\"",
     "start": "nest start",
     "start:dev": "NODE_ENV=local nest start --watch src",
+    "db:sync:prod": "DB_SYNC=true NODE_ENV=production nest start src",
+    "db:sync:local": "DB_SYNC=true NODE_ENV=local nest start src",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",

@@ -22,7 +22,7 @@ import {entities} from "@entity/entity";
                     username: config.get<string>('DB_USER'),
                     password: config.get<string>('DB_PW'),
                     database: config.get<string>('DB_DATABASE'),
-                    synchronize: config.get<string>('NODE_ENV') === 'local',
+                    synchronize: !!config.get<boolean>('DB_SYNC'),
                     timezone: '+09:00',
                     entities,
                 }

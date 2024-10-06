@@ -2,7 +2,7 @@ import {Body, Controller, Get, Header, Post, Query, Res} from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
     AppleLoginRequest,
-    SignupResponse,
+    AuthKakaoResponse,
     VerificationRequest,
     VerificationResponse,
 } from 'src/dto/dto.auth';
@@ -20,6 +20,7 @@ export class AuthController {
     ) {}
 
     @Get('kakao-login-page')
+    @ApiOperation({summary: '카카오 로그인 페이지 요청'})
     @Header('Content-Type', 'text/html')
     async kakaoRedirect(@Res() res: Response): Promise<void> {
         const KAKAO_API_KEY = this.configService.get<string>('KAKAO_API_KEY');
@@ -29,7 +30,8 @@ export class AuthController {
     }
 
     @Get('kakao')
-    @ApiResponse({ status: 200, type: SignupResponse, description: 'kakao login success!' })
+    @ApiOperation({summary: '카카오 로그인 페이지 요청 후 리디렉션되는 라우터'})
+    @ApiResponse({ status: 200, type: AuthKakaoResponse, description: 'kakao login success!' })
     async getKakaoInfo(
         @Query() query: {code: string},
     ): Promise<any> {
@@ -38,6 +40,8 @@ export class AuthController {
         const { code } = query
         return await this.authKakaoSerive.kakaoLogin(apikey, redirectUri, code)
     }
+
+
     //
     // @Post('apple')
     // @ApiOperation({ summary: 'appleLogin' })

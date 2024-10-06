@@ -2,11 +2,6 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
 import {IsAllowedNickName, NickNameValidator} from "../decorator/validation.nick-name";
 
-// export class KakaoLoginRequest {
-//     @ApiProperty()
-//     code: string;
-// }
-
 export class AppleLoginRequest {
     @ApiProperty()
     appleId: string;
@@ -49,20 +44,10 @@ export class UserInfoDto {
     updatedAt: Date;
 }
 
-export class SignupResponse {
-    @ApiProperty({ example: true, description: 'Indicates if the login was successful' })
-    isLoginSuccess: boolean;
-
-    @ApiPropertyOptional({ example: true, description: 'Indicates if the registration was successful' })
-    isRegistSuccess?: boolean;
-
-    @ApiProperty({ example: true, description: 'Indicates if the user is new' })
-    isNewUser: boolean;
-
-    @ApiPropertyOptional({ type: UserInfoDto, description: 'The information of the user' })
-    userInfo?: UserInfoDto;
+export class AuthKakaoResponse {
+    @ApiProperty({ example: '3735918557', description: '카카오 고유 아이디 값' })
+    kakao_id: string;
 }
-
 
 export enum NickNameStatusType {
     DUPLICATION = 'DUPLICATION',
