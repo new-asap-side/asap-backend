@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import {InjectRepository} from "@nestjs/typeorm";
-import {User} from "@entity/User";
+import {User} from "@entity/user";
 import {Repository} from "typeorm";
-import {Group} from "@entity/Group";
-import {UserGroup} from "@entity/UserGroup";
-import {Setting} from "@entity/Setting";
+import {Group} from "@entity/group";
+import {UserGroup} from "@entity/userGroup";
 
 @Injectable()
 export class AppService {
@@ -12,7 +11,6 @@ export class AppService {
       @InjectRepository(User) private readonly userRepo: Repository<User>,
       @InjectRepository(Group) private readonly groupRepo: Repository<Group>,
       @InjectRepository(UserGroup) private readonly userGroupRepo: Repository<UserGroup>,
-      @InjectRepository(Setting) private readonly settingRepo: Repository<Setting>,
   ) {
   }
 
@@ -20,9 +18,7 @@ export class AppService {
     return 'good'
   }
 
-  public getTest() {
-    return 'test'
-  }
+
 
 
 

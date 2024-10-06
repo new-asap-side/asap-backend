@@ -1,5 +1,4 @@
 import {
-    BaseEntity,
     Column,
     CreateDateColumn,
     Entity, JoinColumn,
@@ -7,15 +6,12 @@ import {
     PrimaryGeneratedColumn,
     UpdateDateColumn
 } from "typeorm";
-import {Setting} from "@entity/Setting";
-import {UserGroup} from "@entity/UserGroup";
+import {UserGroup} from "@entity/userGroup";
 import {Exclude} from "class-transformer";
+import { BaseEntity } from '@entity/base';
 
 @Entity('group')
-export class Group {
-    @PrimaryGeneratedColumn()
-    id: number;
-
+export class Group extends BaseEntity{
     @Column()
     title: string;
 
@@ -58,12 +54,6 @@ export class Group {
 
     @Column()
     alarm_unlock_type: string;
-
-    @CreateDateColumn()
-    created_at: Date;
-
-    @UpdateDateColumn()
-    updated_at: Date;
 
     // Relations
     @OneToMany(() => UserGroup, (userGroup) => userGroup.group)

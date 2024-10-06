@@ -1,20 +1,20 @@
 import { Module } from '@nestjs/common';
-import {SharedConfigModule} from "@config/config.share.module";
 import {TypeOrmModule} from "@nestjs/typeorm";
-import {ConfigService} from "@nestjs/config";
+import {ConfigModule, ConfigService} from "@nestjs/config";
 import {entities} from "@entity/entity";
 
 @Module({
     imports: [
-        SharedConfigModule,
         TypeOrmModule.forRootAsync({
-            imports: [SharedConfigModule],
+            imports: [ConfigModule],
             inject: [ConfigService],
             useFactory: async (config: ConfigService) => {
+                console.log(`NODE_ENV:${ config.get<string>('NODE_ENV')}`)
                 console.log(`DB_HOST:${ config.get<string>('DB_HOST')}`)
-                console.log(`DB_PORT:${ config.get<string>('DB_PORT')}`)
+                console.log(`DB_PORT:${ +config.get<string>('DB_PORT')}`)
                 console.log(`DB_USER:${ config.get<string>('DB_USER')}`)
                 console.log(`DB_DATABASE:${ config.get<string>('DB_DATABASE')}`)
+                console.log(`DB_SYNC:${ config.get<string>('NODE_ENV') === 'local' }`)
                 return {
                     type: 'mysql',
                     host: config.get<string>('DB_HOST'),
@@ -23,6 +23,7 @@ import {entities} from "@entity/entity";
                     password: config.get<string>('DB_PW'),
                     database: config.get<string>('DB_DATABASE'),
                     synchronize: config.get<string>('NODE_ENV') === 'local',
+                    timezone: '+09:00',
                     entities,
                 }
             },
@@ -31,7 +32,6 @@ import {entities} from "@entity/entity";
     ],
     exports: [
         TypeOrmModule,
-        SharedConfigModule
     ]
 })
 export class DatabaseModule {}

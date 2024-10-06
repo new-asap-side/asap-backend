@@ -1,5 +1,4 @@
 import {
-    BaseEntity,
     Column,
     CreateDateColumn,
     Entity, JoinColumn,
@@ -7,19 +6,26 @@ import {
     PrimaryGeneratedColumn,
     UpdateDateColumn
 } from "typeorm";
-import {User} from "@entity/User";
-import {Group} from "@entity/Group";
+import {User} from "@entity/user";
+import {Group} from "@entity/group";
+import { BaseEntity } from '@entity/base';
 
 @Entity('user_group')
-export class UserGroup {
-    @PrimaryGeneratedColumn()
-    id: number;
-
+export class UserGroup extends BaseEntity{
     @Column()
     user_id: number;
 
     @Column()
     group_id: number;
+
+    @Column()
+    alarm_type: string;
+
+    @Column()
+    music_title: string;
+
+    @Column({ default: 10 })
+    volume: number;
 
     // Relations
     @ManyToOne(() => User, (user) => user.userGroups)
