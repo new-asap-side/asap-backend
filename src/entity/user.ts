@@ -1,13 +1,10 @@
 import {
     Column,
-    CreateDateColumn,
-    Entity, JoinColumn,
-    ManyToOne, OneToMany, OneToOne,
-    PrimaryGeneratedColumn,
-    UpdateDateColumn
+    Entity,
+    OneToMany
 } from "typeorm";
-import {UserGroup} from "@entity/userGroup";
-import { BaseEntity } from '@entity/base';
+import { BaseEntity } from '@src/entity/base';
+import { UserGroup } from '@src/entity/userGroup';
 
 @Entity('user')
 export class User extends BaseEntity {
@@ -25,6 +22,9 @@ export class User extends BaseEntity {
 
     @Column({nullable: true})
     score: string;
+
+    @Column({nullable: true})
+    refresh_token: string;
 
     @OneToMany(() => UserGroup, (userGroup) => userGroup.user)
     userGroups: UserGroup[];
