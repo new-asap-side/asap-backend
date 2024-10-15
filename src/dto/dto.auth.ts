@@ -1,6 +1,6 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
-import {IsAllowedNickName, NickNameValidator} from "../decorator/validation.nick-name";
+import { ApiProperty } from '@nestjs/swagger';
+import { IsEnum, IsNotEmpty } from 'class-validator';
+import {IsAllowedNickName} from "../decorator/validation.nick-name";
 
 export class AppleLoginRequest {
     @ApiProperty()
