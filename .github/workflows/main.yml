@@ -50,6 +50,5 @@ jobs:
             --env CODE_REDIRECT_URI=${{ secrets.CODE_REDIRECT_URI }} \
             --env JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} \
             --env JWT_ACCESS_TOKEN_EXPIRATION=${{ secrets.JWT_ACCESS_TOKEN_EXPIRATION }} \
-            --env JWT_REFRESH_TOKEN_EXPIRATION=${{ secrets.JWT_REFRESH_TOKEN_EXPIRATION }}
-            
+            --env JWT_REFRESH_TOKEN_EXPIRATION=${{ secrets.JWT_REFRESH_TOKEN_EXPIRATION }} \
             tslee1996y/asap-back:latest
