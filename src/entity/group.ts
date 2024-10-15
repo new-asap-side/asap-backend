@@ -1,14 +1,11 @@
 import {
     Column,
-    CreateDateColumn,
-    Entity, JoinColumn,
-    ManyToOne, OneToMany,
-    PrimaryGeneratedColumn,
-    UpdateDateColumn
+    Entity,
+    OneToMany,
 } from "typeorm";
-import {UserGroup} from "@entity/userGroup";
 import {Exclude} from "class-transformer";
-import { BaseEntity } from '@entity/base';
+import { BaseEntity } from '@src/entity/base';
+import { UserGroup } from '@src/entity/userGroup';
 
 @Entity('group')
 export class Group extends BaseEntity{
@@ -31,20 +28,15 @@ export class Group extends BaseEntity{
     @Column({ length: 4, nullable: true })
     group_password: string;
 
-    @Column()
-    group_is_deadline: boolean;
-
-    @Column({ type: 'date', nullable: true })
-    alarm_deadline: string;
-
-    @Column()
-    alarm_is_am: boolean;
-
-    @Column({ type: 'time', nullable: true })
-    alarm_hour_min: string;
-
-    @Column('json', { nullable: true })
-    alarm_date: string[];
+    // TODO: 알람이 울려야하는 시점을 서버에서 저장할 필요가 있을지 논의 필요
+    // @Column({ type: 'date', nullable: true })
+    // alarm_deadline: string;
+    //
+    // @Column({ type: 'time', nullable: true })
+    // alarm_hour_min: string;
+    //
+    // @Column('json', { nullable: true })
+    // alarm_date: string[];
 
     @Column()
     view_count: number;

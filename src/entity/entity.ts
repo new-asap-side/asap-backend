@@ -1,6 +1,6 @@
-import {Group} from "@entity/group";
-import {User} from "@entity/user";
-import {UserGroup} from "@entity/userGroup";
+import { Group } from '@src/entity/group';
+import { User } from '@src/entity/user';
+import { UserGroup } from '@src/entity/userGroup';
 
 export const entities = [
     Group,
