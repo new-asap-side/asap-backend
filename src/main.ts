@@ -1,8 +1,8 @@
 import {NestFactory, Reflector} from '@nestjs/core';
 import { AppModule } from './app.module';
-import {HttpExceptionFilter} from "@filter/filter.http-exception";
 import {ClassSerializerInterceptor, ValidationPipe} from "@nestjs/common";
 import {DocumentBuilder, SwaggerModule} from "@nestjs/swagger";
+import { HttpExceptionFilter } from '@src/filter/filter.http-exception';
 
 function setupDocs(app) {
   const options = new DocumentBuilder()

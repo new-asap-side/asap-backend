@@ -1,14 +1,12 @@
 import {
     Column,
-    CreateDateColumn,
-    Entity, JoinColumn,
-    ManyToOne, OneToMany, OneToOne,
-    PrimaryGeneratedColumn,
-    UpdateDateColumn
+    Entity,
+    JoinColumn,
+    ManyToOne,
 } from "typeorm";
-import {User} from "@entity/user";
-import {Group} from "@entity/group";
-import { BaseEntity } from '@entity/base';
+import { BaseEntity } from '@src/entity/base';
+import { User } from '@src/entity/user';
+import { Group } from '@src/entity/group';
 
 @Entity('user_group')
 export class UserGroup extends BaseEntity{
