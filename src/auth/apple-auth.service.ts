@@ -25,13 +25,12 @@ export class AppleAuthService {
 
     // JWT 토큰을 디코딩하여 확인
     const decodedToken = jwt.decode(decodedString, {complete: true });
-
-    this.logger.log(`tokenDecodedHeader: ${JSON.stringify(decodedToken)}`);
     if (!decodedToken) throw new BadRequestException('Invalid identityToken');
 
     const sub = decodedToken.payload.sub as string
     const user_id = await this.signUpAppleUser(sub);
     const { accessToken, refreshToken } = this.authService.generateJWT(sub, String(user_id));
+    await this.userRepo.update(user_id, {refresh_token: refreshToken})
 
     return {
       user_id: String(user_id),

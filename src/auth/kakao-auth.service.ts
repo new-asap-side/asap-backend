@@ -22,6 +22,8 @@ export class KakaoAuthService {
 
         const user_id = await this.signUpKakaoUser(kakao_id)
         const { accessToken, refreshToken } = this.authService.generateJWT(kakao_id, String(user_id))
+        await this.userRepo.update(user_id, {refresh_token: refreshToken})
+
         return {
             user_id: String(user_id),
             kakao_id,
