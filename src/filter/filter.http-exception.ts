@@ -13,8 +13,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
         const ctx = host.switchToHttp();
         const response = ctx.getResponse<Response>();
         const request = ctx.getRequest<Request>();
-        console.log(exception)
-        const status = exception.getStatus();
+        console.log("exception-info: ", exception)
+        const status = exception instanceof HttpException
+          ? exception.getStatus()
+          : 500; // 기본값으로 500 설정
 
         response
             .status(status)
