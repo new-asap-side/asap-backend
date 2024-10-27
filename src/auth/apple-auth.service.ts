@@ -1,14 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
-import { AppleJwtTokenPayload, AppleLoginRequest, AuthAppleResponse } from '../dto/dto.auth';
+import { AppleJwtTokenPayload, AppleLoginRequest, AuthAppleResponse, IdentityTokenHeader } from '../dto/dto.auth';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwksClient } from 'jwks-rsa';
 import { User } from '@src/entity/user';
 import { AuthService } from '@src/auth/auth.service';
+import { jwtDecode } from "jwt-decode";
+
 
 @Injectable()
 export class AppleAuthService {
+  private readonly logger = new Logger(AppleAuthService.name);
+
   constructor(
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
@@ -16,32 +20,25 @@ export class AppleAuthService {
   ) {}
 
   // identity_token 검증
-  async appleLogin({ identityToken }: AppleLoginRequest): Promise<AuthAppleResponse> {
-    const decodedToken = jwt.decode(identityToken, { complete: true }) as {
-      header: { kid: string; alg: jwt.Algorithm };
-      payload: { sub: string };
-    };
-    const keyIdFromToken = decodedToken.header.kid;
-    const applePublicKeyUrl = 'https://appleid.apple.com/auth/keys';
+  async appleLogin({ identityToken }: AppleLoginRequest): Promise<any> {
+    const decodedString = Buffer.from(identityToken, 'base64').toString('utf-8');
 
-    const jwksClient = new JwksClient({ jwksUri: applePublicKeyUrl });
+    // JWT 토큰을 디코딩하여 확인
+    const decodedToken = jwt.decode(decodedString, {complete: true });
 
-    const key = await jwksClient.getSigningKey(keyIdFromToken);
-    const publicKey = key.getPublicKey();
+    this.logger.log(`tokenDecodedHeader: ${JSON.stringify(decodedToken)}`);
+    if (!decodedToken) throw new BadRequestException('Invalid identityToken');
 
-    const verifiedDecodedToken: AppleJwtTokenPayload = jwt.verify(identityToken, publicKey, {
-      algorithms: [decodedToken.header.alg]
-    }) as AppleJwtTokenPayload;
-
-    const user_id = await this.signUpAppleUser(verifiedDecodedToken.sub)
-    const { accessToken, refreshToken } = this.authService.generateJWT(verifiedDecodedToken.sub, String(user_id))
+    const sub = decodedToken.payload.sub as string
+    const user_id = await this.signUpAppleUser(sub);
+    const { accessToken, refreshToken } = this.authService.generateJWT(sub, String(user_id));
 
     return {
       user_id: String(user_id),
-      apple_id: verifiedDecodedToken.sub,
+      apple_id: sub,
       accessToken,
-      refreshToken
-    }
+      refreshToken,
+    };
   }
 
   // 유저 정보 확인 또는 생성

@@ -1,9 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsNotEmpty } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
 import {IsAllowedNickName} from "../decorator/validation.nick-name";
 
 export class AppleLoginRequest {
     @ApiProperty()
+    @IsString()
+    @IsNotEmpty()
     identityToken: string;
 }
 
@@ -97,4 +99,9 @@ export class VerificationResponse {
     @IsAllowedNickName()
     @IsEnum(NickNameStatusType)
     checkResult: NickNameStatusType;
+}
+
+export class IdentityTokenHeader {
+    kid: string;
+    alg: string;
 }

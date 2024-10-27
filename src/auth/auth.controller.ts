@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Header, Post, Query, Req, Res, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Header, Post, Query, Req, Res, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
     AppleLoginRequest, AuthAppleResponse,
@@ -46,10 +46,10 @@ export class AuthController {
     @Post('apple')
     @ApiOperation({ summary: '애플 로그인 및 회원가입 요청' })
     @ApiResponse({ status: 200, type: AuthAppleResponse, description: 'apple login success!' })
-    appleLogin(
+    async appleLogin(
         @Body() appleLoginRequest: AppleLoginRequest,
-    ): Promise<AuthAppleResponse> {
-        return this.authApple.appleLogin(appleLoginRequest);
+    ): Promise<any> {
+        return await this.authApple.appleLogin(appleLoginRequest);
     }
 
     @Post('refresh')

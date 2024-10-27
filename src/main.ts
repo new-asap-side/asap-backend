@@ -21,7 +21,9 @@ async function bootstrap() {
       origin: '*',
       methods: ['GET', 'PUT', 'POST', 'DELETE'],
       allowedHeaders: ['Content-type', 'Accept']
-    }
+    },
+    logger: ['log', 'error', 'warn'],
+    bodyParser: true
   });
   app.getHttpAdapter().getInstance().disable('x-powered-by');
   app.useGlobalFilters(new HttpExceptionFilter());
