@@ -4,8 +4,8 @@ import {
     OneToMany,
 } from "typeorm";
 import {Exclude} from "class-transformer";
-import { BaseEntity } from '@src/entity/base';
-import { UserGroup } from '@src/entity/userGroup';
+import { BaseEntity } from '@src/database/entity/base';
+import { UserGroup } from '@src/database/entity/userGroup';
 
 @Entity('group')
 export class Group extends BaseEntity{

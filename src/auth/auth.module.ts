@@ -27,7 +27,7 @@ import { AuthService } from '@src/auth/auth.service';
     ],
     controllers: [AuthController],
     providers: [
-      KakaoAuthService,
+        KakaoAuthService,
         AppleAuthService,
         AccessTokenStrategy,
         RefreshTokenStrategy,

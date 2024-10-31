@@ -4,9 +4,9 @@ import {
     JoinColumn,
     ManyToOne,
 } from "typeorm";
-import { BaseEntity } from '@src/entity/base';
-import { User } from '@src/entity/user';
-import { Group } from '@src/entity/group';
+import { BaseEntity } from '@src/database/entity/base';
+import { User } from '@src/database/entity/user';
+import { Group } from '@src/database/entity/group';
 
 @Entity('user_group')
 export class UserGroup extends BaseEntity{

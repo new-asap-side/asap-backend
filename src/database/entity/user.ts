@@ -3,8 +3,8 @@ import {
     Entity,
     OneToMany
 } from "typeorm";
-import { BaseEntity } from '@src/entity/base';
-import { UserGroup } from '@src/entity/userGroup';
+import { BaseEntity } from '@src/database/entity/base';
+import { UserGroup } from '@src/database/entity/userGroup';
 
 @Entity('user')
 export class User extends BaseEntity {
