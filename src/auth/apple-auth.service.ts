@@ -4,7 +4,7 @@ import { AppleJwtTokenPayload, AppleLoginRequest, AuthAppleResponse, IdentityTok
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { JwksClient } from 'jwks-rsa';
-import { User } from '@src/entity/user';
+import { User } from '@src/database/entity/user';
 import { AuthService } from '@src/auth/auth.service';
 import { jwtDecode } from "jwt-decode";
 

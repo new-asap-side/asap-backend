@@ -4,7 +4,7 @@ import {HttpService} from "@nestjs/axios";
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AuthKakaoResponse } from '../dto/dto.auth';
-import { User } from '@src/entity/user';
+import { User } from '@src/database/entity/user';
 import { AuthService } from '@src/auth/auth.service';
 
 @Injectable()
