@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DatabaseModule } from '@src/database/database.module';
-import { ProfileController } from '@src/profile/profile.controller';
-import { ProfileService } from '@src/profile/profile.service';
 import { JwtModule } from '@nestjs/jwt';
+import { ProfileService } from '@src/profile/profile.service';
+import { ProfileController } from '@src/profile/profile.controller';
 
 @Module({
   imports: [

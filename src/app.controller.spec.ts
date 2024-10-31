@@ -14,5 +14,8 @@ describe('AppController', () => {
   });
 
   describe('root', () => {
+    it('test', ()=> {
+      console.log(1)
+    })
   });
 });

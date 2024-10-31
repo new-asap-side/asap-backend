@@ -4,14 +4,11 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 @ApiTags('Root')
 @Controller()
 export class AppController {
-  constructor(
+  constructor() {}
 
-  ) {}
-
-  @Get('health')
+  @Get()
   @ApiOperation({summary: '서버 헬스 체크'})
   getHealth(): string {
     return 'health'
   }
-
 }
