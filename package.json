@@ -82,7 +82,7 @@
       "json",
       "ts"
     ],
-    "rootDir": "src",
+    "rootDir": ".",
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
@@ -91,6 +91,20 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "roots": [
+      "<rootDir>/src/",
+      "<rootDir>/test/"
+    ],
+    "moduleNameMapper": {
+      "^@src/auth(|/.*)$": "<rootDir>/src/auth/src/$1",
+      "^@src/database(|/.*)$": "<rootDir>/src/database/src/$1",
+      "^@src/decorator(|/.*)$": "<rootDir>/src/decorator/src/$1",
+      "^@src/dto(|/.*)$": "<rootDir>/src/dto/src/$1",
+      "^@src/filter(|/.*)$": "<rootDir>/src/filter/src/$1",
+      "^@src/jwt(|/.*)$": "<rootDir>/src/jwt/src/$1",
+      "^@src/libs(|/.*)$": "<rootDir>/src/libs/src/$1",
+      "^@src/profile(|/.*)$": "<rootDir>/src/profile/src/$1"
+    }
   }
 }
