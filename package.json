@@ -46,8 +46,6 @@
     "jwt-decode": "^4.0.0",
     "lodash": "^4.17.21",
     "mysql2": "^3.11.3",
-    "oci-common": "^2.97.1",
-    "oci-sdk": "^2.97.1",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
     "reflect-metadata": "^0.1.13",
