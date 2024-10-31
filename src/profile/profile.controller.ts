@@ -1,8 +1,14 @@
-import { Controller, Post, Body, UseGuards } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Controller, Post, Body, UseGuards, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ProfileService } from '@src/profile/profile.service';
-import { CheckNickNameRequest, CheckNickNameResponse } from '@src/dto/dto.profile';
+import {
+  CheckNickNameRequest,
+  CheckNickNameResponse,
+  SaveProfileRequest,
+  SaveProfileResponse,
+} from '@src/dto/dto.profile';
 import { JwtAuthGuard } from '@src/auth/auth.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('profile')
 @Controller('profile')
@@ -27,5 +33,18 @@ export class ProfileController {
     @Body() checkNickNameRequest: CheckNickNameRequest
   ) {
     return await this.profileService.checkNickName(checkNickNameRequest.nickName)
+  }
+
+  @Post('save-profile')
+  @ApiOperation({summary: '프로필 저장'})
+  @ApiConsumes('multipart/form-data') // Swagger에 파일을 명시
+  @ApiResponse({ status: 201, type: SaveProfileResponse })
+  @UseInterceptors(FileInterceptor('profile_img')) // 'profile_img' 필드를 파일로 인식
+  async saveProfile(
+    @Body() checkNickNameRequest: SaveProfileRequest,
+    @UploadedFile() profileImg: Express.Multer.File,
+  ) {
+    const {userId, nickName} = checkNickNameRequest
+    return await this.profileService.saveProfile(userId, nickName, profileImg)
   }
 }
