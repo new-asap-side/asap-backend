@@ -1,6 +1,6 @@
 import { Controller, Post, Body, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { ProfileService } from '@src/profile/profile.service';
+import { ProfileService } from './profile.service';
 import { CheckNickNameRequest, CheckNickNameResponse } from '@src/dto/dto.profile';
 import { JwtAuthGuard } from '@src/auth/auth.guard';
 

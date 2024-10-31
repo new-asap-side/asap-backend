@@ -4,7 +4,6 @@ import * as process from "node:process";
 import {AuthModule} from '@src/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from '@src/database/database.module';
-import { ProfileController } from '@src/profile/profile.controller';
 import { ProfileModule } from '@src/profile/profile.module';
 
 @Module({
@@ -17,7 +16,6 @@ import { ProfileModule } from '@src/profile/profile.module';
     }),
     ProfileModule
   ],
-  controllers: [AppController, ProfileController],
-  providers: []
+  controllers: [AppController],
 })
 export class AppModule {}
