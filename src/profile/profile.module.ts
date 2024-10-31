@@ -3,7 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DatabaseModule } from '@src/database/database.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ProfileController } from '@src/profile/profile.controller';
-import { ProfileService } from './profile.service';
+import { ProfileService } from '@src/profile/profile.service';
 
 @Module({
   imports: [
