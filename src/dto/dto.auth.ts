@@ -2,6 +2,13 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
 import {IsAllowedNickName} from "../decorator/validation.nick-name";
 
+export class KakaoLoginRequest {
+    @ApiProperty()
+    @IsString()
+    @IsNotEmpty()
+    kakaoAccessToken: string;
+}
+
 export class AppleLoginRequest {
     @ApiProperty()
     @IsString()

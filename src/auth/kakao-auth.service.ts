@@ -16,10 +16,8 @@ export class KakaoAuthService {
         private readonly authService: AuthService,
     ) {}
 
-    public async kakaoLogin(apikey: string, redirectUri: string, code: string): Promise<AuthKakaoResponse> {
-        const kakaoAccessToken = await this.getAccessToken(apikey, redirectUri, code);
+    public async kakaoLogin(kakaoAccessToken: string): Promise<AuthKakaoResponse> {
         const kakao_id = await this.getKakaoId(kakaoAccessToken);
-
         const user_id = await this.signUpKakaoUser(kakao_id)
         const { accessToken, refreshToken } = this.authService.generateJWT(kakao_id, String(user_id))
         await this.userRepo.update(user_id, {refresh_token: refreshToken})

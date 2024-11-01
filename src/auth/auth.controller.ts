@@ -2,7 +2,7 @@ import { BadRequestException, Body, Controller, Get, Header, Post, Query, Req, R
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
     AppleLoginRequest, AuthAppleResponse,
-    AuthKakaoResponse, AuthTokenResponse,
+    AuthKakaoResponse, AuthTokenResponse, KakaoLoginRequest,
 } from 'src/dto/dto.auth';
 import {KakaoAuthService} from '@src/auth/kakao-auth.service';
 import {Response} from "express";
@@ -21,26 +21,13 @@ export class AuthController {
         private readonly authService: AuthService
     ) {}
 
-    @Get('kakao-login-page')
-    @ApiOperation({summary: '카카오 로그인 페이지 요청'})
-    @Header('Content-Type', 'text/html')
-    async kakaoRedirect(@Res() res: Response): Promise<void> {
-        const KAKAO_API_KEY = this.configService.get<string>('KAKAO_API_KEY');
-        const CODE_REDIRECT_URI = this.configService.get<string>('CODE_REDIRECT_URI');
-        const url = `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=${KAKAO_API_KEY}&redirect_uri=${CODE_REDIRECT_URI}`;
-        res.redirect(url)
-    }
-
-    @Get('kakao')
-    @ApiOperation({summary: '카카오 로그인 페이지 요청 후 리디렉션되는 라우터'})
+    @Post('kakao')
+    @ApiOperation({summary: '카카오 로그인 및 회원가입 요청'})
     @ApiResponse({ status: 200, type: AuthKakaoResponse, description: 'kakao login success!' })
     async getKakaoInfo(
-        @Query() query: {code: string},
+        @Body() req: KakaoLoginRequest,
     ): Promise<AuthKakaoResponse> {
-        const apikey = this.configService.get<string>('KAKAO_API_KEY');
-        const redirectUri = this.configService.get<string>('CODE_REDIRECT_URI');
-        const { code } = query
-        return await this.authKakao.kakaoLogin(apikey, redirectUri, code)
+        return await this.authKakao.kakaoLogin(req.kakaoAccessToken)
     }
 
     @Post('apple')
