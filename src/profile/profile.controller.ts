@@ -36,15 +36,14 @@ export class ProfileController {
   }
 
   @Post('save-profile')
-  @ApiOperation({summary: '프로필 저장'})
-  @ApiConsumes('multipart/form-data') // Swagger에 파일을 명시
+  @ApiOperation({ summary: '프로필 저장' })
   @ApiResponse({ status: 201, type: SaveProfileResponse })
-  @UseInterceptors(FileInterceptor('profile_img')) // 'profile_img' 필드를 파일로 인식
   async saveProfile(
-    @Body() checkNickNameRequest: SaveProfileRequest,
-    @UploadedFile() profileImg: Express.Multer.File,
+    @Body() saveProfileRequest: SaveProfileRequest,
   ) {
-    const {userId, nickName} = checkNickNameRequest
-    return await this.profileService.saveProfile(userId, nickName, profileImg)
+    const { userId, nickName, profileImgBase64 } = saveProfileRequest;
+
+    // profileService로 base64 이미지와 함께 데이터 전달
+    return await this.profileService.saveProfile(userId, nickName, profileImgBase64);
   }
 }

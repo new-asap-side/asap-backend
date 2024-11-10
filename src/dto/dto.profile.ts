@@ -28,10 +28,9 @@ export class SaveProfileRequest {
 
   @ApiProperty({
     type: 'string',
-    format: 'binary',
-    description: 'Profile Image'
+    description: 'Profile Image encoded base64'
   })
-  profile_img: any;
+  profileImgBase64: string;
 }
 
 export class SaveProfileResponse {
