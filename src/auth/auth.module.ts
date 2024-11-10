@@ -9,21 +9,13 @@ import { AppleAuthService } from '@src/auth/apple-auth.service';
 import { AccessTokenStrategy } from '@src/jwt/access-token-strategy.service';
 import { RefreshTokenStrategy } from '@src/jwt/refresh-token-strategy.service';
 import { AuthService } from '@src/auth/auth.service';
+import { JwtStrategyModule } from '@src/jwt/jwt.module';
 
 @Module({
     imports: [
         DatabaseModule,
         HttpModule,
-        JwtModule.registerAsync({
-            imports: [ConfigModule],
-            inject: [ConfigService],
-            useFactory: async (configService: ConfigService) => {
-                return {
-                    secret: configService.get<string>('JWT_SECRET_KEY'),  // 공통 비밀 키
-
-                }
-            }
-        }),
+        JwtStrategyModule
     ],
     controllers: [AuthController],
     providers: [
