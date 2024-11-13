@@ -6,6 +6,9 @@ import { RefreshTokenStrategy } from '@src/jwt/refresh-token-strategy.service';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true
+    }),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
