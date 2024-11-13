@@ -65,11 +65,7 @@ export class CreateGroupDto extends CreateAlarmDateDto {
   @Matches(/^\d{4}$/, {message: 'must be a 4-digit number'})
   group_password: string;
 
-  @ApiProperty({
-    description: '알람 방식, sound/vibration/all',
-    enum: AlarmTypeEnum,
-    example: AlarmTypeEnum.vibration
-  })
+  @ApiProperty({description: '알람 방식, sound/vibration/all'})
   @IsNotEmpty()
   @IsEnum(AlarmTypeEnum)
   alarm_type: AlarmTypeEnum
@@ -106,11 +102,7 @@ export class JoinGroupDto {
   @Matches(/^\d{4}$/, {message: 'must be a 4-digit number'})
   group_password: string;
 
-  @ApiProperty({
-    description: '알람 방식, sound/vibration/all',
-    enum: AlarmTypeEnum,
-    example: AlarmTypeEnum.vibration
-  })
+  @ApiProperty({description: '알람 방식, sound/vibration/all'})
   @IsNotEmpty()
   @IsEnum(AlarmTypeEnum)
   alarm_type: AlarmTypeEnum

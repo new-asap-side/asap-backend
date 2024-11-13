@@ -1,8 +1,8 @@
 import {
-    Column,
+    Column, DeleteDateColumn,
     Entity,
-    OneToMany
-} from "typeorm";
+    OneToMany, UpdateDateColumn,
+} from 'typeorm';
 import { BaseEntity } from '@src/database/entity/base';
 import { UserGroup } from '@src/database/entity/userGroup';
 
@@ -26,6 +26,12 @@ export class User extends BaseEntity {
     @Column({nullable: true})
     refresh_token: string;
 
+    @Column({default: 0})
+    ranking_page_view_count: number // 랭킹페이지 조회수
+
     @OneToMany(() => UserGroup, (userGroup) => userGroup.user)
     userGroups: UserGroup[];
+
+    @DeleteDateColumn({type: 'timestamp'})
+    deletedAt: Date
 }

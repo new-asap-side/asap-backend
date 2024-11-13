@@ -5,6 +5,9 @@ import {AuthModule} from '@src/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { DatabaseModule } from '@src/database/database.module';
 import { ProfileModule } from '@src/profile/profile.module';
+import { GroupModule } from '@src/group/group.module';
+import { FcmService } from '@src/fcm/fcm.service';
+import { AlarmModule } from '@src/event/event.alarm.module';
 
 @Module({
   imports: [
@@ -14,8 +17,11 @@ import { ProfileModule } from '@src/profile/profile.module';
       envFilePath: process.env.NODE_ENV === 'production' ? '.env': '.env.local',
       isGlobal: true,
     }),
-    ProfileModule
+    ProfileModule,
+    GroupModule,
+    AlarmModule
   ],
   controllers: [AppController],
+  providers: [FcmService]
 })
 export class AppModule {}
