@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsDate, IsEnum, IsNotEmpty, IsNumber, IsNumberString, IsString, Matches } from 'class-validator';
+import { IsBoolean, IsDate, IsEnum, IsNotEmpty, IsNumber, IsString, Matches } from 'class-validator';
 import { AlarmTypeEnum } from '@src/database/entity/userGroup';
 
 export enum AlarmDayEnum {
@@ -18,7 +18,11 @@ export class CreateAlarmDateDto {
   @IsDate()
   alarm_end_date: Date;
 
-  @ApiProperty({description: '알람 요일'})
+  @ApiProperty({
+    description: '알람 요일',
+    enum: AlarmDayEnum,
+    example: AlarmDayEnum.수
+  })
   @IsNotEmpty()
   @IsEnum(AlarmDayEnum)
   alarm_day: AlarmDayEnum;
@@ -65,7 +69,11 @@ export class CreateGroupDto extends CreateAlarmDateDto {
   @Matches(/^\d{4}$/, {message: 'must be a 4-digit number'})
   group_password: string;
 
-  @ApiProperty({description: '알람 방식, sound/vibration/all'})
+  @ApiProperty({
+    description: '알람 방식, sound/vibration/all',
+    enum: AlarmTypeEnum,
+    example: AlarmTypeEnum.vibration
+  })
   @IsNotEmpty()
   @IsEnum(AlarmTypeEnum)
   alarm_type: AlarmTypeEnum
@@ -102,7 +110,11 @@ export class JoinGroupDto {
   @Matches(/^\d{4}$/, {message: 'must be a 4-digit number'})
   group_password: string;
 
-  @ApiProperty({description: '알람 방식, sound/vibration/all'})
+  @ApiProperty({
+    description: '알람 방식, sound/vibration/all',
+    enum: AlarmTypeEnum,
+    example: AlarmTypeEnum.vibration
+  })
   @IsNotEmpty()
   @IsEnum(AlarmTypeEnum)
   alarm_type: AlarmTypeEnum

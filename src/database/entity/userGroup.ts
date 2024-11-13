@@ -14,11 +14,6 @@ export enum AlarmTypeEnum {
     'all'='all'
 }
 
-export enum AlarmUnlockTypeEnum {
-    'slide'='slide',
-    'card'='card',
-}
-
 @Entity('user_group')
 export class UserGroup extends BaseEntity{
     @Column()
