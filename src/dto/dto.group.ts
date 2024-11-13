@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsDate, IsEnum, IsNotEmpty, IsNumber, IsNumberString, IsString, Matches } from 'class-validator';
 import { AlarmTypeEnum } from '@src/database/entity/userGroup';
 
-enum AlarmDayEnum {
+export enum AlarmDayEnum {
   '월'='월',
   '화'='화',
   '수'='수',
@@ -13,7 +13,7 @@ enum AlarmDayEnum {
 }
 
 export class CreateAlarmDateDto {
-  @ApiProperty({description: '알람 종료 날짜, YYYY-MM-DD HH:mm'})
+  @ApiProperty({description: '알람 종료 날짜, YYYY-MM-DD 23:59:59'})
   @IsNotEmpty()
   @IsDate()
   alarm_end_date: Date;

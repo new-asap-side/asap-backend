@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import {ClassSerializerInterceptor, ValidationPipe} from "@nestjs/common";
 import {DocumentBuilder, SwaggerModule} from "@nestjs/swagger";
 import { HttpExceptionFilter } from '@src/filter/filter.http-exception';
+import process from 'process';
 
 function setupDocs(app) {
   const options = new DocumentBuilder()
@@ -25,6 +26,7 @@ async function bootstrap() {
     logger: ['log', 'error', 'warn'],
     bodyParser: true
   });
+
   app.getHttpAdapter().getInstance().disable('x-powered-by');
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));

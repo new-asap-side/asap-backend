@@ -34,7 +34,15 @@ jobs:
             
             # 기존 서비스를 제거
             docker service rm asapserver || true
+            docker service rm redis || true
 
+            # Redis 서비스 추가
+            docker service create \
+            --name redis \
+            --publish 6379:6379 \
+            --env REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }} \
+            redis:latest
+                    
             # 새로운 Docker Swarm 서비스 생성
             docker service create \
             --name asapserver \
@@ -51,4 +59,8 @@ jobs:
             --env JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} \
             --env JWT_ACCESS_TOKEN_EXPIRATION=${{ secrets.JWT_ACCESS_TOKEN_EXPIRATION }} \
             --env JWT_REFRESH_TOKEN_EXPIRATION=${{ secrets.JWT_REFRESH_TOKEN_EXPIRATION }} \
+            --env FIRE_BASE_CONFIG=${{ secrets.FIRE_BASE_CONFIG }} \
+            --env REDIS_HOST=${{ secrets.REDIS_HOST }} \
+            --env REDIS_PORT=6379 \
+            --env REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }} \
             tslee1996y/asap-back:latest

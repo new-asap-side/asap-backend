@@ -1,8 +1,9 @@
 // alarm.processor.ts
-import { Processor, Process } from '@nestjs/bull';
+import { Process, Processor } from '@nestjs/bull';
 import { Job } from 'bull';
 import { CreateAlarmDateDto } from '@src/dto/dto.group';
 import { FcmService } from '@src/fcm/fcm.service';
+import dayjs from 'dayjs';
 
 @Processor('alarmQueue')
 export class AlarmProcessor {
@@ -10,9 +11,8 @@ export class AlarmProcessor {
 
   @Process('sendAlarm')
   async handleAlarmJob(job: Job) {
-    const triggerDate: CreateAlarmDateDto = job.data;
     const fcmToken = job.data
-    const message = `알람이 울립니다: ${triggerDate.alarm_day} ${triggerDate.alarm_time}`;
+    const message = `알람이 울립니다!`;
 
     await this.fcmService.sendNotificationToTopic(fcmToken, message);
   }
