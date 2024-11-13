@@ -57,7 +57,7 @@ export class GroupService {
     const { alarm_end_date, alarm_day, alarm_time } = createGroupDto
     await this.alarmQueueService.addAlarmJob({ alarm_end_date, alarm_day, alarm_time }, createGroupDto.fcm_token)
     // await this.fcmService.subscribeToTopic(createGroupDto.fcm_token, group.id);
-    this.logger.log(`Group ${group.title} created and user ${user.id} subscribed to topic group-${group.id}`);
+    // this.logger.log(`Group ${group.title} created and user ${user.id} subscribed to topic group-${group.id}`);
 
     return {
       message: 'Group created successfully and user subscribed to the topic.',
