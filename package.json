@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@nestjs/axios": "^3.0.3",
+    "@nestjs/bull": "^10.2.2",
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^3.2.3",
     "@nestjs/core": "^9.0.0",
@@ -38,9 +39,13 @@
     "@types/multer": "^1.4.12",
     "@types/passport-jwt": "^4.0.1",
     "axios": "^1.7.7",
+    "bull": "^4.16.4",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
+    "dayjs": "^1.11.13",
+    "dayjs-plugin-utc": "^0.1.2",
     "dotenv": "^16.4.5",
+    "firebase-admin": "^12.7.0",
     "jsonwebtoken": "^9.0.2",
     "jwks-rsa": "^3.1.0",
     "jwt-decode": "^4.0.0",
@@ -97,14 +102,17 @@
       "<rootDir>/test/"
     ],
     "moduleNameMapper": {
-      "^@src/auth(|/.*)$": "<rootDir>/src/auth/src/$1",
-      "^@src/database(|/.*)$": "<rootDir>/src/database/src/$1",
-      "^@src/decorator(|/.*)$": "<rootDir>/src/decorator/src/$1",
-      "^@src/dto(|/.*)$": "<rootDir>/src/dto/src/$1",
-      "^@src/filter(|/.*)$": "<rootDir>/src/filter/src/$1",
-      "^@src/jwt(|/.*)$": "<rootDir>/src/jwt/src/$1",
-      "^@src/libs(|/.*)$": "<rootDir>/src/libs/src/$1",
-      "^@src/profile(|/.*)$": "<rootDir>/src/profile/src/$1"
+      "^@src/auth(|/.*)$": "<rootDir>/src/auth/$1",
+      "^@src/database(|/.*)$": "<rootDir>/src/database/$1",
+      "^@src/decorator(|/.*)$": "<rootDir>/src/decorator/$1",
+      "^@src/dto(|/.*)$": "<rootDir>/src/dto/$1",
+      "^@src/filter(|/.*)$": "<rootDir>/src/filter/$1",
+      "^@src/jwt(|/.*)$": "<rootDir>/src/jwt/$1",
+      "^@src/libs(|/.*)$": "<rootDir>/src/libs/$1",
+      "^@src/profile(|/.*)$": "<rootDir>/src/profile/$1",
+      "^@src/group(|/.*)$": "<rootDir>/src/group/$1",
+      "^@src/fcm(|/.*)$": "<rootDir>/src/fcm/$1",
+      "^@src/event(|/.*)$": "<rootDir>/src/event/$1"
     }
   }
 }

@@ -14,7 +14,7 @@ import { entities } from '@src/database/entity/entity';
                 console.log(`DB_PORT:${ +config.get<string>('DB_PORT')}`)
                 console.log(`DB_USER:${ config.get<string>('DB_USER')}`)
                 console.log(`DB_DATABASE:${ config.get<string>('DB_DATABASE')}`)
-                console.log(`DB_SYNC:${ config.get<string>('NODE_ENV') === 'local' }`)
+                console.log(`DB_SYNC:${ !!config.get<boolean>('DB_SYNC') }`)
                 return {
                     type: 'mysql',
                     host: config.get<string>('DB_HOST'),

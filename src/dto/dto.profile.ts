@@ -10,7 +10,6 @@ export class CheckNickNameRequest {
 
 export class CheckNickNameResponse {
   @ApiProperty()
-  @IsNotEmpty()
   @IsBoolean()
   isPossible: boolean
 }
