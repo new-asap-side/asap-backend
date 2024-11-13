@@ -27,7 +27,7 @@ export class CreateAlarmDateDto {
   @IsEnum(AlarmDayEnum)
   alarm_day: AlarmDayEnum;
 
-  @ApiProperty({description: '알람 시간 HH:mm'})
+  @ApiProperty({description: '알람 시간 HH:mm', example: "21:15"})
   @IsNotEmpty()
   @IsString()
   alarm_time: string;

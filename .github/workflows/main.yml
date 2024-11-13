@@ -34,14 +34,14 @@ jobs:
             
             # 기존 서비스를 제거
             docker service rm asapserver || true
-            docker service rm redis || true
-
-            # Redis 서비스 추가
-            docker service create \
-            --name redis \
-            --publish 6379:6379 \
-            --env REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }} \
-            redis:latest
+#            docker service rm redis || true
+#
+#            # Redis 서비스 추가
+#            docker service create \
+#            --name redis \
+#            --publish 6379:6379 \
+#            --env REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }} \
+#            redis:latest
                     
             # 새로운 Docker Swarm 서비스 생성
             docker service create \
