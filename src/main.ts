@@ -4,6 +4,7 @@ import {ClassSerializerInterceptor, ValidationPipe} from "@nestjs/common";
 import {DocumentBuilder, SwaggerModule} from "@nestjs/swagger";
 import { HttpExceptionFilter } from '@src/filter/filter.http-exception';
 import process from 'process';
+import { json } from 'express';
 
 function setupDocs(app) {
   const options = new DocumentBuilder()
@@ -36,6 +37,8 @@ async function bootstrap() {
         whitelist: true,
       }),
   );
+
+  app.use(json({limit: '50mb'}));
 
   app.enableCors();
   app.enableShutdownHooks();
