@@ -132,4 +132,4 @@ dist
 .idea
 yarn.lock
 *.config.json
-.env.*
+.env.test
