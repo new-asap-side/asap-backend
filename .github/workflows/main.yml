@@ -55,4 +55,7 @@ jobs:
             --env REDIS_HOST=${{ secrets.REDIS_HOST }} \
             --env REDIS_PORT=6379 \
             --env REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }} \
+            --env URL_BASE_PATH=${{ secrets.URL_BASE_PATH }} \
+            --env S3_ACCESS_KEY=${{ secrets.S3_ACCESS_KEY }} \
+            --env S3_SECRET_KEY=${{ secrets.S3_SECRET_KEY }} \
             tslee1996y/asap-back:latest

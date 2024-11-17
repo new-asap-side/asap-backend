@@ -4,6 +4,7 @@ import { DatabaseModule } from '@src/database/database.module';
 import { JwtModule } from '@nestjs/jwt';
 import { ProfileController } from '@src/profile/profile.controller';
 import { ProfileService } from '@src/profile/profile.service';
+import { S3Service } from '@src/S3/S3.service';
 
 @Module({
   imports: [
@@ -20,7 +21,7 @@ import { ProfileService } from '@src/profile/profile.service';
     })
   ],
   controllers: [ProfileController],
-  providers: [ProfileService],
+  providers: [ProfileService, S3Service],
   exports: [ProfileService]
 })
 export class ProfileModule {}
