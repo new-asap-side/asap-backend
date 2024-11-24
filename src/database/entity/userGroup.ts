@@ -14,6 +14,11 @@ export enum AlarmTypeEnum {
     'all'='all'
 }
 
+export enum AlarmUnlockContentsEnum {
+    'slide' = 'slide',
+    'card' = 'card'
+}
+
 @Entity('user_group')
 export class UserGroup extends BaseEntity{
     @Column()
@@ -24,10 +29,6 @@ export class UserGroup extends BaseEntity{
 
     @Column({type: 'enum', enum: AlarmTypeEnum})
     alarm_type: AlarmTypeEnum;
-
-    // 이거 랜덤하게 구현할거면 저장할 필요 없을듯?
-    // @Column({type: 'enum', enum: AlarmUnlockTypeEnum})
-    // alarm_unlock_type: AlarmUnlockTypeEnum;
 
     @Column()
     music_title: string;

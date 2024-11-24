@@ -5,7 +5,8 @@ import {
 } from "typeorm";
 import {Exclude} from "class-transformer";
 import { BaseEntity } from '@src/database/entity/base';
-import { UserGroup } from '@src/database/entity/userGroup';
+import { AlarmUnlockContentsEnum, UserGroup } from '@src/database/entity/userGroup';
+import { AlarmDayEnum } from '@src/dto/dto.group';
 
 export enum GroupStatusEnum {
     'live'='live', // 그룹이 살아있는경우
@@ -36,18 +37,20 @@ export class Group extends BaseEntity{
     @Column({ type: 'date', nullable: true, comment: '알람 종료 날짜' })
     alarm_end_date: Date;
 
-    @Column({ type: 'time', nullable: true, comment: '알람 시간 ' })
-    alarm_hour_min: string;
+    @Column({ type: 'time', nullable: true, comment: '알람 시간' })
+    alarm_time: string;
 
-    // Redis bull로 기능 구현할꺼라 필요없음
-    // @Column({type:'json', nullable: true, comment: '알람이 울려야하는 날짜 배열 [YYYY.MM.DD HH:mm, ...]' })
-    // alarm_date: string[];
+    @Column({ type: 'enum', enum: AlarmDayEnum })
+    alarm_day: AlarmDayEnum;
 
     @Column()
     view_count: number;
 
     @Column({ type: 'enum', enum: GroupStatusEnum })
     status: GroupStatusEnum;
+
+    @Column({type: 'enum', enum: AlarmUnlockContentsEnum})
+    alarm_unlock_contents: AlarmUnlockContentsEnum;
 
     // Relations
     @OneToMany(() => UserGroup, (userGroup) => userGroup.group)

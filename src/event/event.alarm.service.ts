@@ -24,7 +24,8 @@ const dayMapping: Record<string, number> = {
 @Injectable()
 export class AlarmQueueService {
   constructor(
-    @InjectQueue('alarmQueue') private readonly alarmQueue: Queue
+    @InjectQueue('alarmQueue') private readonly alarmQueue: Queue,
+    @InjectQueue('iosAlarmQueue') private readonly iosAlarmQueue: Queue
   ) {}
 
   // 알람을 큐에 추가하는 메소드
@@ -36,10 +37,12 @@ export class AlarmQueueService {
     for (const triggerDate of triggerDates) {
       await this.alarmQueue.add('sendAlarm', {
         fcmToken,
-      }, {
-        delay: triggerDate.diff(dayjs(), 'millisecond'), // 알람이 울릴 때까지의 대기 시간
-        removeOnComplete: true, // 작업 완료 후 큐에서 삭제
-      });
+        alarm_unlock_contents: alarmData.alarm_unlock_contents
+      }, {  delay: triggerDate.diff(dayjs(), 'millisecond')}); // 알람이 울릴 때까지의 대기 시간
+
+      await this.iosAlarmQueue.add('sendIosAlarm', {
+
+      })
     }
   }
 

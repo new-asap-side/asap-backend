@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import admin from 'firebase-admin'
+import { AlarmUnlockContentsEnum } from '@src/database/entity/userGroup';
 
 
 @Injectable()
@@ -44,15 +45,15 @@ export class FcmService {
   }
 
   // Send notification to a topic
-  async sendNotificationToTopic(fcmToken: string, message: string): Promise<void> {
+  async sendNotificationToTopic(fcmToken: string, alarm_unlock_contents: AlarmUnlockContentsEnum): Promise<void> {
     const messagePayload = {
       notification: {
         title: 'Group Alarm',
-        body: message,
+        body: alarm_unlock_contents,
       },
       data: {
         title: 'Group Alarm',
-        body: message,
+        body: alarm_unlock_contents,
       },
       token: fcmToken,
     };
@@ -64,4 +65,6 @@ export class FcmService {
       console.error('Error sending notification', error);
     }
   }
+
+  
 }

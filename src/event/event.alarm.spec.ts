@@ -5,6 +5,7 @@ import { AlarmQueueService } from '@src/event/event.alarm.service';
 import { AlarmDayEnum } from '@src/dto/dto.group';
 import { AlarmModule } from '@src/event/event.alarm.module';
 import dayjs from 'dayjs';
+import { AlarmUnlockContentsEnum } from '@src/database/entity/userGroup';
 
 describe('FcmService Test', () => {
   let alarmQueueService: AlarmQueueService;
@@ -32,7 +33,8 @@ describe('FcmService Test', () => {
         {
           alarm_end_date: new Date('2024-11-30 23:59:59'),
           alarm_time: '21:15',
-          alarm_day: AlarmDayEnum.수
+          alarm_day: AlarmDayEnum.수,
+          alarm_unlock_contents: AlarmUnlockContentsEnum.card
         }
       )
       const a = result.map(v=> v.diff(dayjs(), 'millisecond'))
@@ -43,7 +45,8 @@ describe('FcmService Test', () => {
       alarmQueueService.addAlarmJob({
           alarm_end_date: new Date('2024-11-30 23:59:59'),
           alarm_time: '21:15',
-          alarm_day: AlarmDayEnum.수
+          alarm_day: AlarmDayEnum.수,
+        alarm_unlock_contents: AlarmUnlockContentsEnum.card
         }, "aaaa")
 
     });
