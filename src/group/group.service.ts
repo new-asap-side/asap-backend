@@ -4,7 +4,14 @@ import { Repository } from 'typeorm';
 import { User } from '@src/database/entity/user';
 import { Group, GroupStatusEnum } from '@src/database/entity/group';
 import { UserGroup } from '@src/database/entity/userGroup';
-import { CreateGroupDto, JoinGroupDto } from '@src/dto/dto.group';
+import {
+  CreateGroupDto,
+  EditGroupDto,
+  EditPersonalDto,
+  GroupResponse,
+  JoinGroupDto,
+  CreateGroupResponse, JoinGroupResponse,
+} from '@src/dto/dto.group';
 import { FcmService } from '@src/fcm/fcm.service';
 import { AlarmQueueService } from '@src/event/event.alarm.service';
 
@@ -66,7 +73,7 @@ export class GroupService {
   }
 
   // Join an existing group and subscribe the user to the group's topic
-  public async joinGroup(joinGroupDto: JoinGroupDto) {
+  public async joinGroup(joinGroupDto: JoinGroupDto): Promise<JoinGroupResponse> {
     const user = await this.userRepo.findOneBy({ id: joinGroupDto.user_id });
     if (!user) {
       throw new Error('User not found');
@@ -93,5 +100,36 @@ export class GroupService {
       message: 'User joined the group and subscribed to the topic.',
       groupId: group.id,
     };
+  }
+
+  public async editGroup(editGroupDto: EditGroupDto): Promise<GroupResponse> {
+    const {user_id, group_id, is_public, max_person ,description ,title} = editGroupDto
+    const userGroup = await this.userGroupRepo.findOneBy({ user_id, group_id })
+    if(!userGroup.is_group_master) return { result: false, message: '그룹장이 아닙니다.'}
+
+    const group = await this.groupRepo.findOneBy({id: group_id})
+    if(!(max_person >= group.current_person)) return { result: false, message: '최대인원 설정값은 현재인원 이상으로만 변경가능합니다.'}
+
+    const { affected } = await this.groupRepo.update(
+      { id: group_id },
+      { is_public, max_person, description, title }
+    )
+    if(affected == 0) return { result: false, message: '이전 내용과 동일합니다.' }
+
+    return { result: true, message: '수정되었습니다.' }
+  }
+
+  public async editPersonalGroup(editPersonalDto: EditPersonalDto): Promise<GroupResponse> {
+    const { user_id, group_id, music_title, alarm_type, alarm_volume } = editPersonalDto
+    const userGroup = await this.userGroupRepo.findOneBy({ user_id, group_id })
+    if(!userGroup) return { result: false, message: '수정 할 userGroup 데이터를 찾지 못했습니다.' }
+
+    const { affected } = await this.userGroupRepo.update(
+      { user_id, group_id },
+      { music_title, alarm_type, volume: alarm_volume }
+    )
+    if(affected == 0) return { result: false, message: '이전 내용과 동일합니다.' }
+
+    return { result: true, message: '수정되었습니다.' }
   }
 }
