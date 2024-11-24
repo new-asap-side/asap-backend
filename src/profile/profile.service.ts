@@ -31,7 +31,7 @@ export class ProfileService {
         { id: Number(user_id) },
         { nick_name: nickName, profile_image_url }
       )
-      if(affected === 0) return { result: false, reason: 'user_id Is Not Found'}
+      if(affected === 0) return { result: false, reason: 'user update is no affect'}
       return { result: true, profile_image_url}
     } catch (e) {
       this.logger.log(`saveProfile error, M=${e.message}`)

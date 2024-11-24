@@ -1,7 +1,7 @@
 import { createGzip, createGunzip } from 'zlib';
 import { S3 } from 'aws-sdk';
 import { Readable } from 'stream';
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { toBuffer, toObject } from '@src/libs/S3';
 import { v4 as uuidv4 } from 'uuid'; // UUID 생성 라이브러리
 
@@ -13,29 +13,11 @@ const URL_BASE_PATH = process.env.URL_BASE_PATH
 export class S3Service {
 
   private readonly logger = new Logger(S3Service.name);
-  private readonly s3: S3;
 
-  constructor() {
-    const S3_ACCESS_KEY = process.env.S3_ACCESS_KEY;
-    const S3_SECRET_KEY = process.env.S3_SECRET_KEY;
-
-    if (!S3_SECRET_KEY || !S3_SECRET_KEY) {
-      this.logger.error('S3 credentials are not set in environment variables.');
-      throw new Error('S3 credentials are not set in environment variables.');
-    }
-
-    this.s3 = new S3({
-      region: S3_REGION,
-      credentials: {
-        accessKeyId: S3_ACCESS_KEY,
-        secretAccessKey: S3_SECRET_KEY,
-      },
-      maxRetries: 3,
-      retryDelayOptions: {
-        base: 100,
-      },
-    });
-  }
+  constructor(
+    @Inject('S3_CLIENT')
+    private readonly s3: S3
+  ) {}
 
   async upload(base64Data: string) {
   // Base64 데이터에서 파일 타입 추출

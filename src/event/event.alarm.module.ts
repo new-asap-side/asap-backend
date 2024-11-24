@@ -19,6 +19,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
             db: 0,
             password: config.get<string>('REDIS_PASSWORD')
           },
+          defaultJobOptions: {
+            removeOnComplete: 10,
+            removeOnFail: 10,
+          },
         }
       },
 

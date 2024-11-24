@@ -36,7 +36,7 @@ export class GroupService {
       description: createGroupDto.description,
       max_person: createGroupDto.max_person,
       is_public: createGroupDto.is_public,
-      group_password: !createGroupDto.is_public ? createGroupDto.group_password : null,
+      group_password: createGroupDto.is_public ? null : createGroupDto.group_password,
       alarm_end_date: createGroupDto.alarm_end_date,
       alarm_hour_min: createGroupDto.alarm_time,
       status: GroupStatusEnum.live
