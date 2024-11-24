@@ -57,6 +57,7 @@ export class GroupService {
       alarm_type: createGroupDto.alarm_type,
       volume: createGroupDto.alarm_volume,
       music_title: createGroupDto.music_title,
+      is_group_master: true
     });
     await this.userGroupRepo.save(userGroup);
 
