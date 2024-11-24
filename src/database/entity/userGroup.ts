@@ -41,6 +41,9 @@ export class UserGroup extends BaseEntity{
     @Column({ default: 0 })
     view_count: number // 그룹상세 조회수
 
+    @Column()
+    is_group_master: boolean
+
     // Relations
     @ManyToOne(() => User, (user) => user.userGroups)
     @JoinColumn({ name: 'user_id' })

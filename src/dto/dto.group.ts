@@ -83,7 +83,7 @@ export class CreateGroupDto extends CreateAlarmDateDto {
   @IsNumber()
   alarm_volume: number
 
-  @ApiProperty({description: '알람음, 이거 구현방식 논의 필요할듯'})
+  @ApiProperty({description: '알람음 제목, 이거 구현방식 논의 필요할듯'})
   @IsNotEmpty()
   @IsString()
   music_title: string
@@ -120,8 +120,87 @@ export class JoinGroupDto {
   alarm_type: AlarmTypeEnum
 }
 
+export class EditGroupDto {
+  @ApiProperty({description: '그룹장의 user_id값'})
+  @IsNotEmpty()
+  @IsNumber()
+  user_id: number
+
+  @ApiProperty({description: '수정할 group_id값'})
+  @IsNotEmpty()
+  @IsNumber()
+  group_id: number
+
+  @ApiProperty({description: '수정 할 그룹 제목'})
+  @IsNotEmpty()
+  @IsString()
+  title: string;
+
+  @ApiProperty({description: '수정 할 그룹 설명'})
+  @IsNotEmpty()
+  @IsString()
+  description: string;
+
+  @ApiProperty({description: '수정 할 최대인원'})
+  @IsNotEmpty()
+  @IsNumber()
+  max_person: number;
+
+  @ApiProperty({description: '수정 할 공개 그룹 여부, true: 공개, false: 비공개'})
+  @IsNotEmpty()
+  @IsBoolean()
+  is_public: boolean;
+}
+
+export class EditPersonalDto {
+  @ApiProperty({description: '참여자의 user_id 값'})
+  @IsNotEmpty()
+  @IsNumber()
+  user_id: number
+
+  @ApiProperty({description: '참여할 group의 id값'})
+  @IsNotEmpty()
+  @IsNumber()
+  group_id: number
+
+  @ApiProperty({
+    description: '알람 방식, sound/vibration/all',
+    enum: AlarmTypeEnum,
+    example: AlarmTypeEnum.vibration
+  })
+  @IsNotEmpty()
+  @IsEnum(AlarmTypeEnum)
+  alarm_type: AlarmTypeEnum
+
+  @ApiProperty({description: '알람 음량, 기본값 10, 최대값 100'})
+  @IsNotEmpty()
+  @IsNumber()
+  alarm_volume: number
+
+  @ApiProperty({description: '알람음 제목, 이거 구현방식 논의 필요할듯'})
+  @IsNotEmpty()
+  @IsString()
+  music_title: string
+}
+
+export class CreateGroupResponse {
+  @ApiProperty()
+  @IsNumber()
+  groupId: number
+
+  @ApiProperty()
+  @IsString()
+  message: string
+}
+export class JoinGroupResponse extends CreateGroupResponse{
+}
+
 export class GroupResponse {
   @ApiProperty()
   @IsBoolean()
   result: boolean
+
+  @ApiProperty()
+  @IsString()
+  message: string
 }
