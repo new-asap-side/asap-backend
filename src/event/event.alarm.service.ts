@@ -29,20 +29,21 @@ export class AlarmQueueService {
   ) {}
 
   // 알람을 큐에 추가하는 메소드
-  async addAlarmJob(alarmData: CreateAlarmDateDto, fcmToken: string) {
+  async addAlarmJob(alarmData: CreateAlarmDateDto, deviceToken: string) {
     // 알람 종료일자와 요일, 시간에 맞는 알람 날짜 계산
     const triggerDates = this.calculateAlarmTriggerDates(alarmData);
 
     // 알람 날짜들에 대해 각각 큐에 작업을 추가
     for (const triggerDate of triggerDates) {
       await this.alarmQueue.add('sendAlarm', {
-        fcmToken,
+        fcmToken: deviceToken,
         alarm_unlock_contents: alarmData.alarm_unlock_contents
       }, {  delay: triggerDate.diff(dayjs(), 'millisecond')}); // 알람이 울릴 때까지의 대기 시간
 
       await this.iosAlarmQueue.add('sendIosAlarm', {
-
-      })
+        fcmToken: deviceToken,
+        alarm_unlock_contents: alarmData.alarm_unlock_contents
+      }, {  delay: triggerDate.diff(dayjs(), 'millisecond')}); // 알람이 울릴 때까지의 대기 시간
     }
   }
 

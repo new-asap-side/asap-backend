@@ -26,7 +26,6 @@ export class GroupService {
     private readonly groupRepo: Repository<Group>,
     @InjectRepository(UserGroup)
     private readonly userGroupRepo: Repository<UserGroup>,
-    private readonly fcmService: FcmService,
     private readonly alarmQueueService: AlarmQueueService
   ) {}
 
