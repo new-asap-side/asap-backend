@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards, UseInterceptors, UploadedFile, Get } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, UseInterceptors, UploadedFile, Get, Delete } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@src/auth/auth.guard';
 import { GroupService } from '@src/group/group.service';
@@ -8,7 +8,7 @@ import {
   EditPersonalDto,
   GroupResponse,
   JoinGroupDto,
-  CreateGroupResponse, JoinGroupResponse,
+  CreateGroupResponse, JoinGroupResponse, RemovePersonalDto,
 } from '@src/dto/dto.group';
 
 @ApiTags('group')
@@ -53,5 +53,14 @@ export class GroupController {
     @Body() editPersonalDto: EditPersonalDto
   ) {
     return await this.groupService.editPersonalGroup(editPersonalDto)
+  }
+
+  @Delete('remove')
+  @ApiOperation({summary: '개인 설정 수정[그룹원, 그룹장 권한]'})
+  @ApiResponse({ status: 200, type: GroupResponse })
+  async removePersonalGroup(
+    @Body() removePersonalDto: RemovePersonalDto
+  ) {
+    return await this.groupService.removePersonalGroup(removePersonalDto)
   }
 }

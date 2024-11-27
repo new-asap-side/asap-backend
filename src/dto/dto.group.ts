@@ -1,6 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsDate, IsEnum, IsNotEmpty, IsNumber, IsString, Matches } from 'class-validator';
-import { AlarmTypeEnum } from '@src/database/entity/userGroup';
+import { AlarmTypeEnum, AlarmUnlockContentsEnum } from '@src/database/entity/userGroup';
+
+export enum DeviceTypeEnum {
+  'ANDROID' = 'ANDROID',
+  'IOS' = 'IOS'
+}
 
 export enum AlarmDayEnum {
   '월'='월',
@@ -31,7 +36,17 @@ export class CreateAlarmDateDto {
   @IsNotEmpty()
   @IsString()
   alarm_time: string;
+
+  @ApiProperty({
+  description: '알람 해제 컨텐츠, slid/card',
+  enum: AlarmUnlockContentsEnum,
+  example: AlarmUnlockContentsEnum.card
+  })
+  @IsNotEmpty()
+  @IsEnum(AlarmUnlockContentsEnum)
+  alarm_unlock_contents: AlarmUnlockContentsEnum
 }
+
 
 export class CreateGroupDto extends CreateAlarmDateDto {
   @ApiProperty({description: '그룹장이 될사람의 user_id값'})
@@ -39,10 +54,10 @@ export class CreateGroupDto extends CreateAlarmDateDto {
   @IsNumber()
   user_id: number
 
-  @ApiProperty({description: '그룹장이 될사람의 fcm 디바이스 토큰'})
+  @ApiProperty({description: '디바이스 토큰값(Android는 fcm토큰, IOS는 APNsDevice 토큰)'})
   @IsNotEmpty()
   @IsString()
-  fcm_token: string;
+  device_token: string;
 
   @ApiProperty({description: '그룹 제목'})
   @IsNotEmpty()
@@ -87,6 +102,15 @@ export class CreateGroupDto extends CreateAlarmDateDto {
   @IsNotEmpty()
   @IsString()
   music_title: string
+
+  @ApiProperty({
+  description: '디바이스 타입, IOS/ANDROID',
+  enum: DeviceTypeEnum,
+  example: DeviceTypeEnum.IOS
+  })
+  @IsNotEmpty()
+  @IsEnum(DeviceTypeEnum)
+  device_type: DeviceTypeEnum
 }
 
 export class JoinGroupDto {
@@ -100,10 +124,10 @@ export class JoinGroupDto {
   @IsNumber()
   group_id: number
 
-  @ApiProperty({description: '참여자 fcm 디바이스 토큰값'})
+  @ApiProperty({description: '디바이스 토큰값(Android는 fcm토큰, IOS는 APNsDevice 토큰)'})
   @IsNotEmpty()
   @IsString()
-  fcm_token: string;
+  device_token: string;
 
   @ApiProperty({description: '비공개 그룹 비밀번호 string 숫자4자리'})
   @IsString()
@@ -118,6 +142,15 @@ export class JoinGroupDto {
   @IsNotEmpty()
   @IsEnum(AlarmTypeEnum)
   alarm_type: AlarmTypeEnum
+
+  @ApiProperty({
+  description: '디바이스 타입, IOS/ANDROID',
+  enum: DeviceTypeEnum,
+  example: DeviceTypeEnum.IOS
+  })
+  @IsNotEmpty()
+  @IsEnum(DeviceTypeEnum)
+  device_type: DeviceTypeEnum
 }
 
 export class EditGroupDto {
@@ -145,6 +178,15 @@ export class EditGroupDto {
   @IsNotEmpty()
   @IsNumber()
   max_person: number;
+
+  @ApiProperty({
+  description: '알람 해제 컨텐츠, slid/card',
+  enum: AlarmUnlockContentsEnum,
+  example: AlarmUnlockContentsEnum.card
+  })
+  @IsNotEmpty()
+  @IsEnum(AlarmUnlockContentsEnum)
+  alarm_unlock_contents: AlarmUnlockContentsEnum
 
   @ApiProperty({description: '수정 할 공개 그룹 여부, true: 공개, false: 비공개'})
   @IsNotEmpty()
@@ -181,6 +223,18 @@ export class EditPersonalDto {
   @IsNotEmpty()
   @IsString()
   music_title: string
+}
+
+export class RemovePersonalDto {
+  @ApiProperty({description: '참여자의 user_id 값'})
+  @IsNotEmpty()
+  @IsNumber()
+  user_id: number
+
+  @ApiProperty({description: '참여할 group의 id값'})
+  @IsNotEmpty()
+  @IsNumber()
+  group_id: number
 }
 
 export class CreateGroupResponse {

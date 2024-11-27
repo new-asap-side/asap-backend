@@ -10,7 +10,7 @@ import {
   EditPersonalDto,
   GroupResponse,
   JoinGroupDto,
-  CreateGroupResponse, JoinGroupResponse,
+  CreateGroupResponse, JoinGroupResponse, RemovePersonalDto,
 } from '@src/dto/dto.group';
 import { FcmService } from '@src/fcm/fcm.service';
 import { AlarmQueueService } from '@src/event/event.alarm.service';
@@ -26,12 +26,13 @@ export class GroupService {
     private readonly groupRepo: Repository<Group>,
     @InjectRepository(UserGroup)
     private readonly userGroupRepo: Repository<UserGroup>,
-    private readonly fcmService: FcmService,
     private readonly alarmQueueService: AlarmQueueService
   ) {}
 
   // 새 그룹 생성 후 해당유저부터 새 그룹 구독시키기
   public async createGroup(createGroupDto: CreateGroupDto) {
+    if(!createGroupDto.user_id) return {result: false, message: 'user_id 값이 없습니다.'}
+
     const user = await this.userRepo.findOneBy({ id: createGroupDto.user_id });
     if (!user) {
       throw new Error('User not found');
@@ -45,8 +46,10 @@ export class GroupService {
       is_public: createGroupDto.is_public,
       group_password: createGroupDto.is_public ? null : createGroupDto.group_password,
       alarm_end_date: createGroupDto.alarm_end_date,
-      alarm_hour_min: createGroupDto.alarm_time,
-      status: GroupStatusEnum.live
+      alarm_time: createGroupDto.alarm_time,
+      alarm_day: createGroupDto.alarm_day,
+      status: GroupStatusEnum.live,
+      alarm_unlock_contents: createGroupDto.alarm_unlock_contents,
     });
     await this.groupRepo.save(group);
 
@@ -62,8 +65,17 @@ export class GroupService {
     await this.userGroupRepo.save(userGroup);
 
     // Subscribe the user to the group's topic
-    const { alarm_end_date, alarm_day, alarm_time } = createGroupDto
-    await this.alarmQueueService.addAlarmJob({ alarm_end_date, alarm_day, alarm_time }, createGroupDto.fcm_token)
+    const { alarm_end_date, alarm_day, alarm_time, alarm_unlock_contents } = createGroupDto
+    await this.alarmQueueService.addAlarmJob(
+      {
+        alarm_end_date,
+        alarm_day,
+        alarm_time,
+        alarm_unlock_contents
+      },
+      createGroupDto.device_token,
+      createGroupDto.device_type
+    )
     // await this.fcmService.subscribeToTopic(createGroupDto.fcm_token, group.id);
     // this.logger.log(`Group ${group.title} created and user ${user.id} subscribed to topic group-${group.id}`);
 
@@ -92,19 +104,31 @@ export class GroupService {
     });
     await this.userGroupRepo.save(userGroup);
 
-    // Subscribe the user to the group's topic
-    await this.fcmService.subscribeToTopic(joinGroupDto.fcm_token, group.id);
+    // 구독방식은 속도가 너무 느려서 redis job으로 유저에게 직접 쏘도록 구현해보자
+    const {alarm_end_date, alarm_day, alarm_time, alarm_unlock_contents} = group
+    await this.alarmQueueService.addAlarmJob(
+      {
+        alarm_end_date,
+        alarm_day,
+        alarm_time,
+        alarm_unlock_contents
+      },
+      joinGroupDto.device_token,
+      joinGroupDto.device_type
+    )
 
     this.logger.log(`User ${user.id} joined group ${group.title} and subscribed to topic group-${group.id}`);
 
     return {
-      message: 'User joined the group and subscribed to the topic.',
+      message: 'User joined the group and scheduling to the alarm.',
       groupId: group.id,
     };
   }
 
   public async editGroup(editGroupDto: EditGroupDto): Promise<GroupResponse> {
-    const {user_id, group_id, is_public, max_person ,description ,title} = editGroupDto
+    const { user_id, group_id, is_public, max_person ,description ,title, alarm_unlock_contents } = editGroupDto
+    if(!user_id || !group_id) return {result: false, message: 'user_id 혹은 group_id 값이 없습니다.'}
+
     const userGroup = await this.userGroupRepo.findOneBy({ user_id, group_id })
     if(!userGroup.is_group_master) return { result: false, message: '그룹장이 아닙니다.'}
 
@@ -113,7 +137,7 @@ export class GroupService {
 
     const { affected } = await this.groupRepo.update(
       { id: group_id },
-      { is_public, max_person, description, title }
+      { is_public, max_person, description, title, alarm_unlock_contents }
     )
     if(affected == 0) return { result: false, message: '이전 내용과 동일합니다.' }
 
@@ -122,6 +146,8 @@ export class GroupService {
 
   public async editPersonalGroup(editPersonalDto: EditPersonalDto): Promise<GroupResponse> {
     const { user_id, group_id, music_title, alarm_type, alarm_volume } = editPersonalDto
+    if(!user_id || !group_id) return {result: false, message: 'user_id 혹은 group_id 값이 없습니다.'}
+
     const userGroup = await this.userGroupRepo.findOneBy({ user_id, group_id })
     if(!userGroup) return { result: false, message: '수정 할 userGroup 데이터를 찾지 못했습니다.' }
 
@@ -132,5 +158,18 @@ export class GroupService {
     if(affected == 0) return { result: false, message: '이전 내용과 동일합니다.' }
 
     return { result: true, message: '수정되었습니다.' }
+  }
+
+  public async removePersonalGroup(removePersonalDto: RemovePersonalDto): Promise<GroupResponse> {
+    const { user_id, group_id } = removePersonalDto
+    if(!user_id || !group_id) return {result: false, message: 'user_id 혹은 group_id 값이 없습니다.'}
+
+    const userGroup = await this.userGroupRepo.findOneBy({ user_id, group_id })
+    if(!userGroup) return { result: false, message: '삭제할 할 userGroup 데이터를 찾지 못했습니다.' }
+
+    const { affected } = await this.userGroupRepo.delete({ user_id, group_id })
+    if(affected == 0) return { result: false, message: '삭제할 데이터가 없습니다.' }
+
+    return { result: true, message: '삭제되었습니다.' }
   }
 }

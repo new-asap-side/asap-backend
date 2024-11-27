@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc';  // UTC 플러그인
+import utc from 'dayjs/plugin/utc'; // UTC 플러그인
 import timezone from 'dayjs/plugin/timezone';
-import { CreateAlarmDateDto } from '@src/dto/dto.group';  // timezone 플러그인
+import { CreateAlarmDateDto, DeviceTypeEnum } from '@src/dto/dto.group'; // timezone 플러그인
 
 // dayjs에 플러그인 등록
 dayjs.extend(utc);
@@ -24,22 +24,28 @@ const dayMapping: Record<string, number> = {
 @Injectable()
 export class AlarmQueueService {
   constructor(
-    @InjectQueue('alarmQueue') private readonly alarmQueue: Queue
+    @InjectQueue('alarmQueue') private readonly alarmQueue: Queue,
+    @InjectQueue('iosAlarmQueue') private readonly iosAlarmQueue: Queue
   ) {}
 
   // 알람을 큐에 추가하는 메소드
-  async addAlarmJob(alarmData: CreateAlarmDateDto, fcmToken: string) {
+  async addAlarmJob(alarmData: CreateAlarmDateDto, deviceToken: string, deviceType: DeviceTypeEnum) {
     // 알람 종료일자와 요일, 시간에 맞는 알람 날짜 계산
     const triggerDates = this.calculateAlarmTriggerDates(alarmData);
 
     // 알람 날짜들에 대해 각각 큐에 작업을 추가
     for (const triggerDate of triggerDates) {
-      await this.alarmQueue.add('sendAlarm', {
-        fcmToken,
-      }, {
-        delay: triggerDate.diff(dayjs(), 'millisecond'), // 알람이 울릴 때까지의 대기 시간
-        removeOnComplete: true, // 작업 완료 후 큐에서 삭제
-      });
+      if (deviceType === DeviceTypeEnum.ANDROID) {
+        await this.alarmQueue.add('sendAlarm', {
+          fcmToken: deviceToken,
+          alarm_unlock_contents: alarmData.alarm_unlock_contents
+        }, { delay: triggerDate.diff(dayjs(), 'millisecond') }); // 알람이 울릴 때까지의 대기 시간
+      } else if (deviceType === DeviceTypeEnum.IOS) {
+        await this.iosAlarmQueue.add('sendIosAlarm', {
+          deviceToken,
+          payload: alarmData.alarm_unlock_contents
+        }, { delay: triggerDate.diff(dayjs(), 'millisecond') }); // 알람이 울릴 때까지의 대기 시간
+      }
     }
   }
 

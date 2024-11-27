@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
 import { AlarmQueueService } from '@src/event/event.alarm.service';
 import { FcmService } from '@src/fcm/fcm.service';
-import { AlarmProcessor } from '@src/event/event.alarmProcessor';
+import { AlarmProcessor, IosAlarmProcessor } from '@src/event/event.alarmProcessor';
 import { BullModule } from '@nestjs/bull';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ApnService } from '@src/apn/apn.service';
+import { ApnConfig } from '@src/apn/apn.config';
 
 @Module({
   imports: [
@@ -30,8 +32,26 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     BullModule.registerQueue({
       name: 'alarmQueue',
     }),
+    BullModule.registerQueue({
+      name: 'iosAlarmQueue',
+    }),
   ],
-  providers: [AlarmQueueService, FcmService, AlarmProcessor],
-  exports: [AlarmQueueService, FcmService, BullModule, AlarmProcessor]
+  providers: [
+    AlarmQueueService,
+    FcmService,
+    AlarmProcessor,
+    IosAlarmProcessor,
+    ApnService,
+    ApnConfig
+  ],
+  exports: [
+    AlarmQueueService,
+    FcmService,
+    BullModule,
+    AlarmProcessor,
+    IosAlarmProcessor,
+    ApnService,
+    ApnConfig
+  ]
 })
 export class AlarmModule {}
