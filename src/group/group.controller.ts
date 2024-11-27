@@ -56,7 +56,7 @@ export class GroupController {
   }
 
   @Delete('remove')
-  @ApiOperation({summary: '개인 설정 수정[그룹원, 그룹장 권한]'})
+  @ApiOperation({summary: '그룹 탈퇴'})
   @ApiResponse({ status: 200, type: GroupResponse })
   async removePersonalGroup(
     @Body() removePersonalDto: RemovePersonalDto
