@@ -3,7 +3,7 @@ import * as apn from 'apn';
 import { ApnConfig } from '@src/apn/apn.config';
 
 @Injectable()
-export class ApnService implements OnModuleDestroy {
+export class ApnService {
   private apnProvider: apn.Provider;
   private appBundleId: string;
   private static initialized = false;
@@ -36,10 +36,5 @@ export class ApnService implements OnModuleDestroy {
     } catch (error) {
       console.error('Error sending APNs notification:', error);
     }
-  }
-
-  onModuleDestroy() {
-    // 서비스가 종료될 때 커넥션 닫기
-    this.apnProvider.shutdown();
   }
 }
