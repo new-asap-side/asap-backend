@@ -38,7 +38,7 @@ async function bootstrap() {
       }),
   );
 
-  app.use(json({limit: '50mb'}));
+  app.use(json({limit: '100mb'}));
 
   app.enableCors();
   app.enableShutdownHooks();

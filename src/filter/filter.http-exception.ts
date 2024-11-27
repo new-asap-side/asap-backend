@@ -20,10 +20,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
         response
             .status(status)
             .json({
-                statusCode: status,
+                exception: exception.getResponse(),
                 timestamp: new Date().toISOString(),
                 path: request.url,
-                message: exception?.message ?? 'INTERNAL_SERVER_ERROR'
             });
     }
 }

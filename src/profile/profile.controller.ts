@@ -26,6 +26,7 @@ export class ProfileController {
   //   return { message: 'File uploaded successfully' };
   // }
 
+
   @Post('check-nick-name')
   @ApiOperation({summary: '닉네임 중복체크'})
   @ApiResponse({ status: 200, type: CheckNickNameResponse })
