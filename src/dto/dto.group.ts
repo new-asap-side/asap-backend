@@ -2,6 +2,11 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsBoolean, IsDate, IsEnum, IsNotEmpty, IsNumber, IsString, Matches } from 'class-validator';
 import { AlarmTypeEnum, AlarmUnlockContentsEnum } from '@src/database/entity/userGroup';
 
+export enum DeviceTypeEnum {
+  'ANDROID' = 'ANDROID',
+  'IOS' = 'IOS'
+}
+
 export enum AlarmDayEnum {
   '월'='월',
   '화'='화',
@@ -41,6 +46,7 @@ export class CreateAlarmDateDto {
   @IsEnum(AlarmUnlockContentsEnum)
   alarm_unlock_contents: AlarmUnlockContentsEnum
 }
+
 
 export class CreateGroupDto extends CreateAlarmDateDto {
   @ApiProperty({description: '그룹장이 될사람의 user_id값'})
@@ -96,6 +102,15 @@ export class CreateGroupDto extends CreateAlarmDateDto {
   @IsNotEmpty()
   @IsString()
   music_title: string
+
+  @ApiProperty({
+  description: '디바이스 타입, IOS/ANDROID',
+  enum: DeviceTypeEnum,
+  example: DeviceTypeEnum.IOS
+  })
+  @IsNotEmpty()
+  @IsEnum(DeviceTypeEnum)
+  device_type: DeviceTypeEnum
 }
 
 export class JoinGroupDto {
@@ -127,6 +142,15 @@ export class JoinGroupDto {
   @IsNotEmpty()
   @IsEnum(AlarmTypeEnum)
   alarm_type: AlarmTypeEnum
+
+  @ApiProperty({
+  description: '디바이스 타입, IOS/ANDROID',
+  enum: DeviceTypeEnum,
+  example: DeviceTypeEnum.IOS
+  })
+  @IsNotEmpty()
+  @IsEnum(DeviceTypeEnum)
+  device_type: DeviceTypeEnum
 }
 
 export class EditGroupDto {

@@ -1,8 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { FcmService } from '@src/fcm/fcm.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AlarmQueueService } from '@src/event/event.alarm.service';
-import { AlarmDayEnum } from '@src/dto/dto.group';
+import { AlarmDayEnum, DeviceTypeEnum } from '@src/dto/dto.group';
 import { AlarmModule } from '@src/event/event.alarm.module';
 import dayjs from 'dayjs';
 import { AlarmUnlockContentsEnum } from '@src/database/entity/userGroup';
@@ -47,7 +46,7 @@ describe('FcmService Test', () => {
           alarm_time: '21:15',
           alarm_day: AlarmDayEnum.수,
         alarm_unlock_contents: AlarmUnlockContentsEnum.card
-        }, "aaaa")
+        }, "aaaa", DeviceTypeEnum.IOS)
 
     });
   });

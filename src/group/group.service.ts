@@ -66,7 +66,16 @@ export class GroupService {
 
     // Subscribe the user to the group's topic
     const { alarm_end_date, alarm_day, alarm_time, alarm_unlock_contents } = createGroupDto
-    await this.alarmQueueService.addAlarmJob({ alarm_end_date, alarm_day, alarm_time, alarm_unlock_contents }, createGroupDto.device_token)
+    await this.alarmQueueService.addAlarmJob(
+      {
+        alarm_end_date,
+        alarm_day,
+        alarm_time,
+        alarm_unlock_contents
+      },
+      createGroupDto.device_token,
+      createGroupDto.device_type
+    )
     // await this.fcmService.subscribeToTopic(createGroupDto.fcm_token, group.id);
     // this.logger.log(`Group ${group.title} created and user ${user.id} subscribed to topic group-${group.id}`);
 
@@ -97,7 +106,16 @@ export class GroupService {
 
     // 구독방식은 속도가 너무 느려서 redis job으로 유저에게 직접 쏘도록 구현해보자
     const {alarm_end_date, alarm_day, alarm_time, alarm_unlock_contents} = group
-    await this.alarmQueueService.addAlarmJob({ alarm_end_date, alarm_day, alarm_time, alarm_unlock_contents }, joinGroupDto.device_token)
+    await this.alarmQueueService.addAlarmJob(
+      {
+        alarm_end_date,
+        alarm_day,
+        alarm_time,
+        alarm_unlock_contents
+      },
+      joinGroupDto.device_token,
+      joinGroupDto.device_type
+    )
 
     this.logger.log(`User ${user.id} joined group ${group.title} and subscribed to topic group-${group.id}`);
 
