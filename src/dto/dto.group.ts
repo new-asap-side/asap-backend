@@ -20,8 +20,8 @@ export enum AlarmDayEnum {
 export class CreateAlarmDateDto {
   @ApiProperty({description: '알람 종료 날짜, YYYY-MM-DD 23:59:59'})
   @IsNotEmpty()
-  @IsDate()
-  alarm_end_date: Date;
+  @IsString()
+  alarm_end_date: string;
 
   @ApiProperty({
     description: '알람 요일',
