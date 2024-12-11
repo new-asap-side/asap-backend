@@ -34,8 +34,8 @@ export class Group extends BaseEntity{
     @Column({ length: 4, nullable: true })
     group_password: string;
 
-    @Column({ type: 'date', nullable: true, comment: '알람 종료 날짜' })
-    alarm_end_date: Date;
+    @Column({ nullable: true, comment: '알람 종료 날짜' })
+    alarm_end_date: string;
 
     @Column({ type: 'time', nullable: true, comment: '알람 시간' })
     alarm_time: string;
