@@ -4,7 +4,7 @@ import { Queue } from 'bull';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc'; // UTC 플러그인
 import timezone from 'dayjs/plugin/timezone';
-import { CreateAlarmDateDto, DeviceTypeEnum } from '@src/dto/dto.group'; // timezone 플러그인
+import { AddAlarmJobDto, CreateAlarmDateDto, DeviceTypeEnum } from '@src/dto/dto.group'; // timezone 플러그인
 
 // dayjs에 플러그인 등록
 dayjs.extend(utc);
@@ -29,7 +29,7 @@ export class AlarmQueueService {
   ) {}
 
   // 알람을 큐에 추가하는 메소드
-  async addAlarmJob(alarmData: CreateAlarmDateDto, deviceToken: string, deviceType: DeviceTypeEnum) {
+  async addAlarmJob(alarmData: AddAlarmJobDto, deviceToken: string, deviceType: DeviceTypeEnum) {
     // 알람 종료일자와 요일, 시간에 맞는 알람 날짜 계산
     const triggerDates = this.calculateAlarmTriggerDates(alarmData);
 
@@ -50,7 +50,7 @@ export class AlarmQueueService {
   }
 
   // 알람이 울릴 날짜를 계산하는 메소드
-  public calculateAlarmTriggerDates(alarmData: CreateAlarmDateDto): dayjs.Dayjs[] {
+  public calculateAlarmTriggerDates(alarmData: AddAlarmJobDto): dayjs.Dayjs[] {
     const triggerDates: dayjs.Dayjs[] = [];
     let currentDate = dayjs().tz('Asia/Seoul', true);  // 현재 날짜를 서울 시간대 기준으로 초기화
 

@@ -1,12 +1,9 @@
 import { CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 export class BaseEntity {
-    @PrimaryGeneratedColumn()
-    id: number;
+    @CreateDateColumn({type: 'datetime'})
+    created_at: Date;
 
-    @CreateDateColumn({type: 'timestamp'})
-    createdAt: Date;
-
-    @UpdateDateColumn({type: 'timestamp'})
-    updatedAt: Date;
+    @UpdateDateColumn({type: 'datetime'})
+    updated_at: Date;
 }

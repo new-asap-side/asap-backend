@@ -1,5 +1,15 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsDate, IsEnum, IsNotEmpty, IsNumber, IsString, Matches } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  IsArray,
+  IsBoolean,
+  IsDate,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Matches,
+} from 'class-validator';
 import { AlarmTypeEnum, AlarmUnlockContentsEnum } from '@src/database/entity/userGroup';
 
 export enum DeviceTypeEnum {
@@ -24,13 +34,15 @@ export class CreateAlarmDateDto {
   alarm_end_date: string;
 
   @ApiProperty({
-    description: '알람 요일',
+    description: '알람 요일 목록',
     enum: AlarmDayEnum,
-    example: AlarmDayEnum.수
+    isArray: true,
+    example: [AlarmDayEnum.수, AlarmDayEnum.금],
   })
   @IsNotEmpty()
-  @IsEnum(AlarmDayEnum)
-  alarm_day: AlarmDayEnum;
+  @IsArray()
+  @IsEnum(AlarmDayEnum, { each: true }) // 배열 내 각 값이 Enum에 속해야 함
+  alarm_days: AlarmDayEnum[];
 
   @ApiProperty({description: '알람 시간 HH:mm', example: "21:15"})
   @IsNotEmpty()
@@ -47,12 +59,22 @@ export class CreateAlarmDateDto {
   alarm_unlock_contents: AlarmUnlockContentsEnum
 }
 
+export class AddAlarmJobDto {
+    alarm_end_date: string;
+    alarm_day: AlarmDayEnum;
+    alarm_time: string;
+    alarm_unlock_contents: AlarmUnlockContentsEnum
+}
 
 export class CreateGroupDto extends CreateAlarmDateDto {
   @ApiProperty({description: '그룹장이 될사람의 user_id값'})
   @IsNotEmpty()
   @IsNumber()
   user_id: number
+
+  @ApiProperty({description: '그룹 썸네일 base64인코딩된 이미지'})
+  @IsString()
+  base64_group_img: string
 
   @ApiProperty({description: '디바이스 토큰값(Android는 fcm토큰, IOS는 APNsDevice 토큰)'})
   @IsNotEmpty()
@@ -79,10 +101,14 @@ export class CreateGroupDto extends CreateAlarmDateDto {
   @IsBoolean()
   is_public: boolean;
 
-  @ApiProperty({description: '비공개 그룹 비밀번호 string 숫자4자리'})
+  @ApiPropertyOptional({
+    description: '비공개 그룹 비밀번호 (숫자 4자리, 선택 사항)',
+    example: '1234',
+  })
+  @IsOptional() // 필드가 선택 사항임을 나타냄
   @IsString()
-  @Matches(/^\d{4}$/, {message: 'must be a 4-digit number'})
-  group_password: string;
+  @Matches(/^\d{4}$/, { message: 'must be a 4-digit number' })
+  group_password?: string; // 필드를 optional로 설정
 
   @ApiProperty({
     description: '알람 방식, sound/vibration/all',
@@ -129,10 +155,14 @@ export class JoinGroupDto {
   @IsString()
   device_token: string;
 
-  @ApiProperty({description: '비공개 그룹 비밀번호 string 숫자4자리'})
+  @ApiPropertyOptional({
+    description: '비공개 그룹 비밀번호 (숫자 4자리, 선택 사항)',
+    example: '1234',
+  })
+  @IsOptional() // 필드가 선택 사항임을 나타냄
   @IsString()
-  @Matches(/^\d{4}$/, {message: 'must be a 4-digit number'})
-  group_password: string;
+  @Matches(/^\d{4}$/, { message: 'must be a 4-digit number' })
+  group_password?: string; // 필드를 optional로 설정
 
   @ApiProperty({
     description: '알람 방식, sound/vibration/all',

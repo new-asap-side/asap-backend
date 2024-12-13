@@ -53,10 +53,10 @@ export class AuthController {
         const user = await this.authService.findByIdAndCheckRT(user_id, refreshToken);
         const token = this.authService.generateJWT(user_id, platform_id);
 
-        await this.authService.updateHashedRefreshToken(user.id, refreshToken);
+        await this.authService.updateHashedRefreshToken(user.user_id, refreshToken);
 
         return {
-            user_id: String(user.id),
+            user_id: String(user.user_id),
             accessToken: token.accessToken,
             refreshToken: token.refreshToken,
         }

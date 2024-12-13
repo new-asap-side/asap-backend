@@ -31,40 +31,13 @@ export class KakaoAuthService {
     }
 
     private async signUpKakaoUser(kakao_id: string) {
-        const kakaoUser = await this.userRepo.findOne({
-            where: {
-                kakao_id
-            }}
-        );
+        const kakaoUser = await this.userRepo.findOneBy({ kakao_id });
         if(!kakaoUser) {
-            const kakaoUser = this.userRepo.create();
-            kakaoUser.kakao_id = kakao_id;
+            const kakaoUser = this.userRepo.create({kakao_id});
             const savedUser = await this.userRepo.save(kakaoUser);
-            return savedUser.id
+            return savedUser.user_id
         }
-        return kakaoUser.id
-    }
-
-    private async getAccessToken(apikey: string, redirectUri: string, code: string) {
-        const config = {
-            grant_type: 'authorization_code',
-            client_id: apikey,
-            redirect_uri: redirectUri,
-            code,
-        };
-
-        const params = new URLSearchParams(config).toString();
-        const tokenHeaders = {
-            'Content-type': 'application/x-www-form-urlencoded;charset=utf-8',
-        };
-        const tokenUrl = `https://kauth.kakao.com/oauth/token?`;
-
-
-        const { data } = await firstValueFrom(
-          this.http.post(tokenUrl, params, { headers: tokenHeaders }),
-        );
-
-        return data.access_token
+        return kakaoUser.user_id
     }
 
     private async getKakaoId(kakaoAccessToken: string) {

@@ -14,6 +14,8 @@ import {
 } from '@src/dto/dto.group';
 import { FcmService } from '@src/fcm/fcm.service';
 import { AlarmQueueService } from '@src/event/event.alarm.service';
+import { Alarm } from '@src/database/entity/alarm';
+import { S3Service } from '@src/S3/S3.service';
 
 @Injectable()
 export class GroupService {
@@ -26,20 +28,24 @@ export class GroupService {
     private readonly groupRepo: Repository<Group>,
     @InjectRepository(UserGroup)
     private readonly userGroupRepo: Repository<UserGroup>,
-    private readonly alarmQueueService: AlarmQueueService
+    @InjectRepository(Alarm)
+    private readonly alarmRepo: Repository<Alarm>,
+    private readonly alarmQueueService: AlarmQueueService,
+    private readonly s3Service: S3Service
   ) {}
 
   // 새 그룹 생성 후 해당유저부터 새 그룹 구독시키기
   public async createGroup(createGroupDto: CreateGroupDto) {
     if(!createGroupDto.user_id) return {result: false, message: 'user_id 값이 없습니다.'}
 
-    const user = await this.userRepo.findOneBy({ id: createGroupDto.user_id });
+    const user = await this.userRepo.findOneBy({ user_id: createGroupDto.user_id });
     if (!user) {
       throw new Error('User not found');
     }
+    const group_thumbnail_image_url = await this.s3Service.upload(createGroupDto.base64_group_img)
 
     // 그룹생성
-    const group = this.groupRepo.create({
+    const groupEntity = this.groupRepo.create({
       title: createGroupDto.title,
       description: createGroupDto.description,
       max_person: createGroupDto.max_person,
@@ -47,16 +53,24 @@ export class GroupService {
       group_password: createGroupDto.is_public ? null : createGroupDto.group_password,
       alarm_end_date: createGroupDto.alarm_end_date,
       alarm_time: createGroupDto.alarm_time,
-      alarm_day: createGroupDto.alarm_day,
       status: GroupStatusEnum.live,
       alarm_unlock_contents: createGroupDto.alarm_unlock_contents,
+      group_thumbnail_image_url
     });
-    await this.groupRepo.save(group);
+    const savedGroup = await this.groupRepo.save(groupEntity);
+
+    for (const alarmDay of createGroupDto.alarm_days) {
+      const alarm = this.alarmRepo.create({
+        alarm_day: alarmDay,
+        group: savedGroup
+      })
+      await this.alarmRepo.save(alarm);
+    }
 
     // user-group 관계 생성
     const userGroup = this.userGroupRepo.create({
       user: user,
-      group: group,
+      group: savedGroup,
       alarm_type: createGroupDto.alarm_type,
       volume: createGroupDto.alarm_volume,
       music_title: createGroupDto.music_title,
@@ -64,35 +78,22 @@ export class GroupService {
     });
     await this.userGroupRepo.save(userGroup);
 
-    // Subscribe the user to the group's topic
-    const { alarm_end_date, alarm_day, alarm_time, alarm_unlock_contents } = createGroupDto
-    await this.alarmQueueService.addAlarmJob(
-      {
-        alarm_end_date,
-        alarm_day,
-        alarm_time,
-        alarm_unlock_contents
-      },
-      createGroupDto.device_token,
-      createGroupDto.device_type
-    )
-    // await this.fcmService.subscribeToTopic(createGroupDto.fcm_token, group.id);
-    // this.logger.log(`Group ${group.title} created and user ${user.id} subscribed to topic group-${group.id}`);
+    await this.emitAlarmQueue(savedGroup, createGroupDto)
 
     return {
       message: 'Group created successfully and user subscribed to the topic.',
-      groupId: group.id,
+      groupId: savedGroup.group_id,
     };
   }
 
   // Join an existing group and subscribe the user to the group's topic
   public async joinGroup(joinGroupDto: JoinGroupDto): Promise<JoinGroupResponse> {
-    const user = await this.userRepo.findOneBy({ id: joinGroupDto.user_id });
+    const user = await this.userRepo.findOneBy({ user_id: joinGroupDto.user_id });
     if (!user) {
       throw new Error('User not found');
     }
 
-    const group = await this.groupRepo.findOneBy({ id: joinGroupDto.group_id });
+    const group = await this.groupRepo.findOneBy({ group_id: joinGroupDto.group_id });
     if (!group) {
       throw new Error('Group not found');
     }
@@ -105,23 +106,13 @@ export class GroupService {
     await this.userGroupRepo.save(userGroup);
 
     // 구독방식은 속도가 너무 느려서 redis job으로 유저에게 직접 쏘도록 구현해보자
-    const {alarm_end_date, alarm_day, alarm_time, alarm_unlock_contents} = group
-    await this.alarmQueueService.addAlarmJob(
-      {
-        alarm_end_date,
-        alarm_day,
-        alarm_time,
-        alarm_unlock_contents
-      },
-      joinGroupDto.device_token,
-      joinGroupDto.device_type
-    )
+    await this.emitAlarmQueue(group, joinGroupDto)
 
-    this.logger.log(`User ${user.id} joined group ${group.title} and subscribed to topic group-${group.id}`);
+    this.logger.log(`User ${user.user_id} joined group ${group.title} and subscribed to topic group-${group.group_id}`);
 
     return {
       message: 'User joined the group and scheduling to the alarm.',
-      groupId: group.id,
+      groupId: group.group_id,
     };
   }
 
@@ -132,11 +123,11 @@ export class GroupService {
     const userGroup = await this.userGroupRepo.findOneBy({ user_id, group_id })
     if(!userGroup.is_group_master) return { result: false, message: '그룹장이 아닙니다.'}
 
-    const group = await this.groupRepo.findOneBy({id: group_id})
+    const group = await this.groupRepo.findOneBy({group_id: group_id})
     if(!(max_person >= group.current_person)) return { result: false, message: '최대인원 설정값은 현재인원 이상으로만 변경가능합니다.'}
 
     const { affected } = await this.groupRepo.update(
-      { id: group_id },
+      { group_id: group_id },
       { is_public, max_person, description, title, alarm_unlock_contents }
     )
     if(affected == 0) return { result: false, message: '이전 내용과 동일합니다.' }
@@ -171,5 +162,21 @@ export class GroupService {
     if(affected == 0) return { result: false, message: '삭제할 데이터가 없습니다.' }
 
     return { result: true, message: '삭제되었습니다.' }
+  }
+
+  private async emitAlarmQueue(group: Group, joinGroupDto: JoinGroupDto | CreateGroupDto) {
+    const {alarm_end_date, alarm_days, alarm_time, alarm_unlock_contents} = group
+    for (const alarmDayEntity of alarm_days) {
+      await this.alarmQueueService.addAlarmJob(
+        {
+          alarm_end_date,
+          alarm_day: alarmDayEntity.alarm_day,
+          alarm_time,
+          alarm_unlock_contents
+        },
+        joinGroupDto.device_token,
+        joinGroupDto.device_type
+      )
+    }
   }
 }

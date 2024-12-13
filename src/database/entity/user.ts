@@ -1,13 +1,16 @@
 import {
     Column, DeleteDateColumn,
     Entity,
-    OneToMany, UpdateDateColumn,
+    OneToMany, PrimaryGeneratedColumn, UpdateDateColumn,
 } from 'typeorm';
 import { BaseEntity } from '@src/database/entity/base';
 import { UserGroup } from '@src/database/entity/userGroup';
 
 @Entity('user')
 export class User extends BaseEntity {
+    @PrimaryGeneratedColumn()
+    user_id: number;
+
     @Column({ unique: true, nullable: true })
     kakao_id: string;
 

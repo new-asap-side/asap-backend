@@ -2,25 +2,28 @@ import {
     Column,
     Entity,
     JoinColumn,
-    ManyToOne,
-} from "typeorm";
+    ManyToOne, PrimaryGeneratedColumn,
+} from 'typeorm';
 import { BaseEntity } from '@src/database/entity/base';
 import { User } from '@src/database/entity/user';
 import { Group } from '@src/database/entity/group';
 
 export enum AlarmTypeEnum {
-    'sound'='sound',
-    'vibration'='vibration',
-    'all'='all'
+    'sound'='SOUND',
+    'vibration'='VIBRATION',
+    'all'='ALL'
 }
 
 export enum AlarmUnlockContentsEnum {
-    'slide' = 'slide',
-    'card' = 'card'
+    'slide' = 'SLIDE',
+    'card' = 'CARD'
 }
 
 @Entity('user_group')
 export class UserGroup extends BaseEntity{
+    @PrimaryGeneratedColumn()
+    user_group_id: number;
+
     @Column()
     user_id: number;
 

@@ -19,7 +19,7 @@ export class AuthService {
   public async findByIdAndCheckRT(user_id: string, refresh_token: string): Promise<User> {
     return await this.userRepo.findOne({
       where: {
-        id: Number(user_id),
+        user_id: Number(user_id),
         refresh_token
       }
     })

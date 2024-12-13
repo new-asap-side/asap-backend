@@ -32,7 +32,7 @@ describe('FcmService Test', () => {
         {
           alarm_end_date: new Date('2024-11-30 23:59:59'),
           alarm_time: '21:15',
-          alarm_day: AlarmDayEnum.수,
+          alarm_days: AlarmDayEnum.수,
           alarm_unlock_contents: AlarmUnlockContentsEnum.card
         }
       )
@@ -44,7 +44,7 @@ describe('FcmService Test', () => {
       alarmQueueService.addAlarmJob({
           alarm_end_date: new Date('2024-11-30 23:59:59'),
           alarm_time: '21:15',
-          alarm_day: AlarmDayEnum.수,
+          alarm_days: AlarmDayEnum.수,
         alarm_unlock_contents: AlarmUnlockContentsEnum.card
         }, "aaaa", DeviceTypeEnum.IOS)
 

@@ -52,8 +52,8 @@ export class AppleAuthService {
       const appleUser = this.userRepo.create();
       appleUser.apple_id = apple_id
       const savedUser = await this.userRepo.save(appleUser);
-      return savedUser.id
+      return savedUser.user_id
     }
-    return user.id
+    return user.user_id
   }
 }

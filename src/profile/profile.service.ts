@@ -28,7 +28,7 @@ export class ProfileService {
       }
       const profile_image_url = await this.s3Service.upload(profileImgBase64);
       const { affected } = await this.userRepo.update(
-        { id: Number(user_id) },
+        { user_id: Number(user_id) },
         { nick_name: nickName, profile_image_url }
       )
       if(affected === 0) return { result: false, reason: 'user update is no affect'}
