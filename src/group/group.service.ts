@@ -42,6 +42,9 @@ export class GroupService {
     if (!user) {
       throw new Error('User not found');
     }
+    if(!createGroupDto.is_public && !createGroupDto.group_password) {
+      throw new Error('Please password typing!')
+    }
     const group_thumbnail_image_url = await this.s3Service.upload(createGroupDto.base64_group_img)
 
     // 그룹생성
