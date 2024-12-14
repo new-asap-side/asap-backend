@@ -54,6 +54,7 @@ export class S3Service {
 
   try {
     await this.s3.upload(params).promise();
+    this.logger.log('s3 upload done.')
     return `${URL_BASE_PATH}${key}`;
   } catch (e) {
     console.error('S3 업로드 실패:', e);
