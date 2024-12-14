@@ -6,7 +6,6 @@ import { toBuffer, toObject } from '@src/libs/S3';
 import { v4 as uuidv4 } from 'uuid'; // UUID 생성 라이브러리
 
 const S3_BUCKET = 'asap-resource';
-const S3_REGION = 'ap-northeast-2';
 const URL_BASE_PATH = process.env.URL_BASE_PATH
 
 @Injectable()
@@ -20,20 +19,33 @@ export class S3Service {
   ) {}
 
   async upload(base64Data: string) {
-  // Base64 데이터에서 파일 타입 추출
+  let mimeType: string;
+  let base64String: string;
+
+  // MIME 타입이 존재하는지 확인
   const matches = base64Data.match(/^data:(.+);base64,(.+)$/);
-  if (!matches || matches.length !== 3) {
-    throw new Error('Invalid Base64 format');
+  if (matches && matches.length === 3) {
+    mimeType = matches[1]; // MIME 타입
+    base64String = matches[2]; // Base64 인코딩된 데이터
+  } else {
+    // MIME 타입이 없을 경우, 기본값으로 'image/jpeg' 사용
+    console.warn('MIME 타입이 누락되었습니다. 기본 MIME 타입 image/jpeg를 사용합니다.');
+    mimeType = 'image/jpeg';
+    base64String = base64Data; // 데이터 전체를 Base64로 처리
   }
-  const mimeType = matches[1];
-  const base64String = matches[2];
+
   const uniqueId = uuidv4();
-    // MIME 타입에서 확장자 추출
-  const extension = mimeType.split('/')[1]; // "png", "jpeg", etc.
+  // MIME 타입에서 확장자 추출
+  const extension = mimeType.split('/')[1] || 'jpg'; // 확장자 설정 (기본값 jpg)
   const key = `${uniqueId}.${extension}`; // UUID에 확장자 추가
 
   // Base64 문자열을 Binary 데이터(Buffer)로 변환
-  const buffer = Buffer.from(base64String, 'base64');
+  let buffer: Buffer;
+  try {
+    buffer = Buffer.from(base64String, 'base64');
+  } catch (e) {
+    throw new Error('Base64 데이터가 유효하지 않습니다.');
+  }
 
   const params = {
     Bucket: S3_BUCKET,
@@ -47,7 +59,7 @@ export class S3Service {
     await this.s3.upload(params).promise();
     return `${URL_BASE_PATH}${key}`;
   } catch (e) {
-    this.logger.error(e);
+    console.error('S3 업로드 실패:', e);
     throw e;
   }
 }
