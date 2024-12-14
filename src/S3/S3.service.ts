@@ -1,11 +1,8 @@
-import { createGzip, createGunzip } from 'zlib';
 import { S3 } from 'aws-sdk';
-import { Readable } from 'stream';
 import { Inject, Injectable, Logger } from '@nestjs/common';
-import { toBuffer, toObject } from '@src/libs/S3';
 import { v4 as uuidv4 } from 'uuid'; // UUID 생성 라이브러리
 
-const S3_BUCKET = 'asap-resource';
+const S3_BUCKET = 'asap-data';
 const URL_BASE_PATH = process.env.URL_BASE_PATH
 
 @Injectable()
@@ -64,87 +61,69 @@ export class S3Service {
   }
 }
 
-  async get(key: string) {
-    const params = {
-      Bucket: S3_BUCKET,
-      Key: key
-    };
-
-    try {
-      const data = await this.s3.getObject(params).promise();
-      return this.decompress(data.Body);
-    } catch (e) {
-      this.logger.error(`key(${key}): ${e}`);
-      // throw (e)
-    }
-  }
-
-
-  async delete(key: string): Promise<any> {
-    const params = {
-      Bucket: S3_BUCKET,
-      Key: key
-    };
-
-    try {
-      return await this.s3.deleteObject(params).promise();
-    } catch (e) {
-      this.logger.error(`key(${key}): ${e}`);
-      // throw (e)
-    }
-  }
-
-  private compress(data: any): Readable {
-    try {
-      const buffer = toBuffer(data);
-      const input = new Readable();
-      input.push(buffer);
-      input.push(null);
-      return input.pipe(createGzip());
-    } catch (e) {
-      this.logger.error(e);
-      throw (e);
-    }
-  }
-
-  private async decompress(compressedData: any) {
-    try {
-      const input = new Readable();
-      input.push(compressedData);
-      input.push(null);
-      const gunzip = createGunzip();
-      const buffer = await this.streamToBuffer(input.pipe(gunzip));
-      return toObject(buffer);
-    } catch (e) {
-      this.logger.error(e);
-      throw (e);
-    }
-  }
-
-  private streamToBuffer(stream: Readable): Promise<Buffer> {
-    return new Promise((resolve, reject) => {
-      const chunks = [];
-      stream.on('data', chunk => chunks.push(chunk));
-      stream.on('end', () => resolve(Buffer.concat(chunks)));
-      stream.on('error', reject);
-    });
-  }
-
-  async uploadFile(filePathName: string, contentsType : string, data: Buffer) {
-    const params = {
-      Bucket: S3_BUCKET,
-      acl: 'public-read',
-      Key: filePathName,
-      Body: data,
-      ContentType: contentsType
-    };
-
-    try {
-      await this.s3.upload(params).promise();
-      return `http://${URL_BASE_PATH}/${filePathName}`;
-    } catch (e) {
-      this.logger.error(e);
-      throw (e);
-    }
-  }
+  // async get(key: string) {
+  //   const params = {
+  //     Bucket: S3_BUCKET,
+  //     Key: key
+  //   };
+  //
+  //   try {
+  //     const data = await this.s3.getObject(params).promise();
+  //     return this.decompress(data.Body);
+  //   } catch (e) {
+  //     this.logger.error(`key(${key}): ${e}`);
+  //     // throw (e)
+  //   }
+  // }
+  //
+  //
+  // async delete(key: string): Promise<any> {
+  //   const params = {
+  //     Bucket: S3_BUCKET,
+  //     Key: key
+  //   };
+  //
+  //   try {
+  //     return await this.s3.deleteObject(params).promise();
+  //   } catch (e) {
+  //     this.logger.error(`key(${key}): ${e}`);
+  //     // throw (e)
+  //   }
+  // }
+  //
+  // private compress(data: any): Readable {
+  //   try {
+  //     const buffer = toBuffer(data);
+  //     const input = new Readable();
+  //     input.push(buffer);
+  //     input.push(null);
+  //     return input.pipe(createGzip());
+  //   } catch (e) {
+  //     this.logger.error(e);
+  //     throw (e);
+  //   }
+  // }
+  //
+  // private async decompress(compressedData: any) {
+  //   try {
+  //     const input = new Readable();
+  //     input.push(compressedData);
+  //     input.push(null);
+  //     const gunzip = createGunzip();
+  //     const buffer = await this.streamToBuffer(input.pipe(gunzip));
+  //     return toObject(buffer);
+  //   } catch (e) {
+  //     this.logger.error(e);
+  //     throw (e);
+  //   }
+  // }
+  //
+  // private streamToBuffer(stream: Readable): Promise<Buffer> {
+  //   return new Promise((resolve, reject) => {
+  //     const chunks = [];
+  //     stream.on('data', chunk => chunks.push(chunk));
+  //     stream.on('end', () => resolve(Buffer.concat(chunks)));
+  //     stream.on('error', reject);
+  //   });
+  // }
 }
