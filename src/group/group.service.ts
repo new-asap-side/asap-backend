@@ -10,7 +10,7 @@ import {
   EditPersonalDto,
   GroupResponse,
   JoinGroupDto,
-  CreateGroupResponse, JoinGroupResponse, RemovePersonalDto,
+  CreateGroupResponse, JoinGroupResponse, RemovePersonalDto, AlarmDayEnum,
 } from '@src/dto/dto.group';
 import { FcmService } from '@src/fcm/fcm.service';
 import { AlarmQueueService } from '@src/event/event.alarm.service';
@@ -168,13 +168,13 @@ export class GroupService {
     return { result: true, message: '삭제되었습니다.' }
   }
 
-  private async emitAlarmQueue(group: Group, joinGroupDto: JoinGroupDto | CreateGroupDto) {
+  private async emitAlarmQueue(group: any, joinGroupDto: JoinGroupDto | CreateGroupDto) {
     const {alarm_end_date, alarm_days, alarm_time, alarm_unlock_contents} = group
-    for (const alarmDayEntity of alarm_days) {
+    for (const alarmDay of alarm_days) {
       await this.alarmQueueService.addAlarmJob(
         {
           alarm_end_date,
-          alarm_day: alarmDayEntity.alarm_day,
+          alarm_day: alarmDay as AlarmDayEnum,
           alarm_time,
           alarm_unlock_contents
         },
