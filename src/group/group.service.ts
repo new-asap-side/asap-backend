@@ -69,6 +69,7 @@ export class GroupService {
         group: savedGroup
       })
       await this.alarmRepo.save(alarm);
+      await this.emitAlarmQueue(savedGroup, createGroupDto, alarmDay)
     }
 
     // user-group 관계 생성
@@ -82,7 +83,6 @@ export class GroupService {
     });
     await this.userGroupRepo.save(userGroup);
 
-    await this.emitAlarmQueue(savedGroup, createGroupDto)
 
     return {
       message: 'Group created successfully and user subscribed to the topic.',
@@ -97,7 +97,10 @@ export class GroupService {
       throw new Error('User not found');
     }
 
-    const group = await this.groupRepo.findOneBy({ group_id: joinGroupDto.group_id });
+    const group = await this.groupRepo.findOne({
+      where: {  group_id: joinGroupDto.group_id },
+      relations: ['alarm_days']
+    });
     if (!group) {
       throw new Error('Group not found');
     }
@@ -109,8 +112,9 @@ export class GroupService {
     });
     await this.userGroupRepo.save(userGroup);
 
-    // 구독방식은 속도가 너무 느려서 redis job으로 유저에게 직접 쏘도록 구현해보자
-    await this.emitAlarmQueue(group, joinGroupDto)
+    for (const alarmDay of group.alarm_days) {
+      await this.emitAlarmQueue(group, joinGroupDto, alarmDay.alarm_day)
+    }
 
     this.logger.log(`User ${user.user_id} joined group ${group.title} and subscribed to topic group-${group.group_id}`);
 
@@ -168,19 +172,17 @@ export class GroupService {
     return { result: true, message: '삭제되었습니다.' }
   }
 
-  private async emitAlarmQueue(group: any, joinGroupDto: JoinGroupDto | CreateGroupDto) {
-    const {alarm_end_date, alarm_days, alarm_time, alarm_unlock_contents} = group
-    for (const alarmDay of alarm_days) {
+  private async emitAlarmQueue(group: Group, joinGroupDto: JoinGroupDto | CreateGroupDto, alarmDay: AlarmDayEnum) {
+    const {alarm_end_date, alarm_time, alarm_unlock_contents} = group
       await this.alarmQueueService.addAlarmJob(
         {
           alarm_end_date,
-          alarm_day: alarmDay as AlarmDayEnum,
+          alarm_day: alarmDay,
           alarm_time,
           alarm_unlock_contents
         },
         joinGroupDto.device_token,
         joinGroupDto.device_type
       )
-    }
   }
 }
