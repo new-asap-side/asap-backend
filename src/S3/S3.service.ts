@@ -13,11 +13,13 @@ export class S3Service {
   constructor(
     @Inject('S3_CLIENT')
     private readonly s3: S3
-  ) {}
+  ) {
+  }
 
   async upload(base64Data: string) {
   let mimeType: string;
   let base64String: string;
+
 
   // MIME 타입이 존재하는지 확인
   const matches = base64Data.match(/^data:(.+);base64,(.+)$/);
@@ -49,7 +51,7 @@ export class S3Service {
     Key: key,
     Body: buffer,
     ContentType: mimeType, // 올바른 MIME 타입 설정
-    ACL: 'public-read', // 공개 URL을 통해 접근 가능하도록 설정
+    // ACL: 'public-read', // 공개 URL을 통해 접근 가능하도록 설정
   };
 
   try {
