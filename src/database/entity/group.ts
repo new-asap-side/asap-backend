@@ -44,7 +44,7 @@ export class Group extends BaseEntity{
     @Column({ nullable: true, comment: '알람 시간' })
     alarm_time: string;
 
-    @Column()
+    @Column({default: 0})
     view_count: number;
 
     @Column({nullable: true})

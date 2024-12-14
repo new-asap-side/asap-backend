@@ -61,7 +61,8 @@ export class GroupService {
       group_thumbnail_image_url
     });
     const savedGroup = await this.groupRepo.save(groupEntity);
-
+    this.logger.log(`createGroupDto.alarm_days arr: ${createGroupDto.alarm_days}`)
+    this.logger.log(`createGroupDto.alarm_days str: ${JSON.stringify(createGroupDto.alarm_days)}`)
     for (const alarmDay of createGroupDto.alarm_days) {
       const alarm = this.alarmRepo.create({
         alarm_day: alarmDay,
