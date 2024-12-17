@@ -2,7 +2,8 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
 import admin from 'firebase-admin'
-import { AlarmUnlockContentsEnum } from '@src/database/entity/userGroup';
+
+import { AlarmUnlockContentsEnum } from '@src/database/enum/alarmUnlockContentsEnum';
 
 
 @Injectable()

@@ -3,7 +3,6 @@ import {
     Entity, JoinColumn, ManyToOne,
     PrimaryGeneratedColumn,
 } from 'typeorm';
-import { BaseEntity } from '@src/database/entity/base';
 import { AlarmDayEnum } from '@src/dto/dto.group';
 import { Group } from '@src/database/entity/group';
 

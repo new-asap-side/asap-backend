@@ -1,18 +1,10 @@
-import {
-    Column,
-    Entity,
-    OneToMany, PrimaryGeneratedColumn,
-} from 'typeorm';
-import {Exclude} from "class-transformer";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Exclude } from 'class-transformer';
 import { BaseEntity } from '@src/database/entity/base';
-import { AlarmUnlockContentsEnum, UserGroup } from '@src/database/entity/userGroup';
-import { AlarmDayEnum } from '@src/dto/dto.group';
+import { UserGroup } from '@src/database/entity/userGroup';
 import { Alarm } from '@src/database/entity/alarm';
-
-export enum GroupStatusEnum {
-    'live'='LIVE', // 그룹이 살아있는경우
-    'removed'='REMOVED', // 그룹이 알람종료일이 되어 제거된 경우
-}
+import { AlarmUnlockContentsEnum } from '@src/database/enum/alarmUnlockContentsEnum';
+import { GroupStatusEnum } from '@src/database/enum/groupStatusEnum';
 
 @Entity('group')
 export class Group extends BaseEntity{

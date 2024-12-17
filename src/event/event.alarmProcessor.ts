@@ -4,8 +4,8 @@ import { Job } from 'bull';
 import { CreateAlarmDateDto } from '@src/dto/dto.group';
 import { FcmService } from '@src/fcm/fcm.service';
 import dayjs from 'dayjs';
-import { AlarmUnlockContentsEnum } from '@src/database/entity/userGroup';
 import { ApnService } from '@src/apn/apn.service';
+import { AlarmUnlockContentsEnum } from '@src/database/enum/alarmUnlockContentsEnum';
 
 @Processor('alarmQueue')
 export class AlarmProcessor {

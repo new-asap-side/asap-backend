@@ -1,9 +1,4 @@
-import {
-    Column,
-    Entity,
-    JoinColumn,
-    ManyToOne, PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { BaseEntity } from '@src/database/entity/base';
 import { User } from '@src/database/entity/user';
 import { Group } from '@src/database/entity/group';
@@ -12,11 +7,6 @@ export enum AlarmTypeEnum {
     'sound'='SOUND',
     'vibration'='VIBRATION',
     'all'='ALL'
-}
-
-export enum AlarmUnlockContentsEnum {
-    'slide' = 'SLIDE',
-    'card' = 'CARD'
 }
 
 @Entity('user_group')

@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '@src/database/entity/user';
-import { Group, GroupStatusEnum } from '@src/database/entity/group';
+import { Group } from '@src/database/entity/group';
 import { UserGroup } from '@src/database/entity/userGroup';
 import {
   CreateGroupDto,
@@ -16,6 +16,7 @@ import { FcmService } from '@src/fcm/fcm.service';
 import { AlarmQueueService } from '@src/event/event.alarm.service';
 import { Alarm } from '@src/database/entity/alarm';
 import { S3Service } from '@src/S3/S3.service';
+import { GroupStatusEnum } from '@src/database/enum/groupStatusEnum';
 
 @Injectable()
 export class GroupService {
@@ -33,6 +34,14 @@ export class GroupService {
     private readonly alarmQueueService: AlarmQueueService,
     private readonly s3Service: S3Service
   ) {}
+
+  public async getAllGroup() {
+    return await this.groupRepo.find({order: { created_at: 'DESC' }})
+  }
+
+  public async getPopularGroup() {
+    return await this.groupRepo.find({order: { view_count: 'DESC' }})
+  }
 
   // 새 그룹 생성 후 해당유저부터 새 그룹 구독시키기
   public async createGroup(createGroupDto: CreateGroupDto) {

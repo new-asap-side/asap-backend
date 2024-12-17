@@ -2,9 +2,11 @@ import { Module } from '@nestjs/common';
 import {TypeOrmModule} from "@nestjs/typeorm";
 import {ConfigModule, ConfigService} from "@nestjs/config";
 import { entities } from '@src/database/entity/entity';
+import { ConfigurationModule } from '@src/config/config.module';
 
 @Module({
     imports: [
+      ConfigurationModule,
         TypeOrmModule.forRootAsync({
             imports: [ConfigModule],
             inject: [ConfigService],

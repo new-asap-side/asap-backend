@@ -10,7 +10,12 @@ import {
   IsString,
   Matches,
 } from 'class-validator';
-import { AlarmTypeEnum, AlarmUnlockContentsEnum } from '@src/database/entity/userGroup';
+import { AlarmTypeEnum } from '@src/database/entity/userGroup';
+import { Group } from '@src/database/entity/group';
+import { Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Exclude } from 'class-transformer';
+import { AlarmUnlockContentsEnum } from '@src/database/enum/alarmUnlockContentsEnum';
+import { GroupStatusEnum } from '@src/database/enum/groupStatusEnum';
 
 export enum DeviceTypeEnum {
   'ANDROID' = 'ANDROID',
@@ -25,6 +30,61 @@ export enum AlarmDayEnum {
   '금'='금',
   '토'='토',
   '일'='일',
+}
+
+export class ReadGroupResponseDto {
+    @ApiProperty()
+    group_id: number;
+
+    @ApiProperty()
+    title: string;
+
+    @ApiProperty()
+    description: string;
+
+    @ApiProperty()
+    max_person: number;
+
+    @ApiProperty()
+    current_person: number;
+
+    @ApiProperty()
+    is_public: boolean;
+
+    @ApiProperty()
+    group_password: string;
+
+    @ApiProperty()
+    alarm_end_date: string;
+
+    @ApiProperty()
+    alarm_time: string;
+
+    @ApiProperty()
+    view_count: number;
+
+    @ApiProperty()
+    group_thumbnail_image_url: string;
+
+    @ApiProperty({
+      enum: GroupStatusEnum,
+      isArray: false,
+      example: GroupStatusEnum.live
+    })
+    status: GroupStatusEnum;
+
+    @ApiProperty({
+      enum: AlarmUnlockContentsEnum,
+      isArray: false,
+      example: AlarmUnlockContentsEnum.card
+    })
+    alarm_unlock_contents: AlarmUnlockContentsEnum;
+
+    @ApiProperty()
+    created_at: Date;
+
+    @ApiProperty()
+    updated_at: Date;
 }
 
 export class CreateAlarmDateDto {

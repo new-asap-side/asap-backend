@@ -10,15 +10,13 @@ import { FcmService } from '@src/fcm/fcm.service';
 import { AlarmModule } from '@src/event/event.alarm.module';
 import { S3Service } from '@src/S3/S3.service';
 import { ApnModule } from '@src/apn/apn.module';
+import { ConfigurationModule } from '@src/config/config.module';
 
 @Module({
   imports: [
+    ConfigurationModule,
     DatabaseModule,
     AuthModule,
-    ConfigModule.forRoot({
-      envFilePath: process.env.NODE_ENV === 'production' ? '.env': '.env.local',
-      isGlobal: true,
-    }),
     ProfileModule,
     GroupModule,
     AlarmModule,

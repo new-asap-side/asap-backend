@@ -8,16 +8,33 @@ import {
   EditPersonalDto,
   GroupResponse,
   JoinGroupDto,
-  CreateGroupResponse, JoinGroupResponse, RemovePersonalDto,
+  CreateGroupResponse, JoinGroupResponse, RemovePersonalDto, ReadGroupResponseDto,
 } from '@src/dto/dto.group';
+import { Group } from '@src/database/entity/group';
 
 @ApiTags('group')
 @Controller('group')
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard)
 export class GroupController {
   constructor(
     private readonly groupService: GroupService
   ) {}
+
+  @Get('latest')
+  @ApiOperation({summary: '최신그룹 전체조회'})
+  @ApiResponse({ status: 200, type: ReadGroupResponseDto, isArray: true })
+  async getAllGroup(
+  ) {
+    return await this.groupService.getAllGroup()
+  }
+
+  @Get('popular')
+  @ApiOperation({summary: '인기그룹 전체조회'})
+  @ApiResponse({ status: 200, type: ReadGroupResponseDto, isArray: true })
+  async getPopularGroup(
+  ) {
+    return await this.groupService.getPopularGroup()
+  }
 
   @Post('create')
   @ApiOperation({summary: '그룹 생성'})
