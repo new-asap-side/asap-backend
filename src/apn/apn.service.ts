@@ -66,10 +66,8 @@ export class ApnService {
     };
 
     const body = {
-      aps: {
-        alert: 'lee_tae_sung_test_msg',
-       "content-available" : 1
-      },
+      aps: { "content-available" : 1 },
+      'hi': 'Hello'
     };
 
     const url = `${APNS_URL}/${deviceToken}`;
@@ -80,7 +78,8 @@ export class ApnService {
       );
       return response.data;
     } catch (error) {
-      console.error('APNs Request Error:', error.response?.data || error.message);
+      console.error('APN raw Error: ',JSON.stringify(error))
+      // console.error('APNs Request Error:', error.response?.data || error.message);
       throw new Error('Failed to send push notification');
     }
   }

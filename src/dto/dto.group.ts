@@ -336,6 +336,7 @@ export class CreateGroupResponse {
   @IsString()
   message: string
 }
+
 export class JoinGroupResponse extends CreateGroupResponse{
 }
 
