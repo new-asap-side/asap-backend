@@ -29,6 +29,7 @@ export class SaveProfileRequest {
     type: 'string',
     description: 'Profile Image encoded base64'
   })
+  @IsString()
   profileImgBase64: string;
 }
 
