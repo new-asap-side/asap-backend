@@ -23,7 +23,6 @@ export class ProfileService {
 
   public async saveProfile(user_id: number, nickName: string, profileImgBase64?: string): Promise<{ result: boolean, reason?: string, profile_image_url?: string }> {
     try {
-      this.logger.warn(`profileImgBase64: ${profileImgBase64}`)
       if(!user_id || !nickName) return{
         result: false, reason: 'user_id or nickName is empty!'
       }
