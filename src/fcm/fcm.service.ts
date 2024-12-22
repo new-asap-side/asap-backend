@@ -33,18 +33,6 @@ export class FcmService {
     }
   }
 
-   // Subscribe the user to a topic (e.g., alarm-${userId})
-  async subscribeToTopic(fcmToken: string, group_id: number): Promise<void> {
-    const topic = `group-${group_id}`;
-
-    try {
-      await admin.messaging().subscribeToTopic([fcmToken], topic);
-      console.log(`User ${group_id} subscribed to topic ${topic}`);
-    } catch (error) {
-      console.error('Error subscribing to topic', error);
-    }
-  }
-
   // Send notification to a topic
   async sendNotificationToTopic(fcmToken: string, alarm_unlock_contents: AlarmUnlockContentsEnum): Promise<void> {
     const messagePayload = {
