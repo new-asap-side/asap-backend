@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ApnConfig } from '@src/apn/apn.config';
-import jwt from 'jsonwebtoken';
+import * as jwt from 'jsonwebtoken';
 import { lastValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
 
