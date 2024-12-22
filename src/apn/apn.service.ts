@@ -52,22 +52,25 @@ export class ApnService {
 
   async sendNotification(deviceToken: string): Promise<void> {
     // JWT 헤더와 페이로드
-    const APNS_URL = `https://api.sandbox.push.apple.com/3/device`
+    const APNS_URL = `https://api.push.apple.com/3/device`
     const token = this.generateJWT()
     console.log('Bearer Token:', token);
 
+
+    const body = JSON.stringify({
+      aps: { "content-available" : 1 },
+      'hi': 'Hello'
+    })
+    const contentLength = Buffer.byteLength(body, 'utf-8');
+
     const headers = {
-      Host: 'api.sandbox.push.apple.com',
+      Host: 'api.push.apple.com',
       Authorization: `bearer ${token}`,
       'apns-push-type': 'background',
       'apns-expiration': '0',
       'apns-priority': '5',
       'apns-topic': 'com.asap.Aljyo',
-    };
-
-    const body = {
-      aps: { "content-available" : 1 },
-      'hi': 'Hello'
+      'Content-Length': contentLength.toString(),
     };
 
     const url = `${APNS_URL}/${deviceToken}`;
