@@ -4,7 +4,6 @@ import jwt from 'jsonwebtoken';
 import { lastValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
 
-
 @Injectable()
 export class ApnService {
   constructor(
@@ -33,6 +32,7 @@ export class ApnService {
       algorithm: 'ES256',
       header,
     });
+    console.log(`APN token: ${token}`)
 
     return token
   }
@@ -42,7 +42,6 @@ export class ApnService {
     const APNS_URL = `https://api.push.apple.com/3/device`
     const token = this.generateJWT()
     console.log('Bearer Token:', token);
-
 
     const body = JSON.stringify({
       aps: { "content-available" : 1 },
