@@ -6,9 +6,11 @@ import { BullModule } from '@nestjs/bull';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ApnService } from '@src/apn/apn.service';
 import { ApnConfig } from '@src/apn/apn.config';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
   imports: [
+    HttpModule,
     BullModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

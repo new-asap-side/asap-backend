@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import {HttpModule} from "@nestjs/axios";
 import { DatabaseModule } from '@src/database/database.module';
 import { AuthController } from '@src/auth/auth.controller';
 import { KakaoAuthService } from '@src/auth/kakao-auth.service';
@@ -8,11 +7,12 @@ import { AccessTokenStrategy } from '@src/jwt/access-token-strategy.service';
 import { RefreshTokenStrategy } from '@src/jwt/refresh-token-strategy.service';
 import { AuthService } from '@src/auth/auth.service';
 import { JwtStrategyModule } from '@src/jwt/jwt.module';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
     imports: [
-        DatabaseModule,
-        HttpModule,
+      HttpModule,
+      DatabaseModule,
         JwtStrategyModule
     ],
     controllers: [AuthController],

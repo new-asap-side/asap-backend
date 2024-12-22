@@ -15,7 +15,6 @@ export class ApnService {
 
   constructor(
     private apnConfig: ApnConfig,
-    private readonly jwtService: JwtService,
     private readonly httpService: HttpService
   ) {
     if(!ApnService.initialized) {
