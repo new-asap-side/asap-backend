@@ -25,12 +25,8 @@ describe('AppController (e2e)', () => {
 
   it('ios apn', async () => {
     const deviceToken = ''
-    const payload = {
-      alert: '',
-      badge: 1,
-      sound: ''
-    }
-    await apnService.sendNotification(deviceToken, payload)
+
+    await apnService.sendNotification(deviceToken)
   });
 
   it('android fcm', async () => {
