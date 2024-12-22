@@ -78,7 +78,7 @@ export class GroupService {
         group: savedGroup
       })
       await this.alarmRepo.save(alarm);
-      // await this.emitAlarmQueue(savedGroup, createGroupDto, alarmDay)
+      await this.emitAlarmQueue(savedGroup, createGroupDto, alarmDay)
     }
 
     // user-group 관계 생성
