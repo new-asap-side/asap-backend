@@ -72,14 +72,14 @@ export class GroupService {
     const savedGroup = await this.groupRepo.save(groupEntity);
     this.logger.log(`createGroupDto.alarm_days arr: ${createGroupDto.alarm_days}`)
     this.logger.log(`createGroupDto.alarm_days str: ${JSON.stringify(createGroupDto.alarm_days)}`)
-    for (const alarmDay of createGroupDto.alarm_days) {
-      const alarm = this.alarmRepo.create({
-        alarm_day: alarmDay,
-        group: savedGroup
-      })
-      await this.alarmRepo.save(alarm);
-      await this.emitAlarmQueue(savedGroup, createGroupDto, alarmDay)
-    }
+    // for (const alarmDay of createGroupDto.alarm_days) {
+    //   const alarm = this.alarmRepo.create({
+    //     alarm_day: alarmDay,
+    //     group: savedGroup
+    //   })
+    //   await this.alarmRepo.save(alarm);
+    //   await this.emitAlarmQueue(savedGroup, createGroupDto, alarmDay)
+    // }
 
     // user-group 관계 생성
     const userGroup = this.userGroupRepo.create({
