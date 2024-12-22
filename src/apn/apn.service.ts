@@ -1,7 +1,5 @@
-import { Injectable, OnModuleDestroy } from '@nestjs/common';
-import * as apn from 'apn';
+import { Injectable } from '@nestjs/common';
 import { ApnConfig } from '@src/apn/apn.config';
-import { JwtService } from '@nestjs/jwt';
 import jwt from 'jsonwebtoken';
 import { lastValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
@@ -9,21 +7,10 @@ import { HttpService } from '@nestjs/axios';
 
 @Injectable()
 export class ApnService {
-  private apnProvider: apn.Provider;
-  private appBundleId: string;
-  private static initialized = false;
-
   constructor(
     private apnConfig: ApnConfig,
     private readonly httpService: HttpService
   ) {
-    if(!ApnService.initialized) {
-      const config = this.apnConfig.getApnConfig();
-      this.apnProvider = new apn.Provider(config);
-      this.appBundleId = this.apnConfig.getAppBundleId();
-
-      ApnService.initialized = true;  // 초기화가 완료된 후, initialized 플래그를 true로 설정
-    }
   }
 
   private generateJWT() {
@@ -38,7 +25,7 @@ export class ApnService {
     };
 
     // p8 키 읽기
-    const privateKey = this.apnConfig.getApnConfig().token.key
+    const privateKey = this.apnConfig.getApnConfig().APNS_P8_FILE_STRING
     console.log(`privateKey: ${privateKey}`)
 
     // JWT 생성
