@@ -1,6 +1,11 @@
 import { Injectable, OnModuleDestroy } from '@nestjs/common';
 import * as apn from 'apn';
 import { ApnConfig } from '@src/apn/apn.config';
+import { JwtService } from '@nestjs/jwt';
+import jwt from 'jsonwebtoken';
+import { lastValueFrom } from 'rxjs';
+import { HttpService } from '@nestjs/axios';
+
 
 @Injectable()
 export class ApnService {
@@ -8,7 +13,11 @@ export class ApnService {
   private appBundleId: string;
   private static initialized = false;
 
-  constructor(private apnConfig: ApnConfig) {
+  constructor(
+    private apnConfig: ApnConfig,
+    private readonly jwtService: JwtService,
+    private readonly httpService: HttpService
+  ) {
     if(!ApnService.initialized) {
       const config = this.apnConfig.getApnConfig();
       this.apnProvider = new apn.Provider(config);
@@ -18,23 +27,62 @@ export class ApnService {
     }
   }
 
-  async sendNotification(deviceToken: string, payload: InotificationPayload): Promise<void> {
-    const notification = new apn.Notification();
+  private generateJWT() {
+    const header = {
+      alg: 'ES256',
+      kid: '7W7779L8K6',
+    };
 
-    // 알림 내용 설정
-    notification.alert = payload.alert || 'Default Alert Message';
-    notification.badge = payload.badge || 1;
-    notification.sound = payload.sound || 'default';
-    notification.topic = this.appBundleId; // App의 Bundle ID
+    const payload = {
+      iss: 'ZP2P7SHATC', // Team ID
+      iat: Math.floor(Date.now() / 1000), // 현재 UTC 시간 (초 단위)
+    };
+
+    // p8 키 읽기
+    const privateKey = this.apnConfig.getApnConfig().token.key
+    console.log(`privateKey: ${privateKey}`)
+
+    // JWT 생성
+    const token = jwt.sign(payload, privateKey, {
+      algorithm: 'ES256',
+      header,
+    });
+
+    return token
+  }
+
+  async sendNotification(deviceToken: string): Promise<void> {
+    // JWT 헤더와 페이로드
+    const APNS_URL = `https://api.push.apple.com/3/device`
+    const token = this.generateJWT()
+    console.log('Bearer Token:', token);
+
+    const headers = {
+      Host: 'api.push.apple.com',
+      Authorization: `bearer ${token}`,
+      'apns-push-type': 'alert',
+      'apns-expiration': '0',
+      'apns-priority': '10',
+      'apns-topic': 'com.asap.Aljyo',
+    };
+
+    const body = {
+      aps: {
+        alert: 'lee_tae_sung_test_msg',
+       "content-available" : 1
+      },
+    };
+
+    const url = `${APNS_URL}/${deviceToken}`;
 
     try {
-      const result = await this.apnProvider.send(notification, deviceToken);
-      console.log('APNs result:', result);
-      if (result.failed.length > 0) {
-        console.error('Failed notifications:', result.failed);
-      }
+      const response = await lastValueFrom(
+        this.httpService.post(url, body, { headers }),
+      );
+      return response.data;
     } catch (error) {
-      console.error('Error sending APNs notification:', error);
+      console.error('APNs Request Error:', error.response?.data || error.message);
+      throw new Error('Failed to send push notification');
     }
   }
 }

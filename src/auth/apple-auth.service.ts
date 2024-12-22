@@ -1,12 +1,10 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
-import { AppleJwtTokenPayload, AppleLoginRequest, AuthAppleResponse, IdentityTokenHeader } from '../dto/dto.auth';
+import { AppleLoginRequest } from '../dto/dto.auth';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { JwksClient } from 'jwks-rsa';
 import { User } from '@src/database/entity/user';
 import { AuthService } from '@src/auth/auth.service';
-import { jwtDecode } from "jwt-decode";
 
 
 @Injectable()
