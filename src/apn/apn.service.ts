@@ -59,9 +59,9 @@ export class ApnService {
     const headers = {
       Host: 'api.push.apple.com',
       Authorization: `bearer ${token}`,
-      'apns-push-type': 'alert',
+      'apns-push-type': 'background',
       'apns-expiration': '0',
-      'apns-priority': '10',
+      'apns-priority': '5',
       'apns-topic': 'com.asap.Aljyo',
     };
 
