@@ -24,7 +24,12 @@ export class ApnService {
     };
 
     // p8 키 읽기
-    const privateKey = this.apnConfig.getApnConfig().APNS_P8_FILE_STRING
+    const privateKey = this.apnConfig.getApnConfig()
+      .APNS_P8_FILE_STRING
+      .replace('-----BEGIN PRIVATE KEY-----', '')
+      .replace('-----END PRIVATE KEY-----', '')
+      .replace(/\n/g, '');
+
     console.log(`privateKey: ${privateKey}`)
 
     // JWT 생성
