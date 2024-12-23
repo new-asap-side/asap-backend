@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { User } from '@src/database/entity/user';
 import { Group } from '@src/database/entity/group';
 import { UserGroup } from '@src/database/entity/userGroup';
@@ -32,7 +32,8 @@ export class GroupService {
     @InjectRepository(Alarm)
     private readonly alarmRepo: Repository<Alarm>,
     private readonly alarmQueueService: AlarmQueueService,
-    private readonly s3Service: S3Service
+    private readonly s3Service: S3Service,
+    private readonly manager: EntityManager
   ) {}
 
   public async getAllGroup() {
@@ -44,43 +45,47 @@ export class GroupService {
   }
 
   public async getDetailGroup(group_id: number) {
-  const groupDetails = await this.groupRepo
-    .createQueryBuilder('group')
-    .leftJoinAndSelect('group.userGroups', 'userGroup')
-    .leftJoinAndSelect('group.alarm_days', 'alarmDays')
-    .leftJoinAndSelect('userGroup.user', 'user')
-    .select([
-      'alarmDays.alarm_day',
+    return await this.manager.transaction(async (manager) => {
+      // view_count 증가
+      await manager
+        .createQueryBuilder()
+        .update('group')
+        .set({ view_count: () => 'view_count + 1' })
+        .where('group_id = :group_id', { group_id })
+        .execute();
 
-      'group.group_id', // Group의 특정 필드 선택
-      'group.title',
-      'group.description',
-      'group.max_person',
-      'group.current_person',
-      'group.is_public',
-      'group.alarm_end_date',
-      'group.alarm_time',
-      'group.view_count',
-      'group.group_thumbnail_image_url',
-      'group.status',
-      'group.alarm_unlock_contents',
-
-      'userGroup.user_id',
-      'userGroup.music_title',
-      'userGroup.volume',
-      'userGroup.alarm_type',
-      'userGroup.is_group_master',
-
-      'user.profile_image_url',
-      'user.nick_name',
-    ])
-    .where('group.group_id = :group_id', { group_id })
-    // .andWhere('userGroup.user_id = :user_id', { user_id }) // user_id로 필터링
-    .getOne();
-
-    return groupDetails;
-  }
-
+      // 그룹 상세 정보 조회
+      return await manager
+        .createQueryBuilder(Group, 'group')
+        .leftJoinAndSelect('group.userGroups', 'userGroup')
+        .leftJoinAndSelect('group.alarm_days', 'alarmDays')
+        .leftJoinAndSelect('userGroup.user', 'user')
+        .select([
+          'group.group_id',
+          'group.title',
+          'group.description',
+          'group.max_person',
+          'group.current_person',
+          'group.is_public',
+          'group.alarm_end_date',
+          'group.alarm_time',
+          'group.view_count',
+          'group.group_thumbnail_image_url',
+          'group.status',
+          'group.alarm_unlock_contents',
+          'userGroup.user_id',
+          'userGroup.music_title',
+          'userGroup.volume',
+          'userGroup.alarm_type',
+          'userGroup.is_group_master',
+          'alarmDays.alarm_day',
+          'user.nick_name',
+          'user.profile_image_url',
+        ])
+        .where('group.group_id = :group_id', { group_id })
+        .getOne();
+  });
+}
 
   // 새 그룹 생성 후 해당유저부터 새 그룹 구독시키기
   public async createGroup(createGroupDto: CreateGroupDto) {
