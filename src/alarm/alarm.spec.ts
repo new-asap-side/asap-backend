@@ -1,14 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AlarmQueueService } from '@src/event/event.alarm.service';
-import { AlarmDayEnum, DeviceTypeEnum } from '@src/dto/dto.group';
-import { AlarmModule } from '@src/event/event.alarm.module';
+import { AlarmQueueService } from '@src/alarm/alarm.queue.service';
+import { DeviceTypeEnum } from '@src/dto/dto.group';
+import { AlarmModule } from '@src/alarm/alarm.module';
 import dayjs from 'dayjs';
 
 import { AlarmUnlockContentsEnum } from '@src/database/enum/alarmUnlockContentsEnum';
+import { AlarmService } from '@src/alarm/alarm.service';
+import { AlarmDayEnum } from '@src/database/enum/alarmDaysEnum';
 
 describe('FcmService Test', () => {
   let alarmQueueService: AlarmQueueService;
+  let alarmService: AlarmService;
   let configService: ConfigService;
 
   beforeEach(async () => {
@@ -20,11 +23,12 @@ describe('FcmService Test', () => {
         }),
         AlarmModule
       ],
-      providers: [AlarmQueueService, ConfigService],
+      providers: [AlarmQueueService, ConfigService, AlarmService],
     }).compile();
 
     alarmQueueService = app.get<AlarmQueueService>(AlarmQueueService);
     configService = app.get<ConfigService>(ConfigService);
+    alarmService = app.get<AlarmService>(AlarmService);
   });
 
   describe('time value test', () => {
@@ -48,7 +52,16 @@ describe('FcmService Test', () => {
           alarm_day: AlarmDayEnum.수,
         alarm_unlock_contents: AlarmUnlockContentsEnum.card
         }, "aaaa", DeviceTypeEnum.IOS)
+    });
 
+    it('should query test', async () => {
+      const result = await alarmService.queryTest(1)
+      console.log(result)
+    });
+
+    it('should query test v2', async () => {
+      const result = await alarmService.queryTestV2(2)
+      console.log(result)
     });
   });
 });

@@ -10,13 +10,13 @@ import {
   EditPersonalDto,
   GroupResponse,
   JoinGroupDto,
-  CreateGroupResponse, JoinGroupResponse, RemovePersonalDto, AlarmDayEnum,
+  JoinGroupResponse, RemovePersonalDto,
 } from '@src/dto/dto.group';
-import { FcmService } from '@src/fcm/fcm.service';
-import { AlarmQueueService } from '@src/event/event.alarm.service';
+import { AlarmQueueService } from '@src/alarm/alarm.queue.service';
 import { Alarm } from '@src/database/entity/alarm';
 import { S3Service } from '@src/S3/S3.service';
 import { GroupStatusEnum } from '@src/database/enum/groupStatusEnum';
+import { AlarmDayEnum } from '@src/database/enum/alarmDaysEnum';
 
 @Injectable()
 export class GroupService {

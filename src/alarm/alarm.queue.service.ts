@@ -24,8 +24,9 @@ const dayMapping: Record<string, number> = {
 @Injectable()
 export class AlarmQueueService {
   constructor(
-    @InjectQueue('alarmQueue') private readonly alarmQueue: Queue,
-    @InjectQueue('iosAlarmQueue') private readonly iosAlarmQueue: Queue
+    @InjectQueue('androidAlarmQueue') private readonly androidAlarmQueue: Queue,
+    @InjectQueue('iosAlarmQueue') private readonly iosAlarmQueue: Queue,
+    @InjectQueue('AlarmQueue') private readonly alarmQueue: Queue
   ) {}
 
   // 알람을 큐에 추가하는 메소드
@@ -36,7 +37,7 @@ export class AlarmQueueService {
     // 알람 날짜들에 대해 각각 큐에 작업을 추가
     for (const triggerDate of triggerDates) {
       if (deviceType === DeviceTypeEnum.ANDROID) {
-        await this.alarmQueue.add('sendAlarm', {
+        await this.androidAlarmQueue.add('sendAlarm', {
           fcmToken: deviceToken,
           alarm_unlock_contents: alarmData.alarm_unlock_contents
         }, { delay: triggerDate.diff(dayjs(), 'millisecond') }); // 알람이 울릴 때까지의 대기 시간
@@ -82,5 +83,9 @@ export class AlarmQueueService {
     }
 
     return triggerDates;
+  }
+
+  async emitAlarmOff(userId: number, groupId: number) {
+    await this.alarmQueue.add('offAlarm', { userId, groupId })
   }
 }

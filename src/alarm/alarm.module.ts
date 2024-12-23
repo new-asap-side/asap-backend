@@ -1,15 +1,19 @@
 import { Module } from '@nestjs/common';
-import { AlarmQueueService } from '@src/event/event.alarm.service';
+import { AlarmQueueService } from '@src/alarm/alarm.queue.service';
 import { FcmService } from '@src/fcm/fcm.service';
-import { AlarmProcessor, IosAlarmProcessor } from '@src/event/event.alarmProcessor';
+import { AlarmProcessor, AndroidAlarmProcessor, IosAlarmProcessor } from '@src/alarm/alarm.Processor';
 import { BullModule } from '@nestjs/bull';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ApnService } from '@src/apn/apn.service';
 import { ApnConfig } from '@src/apn/apn.config';
 import { HttpModule } from '@nestjs/axios';
+import { AlarmService } from '@src/alarm/alarm.service';
+import { DatabaseModule } from '@src/database/database.module';
+import { AlarmController } from '@src/alarm/alarm.controller';
 
 @Module({
   imports: [
+    DatabaseModule,
     HttpModule,
     BullModule.forRootAsync({
       imports: [ConfigModule],
@@ -32,28 +36,36 @@ import { HttpModule } from '@nestjs/axios';
 
     }),
     BullModule.registerQueue({
-      name: 'alarmQueue',
+      name: 'androidAlarmQueue',
     }),
     BullModule.registerQueue({
       name: 'iosAlarmQueue',
+    }),
+    BullModule.registerQueue({
+      name: 'AlarmQueue',
     }),
   ],
   providers: [
     AlarmQueueService,
     FcmService,
-    AlarmProcessor,
+    AndroidAlarmProcessor,
     IosAlarmProcessor,
+    AlarmProcessor,
     ApnService,
-    ApnConfig
+    ApnConfig,
+    AlarmService
   ],
+  controllers: [AlarmController],
   exports: [
     AlarmQueueService,
     FcmService,
     BullModule,
-    AlarmProcessor,
+    AndroidAlarmProcessor,
     IosAlarmProcessor,
+    AlarmProcessor,
     ApnService,
-    ApnConfig
+    ApnConfig,
+    AlarmService
   ]
 })
 export class AlarmModule {}

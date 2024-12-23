@@ -1,7 +1,8 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { BaseEntity } from '@src/database/entity/base';
 import { User } from '@src/database/entity/user';
 import { Group } from '@src/database/entity/group';
+import { Rank } from '@src/database/entity/rank';
 
 export enum AlarmTypeEnum {
     'sound'='SOUND',
@@ -30,7 +31,7 @@ export class UserGroup extends BaseEntity{
     volume: number;
 
     @Column({ default: 0 })
-    alarm_unlock_count: number // 알람해제수
+    score: number // 그룹 랭킹 점수
 
     @Column({ default: 0 })
     view_count: number // 그룹상세 조회수
@@ -46,4 +47,7 @@ export class UserGroup extends BaseEntity{
     @ManyToOne(() => Group, (group) => group.userGroups)
     @JoinColumn({ name: 'group_id' })
     group: Group;
+
+    @OneToMany(() => Rank, (rank) => rank.userGroup)
+    Ranks: Rank[];
 }

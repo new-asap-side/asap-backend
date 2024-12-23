@@ -25,7 +25,6 @@ import { ConfigurationModule } from '@src/config/config.module';
                     password: config.get<string>('DB_PW'),
                     database: config.get<string>('DB_DATABASE'),
                     synchronize: !!config.get<boolean>('DB_SYNC'),
-                    timezone: '+09:00',
                     entities,
                 }
             },

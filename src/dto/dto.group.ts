@@ -2,7 +2,6 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsArray,
   IsBoolean,
-  IsDate,
   IsEnum,
   IsNotEmpty,
   IsNumber,
@@ -11,25 +10,13 @@ import {
   Matches,
 } from 'class-validator';
 import { AlarmTypeEnum } from '@src/database/entity/userGroup';
-import { Group } from '@src/database/entity/group';
-import { Column, PrimaryGeneratedColumn } from 'typeorm';
-import { Exclude } from 'class-transformer';
 import { AlarmUnlockContentsEnum } from '@src/database/enum/alarmUnlockContentsEnum';
 import { GroupStatusEnum } from '@src/database/enum/groupStatusEnum';
+import { AlarmDayEnum } from '@src/database/enum/alarmDaysEnum';
 
 export enum DeviceTypeEnum {
   'ANDROID' = 'ANDROID',
   'IOS' = 'IOS'
-}
-
-export enum AlarmDayEnum {
-  '월'='월',
-  '화'='화',
-  '수'='수',
-  '목'='목',
-  '금'='금',
-  '토'='토',
-  '일'='일',
 }
 
 export class ReadGroupResponseDto {

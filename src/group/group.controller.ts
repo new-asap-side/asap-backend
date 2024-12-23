@@ -10,11 +10,10 @@ import {
   JoinGroupDto,
   CreateGroupResponse, JoinGroupResponse, RemovePersonalDto, ReadGroupResponseDto, GroupDetailsResponseDto,
 } from '@src/dto/dto.group';
-import { Group } from '@src/database/entity/group';
 
 @ApiTags('group')
 @Controller('group')
-// @UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard)
 export class GroupController {
   constructor(
     private readonly groupService: GroupService

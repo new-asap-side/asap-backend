@@ -3,7 +3,7 @@ import { DatabaseModule } from '@src/database/database.module';
 import { JwtStrategyModule } from '@src/jwt/jwt.module';
 import { GroupService } from '@src/group/group.service';
 import { GroupController } from '@src/group/group.controller';
-import { AlarmModule } from '@src/event/event.alarm.module';
+import { AlarmModule } from '@src/alarm/alarm.module';
 import { S3Module } from '@src/S3/S3.module';
 
 @Module({

@@ -24,9 +24,6 @@ export class User extends BaseEntity {
     profile_image_url: string;
 
     @Column({nullable: true})
-    score: string;
-
-    @Column({nullable: true})
     refresh_token: string;
 
     @Column({default: 0})

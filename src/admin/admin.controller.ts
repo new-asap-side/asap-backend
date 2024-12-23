@@ -13,7 +13,7 @@ export class AdminController {
   ) {}
 
   @Post('all')
-  @ApiOperation({summary: '닉네임 중복체크'})
+  @ApiOperation({summary: 'TODO: 유저 플로우 트래킹용'})
   @ApiResponse({ status: 200, type: CheckNickNameResponse })
   async checkNickName() {
     // return await this.groupService.checkNickName()

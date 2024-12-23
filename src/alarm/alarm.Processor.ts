@@ -6,9 +6,10 @@ import { FcmService } from '@src/fcm/fcm.service';
 import dayjs from 'dayjs';
 import { ApnService } from '@src/apn/apn.service';
 import { AlarmUnlockContentsEnum } from '@src/database/enum/alarmUnlockContentsEnum';
+import { AlarmService } from '@src/alarm/alarm.service';
 
-@Processor('alarmQueue')
-export class AlarmProcessor {
+@Processor('androidAlarmQueue')
+export class AndroidAlarmProcessor {
   constructor(
     private readonly fcmService: FcmService,
   ) {}
@@ -35,4 +36,17 @@ export class IosAlarmProcessor {
   }
 }
 
+  @Processor('AlarmQueue')
+  export class AlarmProcessor {
+    constructor(
+      private readonly alarmService: AlarmService,
+    ) {
+    }
+
+    @Process('offAlarm')
+    async handleOffAlarmJob(job: Job) {
+      const { userId, groupId }: { userId: number, groupId: number } = job.data
+      await this.alarmService.offAlarm(userId, groupId);
+    }
+  }
 

@@ -7,7 +7,7 @@ import { DatabaseModule } from '@src/database/database.module';
 import { ProfileModule } from '@src/profile/profile.module';
 import { GroupModule } from '@src/group/group.module';
 import { FcmService } from '@src/fcm/fcm.service';
-import { AlarmModule } from '@src/event/event.alarm.module';
+import { AlarmModule } from '@src/alarm/alarm.module';
 import { S3Service } from '@src/S3/S3.service';
 import { ApnModule } from '@src/apn/apn.module';
 import { ConfigurationModule } from '@src/config/config.module';
