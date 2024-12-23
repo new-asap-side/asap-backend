@@ -349,3 +349,90 @@ export class GroupResponse {
   @IsString()
   message: string
 }
+
+export class UserDto {
+  @ApiProperty({ description: '사용자 닉네임', example: '건희' })
+  nick_name: string;
+
+  @ApiProperty({
+    description: '사용자 프로필 이미지 URL',
+    example: 'https://asap-data.s3.ap-southeast-2.amazonaws.com/5723357f-531e-49fa-82dc-21bc1f27ef2f.jpeg',
+  })
+  profile_image_url: string;
+}
+
+export class UserGroupDto {
+  @ApiProperty({ description: '유저 ID', example: 2 })
+  user_id: number;
+
+  @ApiProperty({ description: '알람 타입', example: 'SOUND', enum: ['SOUND', 'VIBRATION', 'ALL'] })
+  alarm_type: string;
+
+  @ApiProperty({ description: '음악 제목', example: 'string' })
+  music_title: string;
+
+  @ApiProperty({ description: '볼륨', example: 10 })
+  volume: number;
+
+  @ApiProperty({ description: '그룹 마스터 여부', example: true })
+  is_group_master: boolean;
+
+  @ApiProperty({ description: '사용자 정보', type: UserDto })
+  user: UserDto;
+}
+
+export class AlarmDayDto {
+  @ApiProperty({ description: '알람 요일', example: '월' })
+  alarm_day: string;
+}
+
+export class GroupDetailsResponseDto {
+  @ApiProperty({ description: '그룹 ID', example: 5 })
+  group_id: number;
+
+  @ApiProperty({ description: '그룹 제목', example: '그룹입니다다' })
+  title: string;
+
+  @ApiProperty({ description: '그룹 설명', example: '그룹' })
+  description: string;
+
+  @ApiProperty({ description: '최대 인원수', example: 7 })
+  max_person: number;
+
+  @ApiProperty({ description: '현재 인원수', example: 0 })
+  current_person: number;
+
+  @ApiProperty({ description: '공개 여부', example: true })
+  is_public: boolean;
+
+  @ApiProperty({ description: '알람 종료 날짜', example: '2024-12-26T23:59:59Z' })
+  alarm_end_date: string;
+
+  @ApiProperty({ description: '알람 시간', example: '01:07' })
+  alarm_time: string;
+
+  @ApiProperty({ description: '조회수', example: 0 })
+  view_count: number;
+
+  @ApiProperty({
+    description: '그룹 썸네일 이미지 URL',
+    example: 'https://asap-data.s3.ap-southeast-2.amazonaws.com/1d4645c1-7803-4d82-b87b-bfff3a87473d.jpeg',
+  })
+  group_thumbnail_image_url: string;
+
+  @ApiProperty({ description: '그룹 상태', example: 'LIVE', enum: ['LIVE', 'CLOSED'] })
+  status: string;
+
+  @ApiProperty({
+    description: '알람 해제 콘텐츠',
+    example: 'SLIDE',
+    enum: ['SLIDE', 'TAP', 'OTHER'],
+  })
+  alarm_unlock_contents: string;
+
+  @ApiProperty({ description: '유저 그룹 리스트', type: [UserGroupDto] })
+  userGroups: UserGroupDto[];
+
+  @ApiProperty({ description: '알람 요일 리스트', type: [AlarmDayDto] })
+  alarm_days: AlarmDayDto[];
+}

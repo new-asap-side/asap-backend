@@ -20,7 +20,7 @@ export class Group extends BaseEntity{
     @Column()
     max_person: number;
 
-    @Column({default: 0})
+    @Column({default: 1})
     current_person: number;
 
     @Column()

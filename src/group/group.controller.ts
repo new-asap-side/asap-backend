@@ -1,5 +1,5 @@
-import { Controller, Post, Body, UseGuards, UseInterceptors, UploadedFile, Get, Delete } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Controller, Post, Body, UseGuards, UseInterceptors, UploadedFile, Get, Delete, Param } from '@nestjs/common';
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@src/auth/auth.guard';
 import { GroupService } from '@src/group/group.service';
 import {
@@ -8,7 +8,7 @@ import {
   EditPersonalDto,
   GroupResponse,
   JoinGroupDto,
-  CreateGroupResponse, JoinGroupResponse, RemovePersonalDto, ReadGroupResponseDto,
+  CreateGroupResponse, JoinGroupResponse, RemovePersonalDto, ReadGroupResponseDto, GroupDetailsResponseDto,
 } from '@src/dto/dto.group';
 import { Group } from '@src/database/entity/group';
 
@@ -34,6 +34,16 @@ export class GroupController {
   async getPopularGroup(
   ) {
     return await this.groupService.getPopularGroup()
+  }
+
+  @Get(':group_id')
+  @ApiOperation({ summary: '특정 그룹 상세조회' })
+  @ApiParam({ name: 'group_id', description: '그룹 ID', required: true, type: String })
+  @ApiResponse({ status: 200, type: GroupDetailsResponseDto })
+  async getDetailGroup(
+    @Param('group_id') groupId: string,
+  ) {
+    return await this.groupService.getDetailGroup(Number(groupId));
   }
 
   @Post('create')

@@ -11,10 +11,11 @@ export class Alarm {
     @PrimaryGeneratedColumn()
     alarm_id: number;
 
-    @ManyToOne(() => Group, (group) => group.alarm_days)
-    @JoinColumn({ name: 'group_id' })
-    group: Group;
+    @Column()
+    group_id: number
 
     @Column({ type: 'enum', enum: AlarmDayEnum })
+    @ManyToOne(() => Group, (group) => group.alarm_days)
+    @JoinColumn({ name: 'group_id' })
     alarm_day: AlarmDayEnum;
 }

@@ -43,6 +43,45 @@ export class GroupService {
     return await this.groupRepo.find({order: { view_count: 'DESC' }})
   }
 
+  public async getDetailGroup(group_id: number) {
+  const groupDetails = await this.groupRepo
+    .createQueryBuilder('group')
+    .leftJoinAndSelect('group.userGroups', 'userGroup')
+    .leftJoinAndSelect('group.alarm_days', 'alarmDays')
+    .leftJoinAndSelect('userGroup.user', 'user')
+    .select([
+      'alarmDays.alarm_day',
+
+      'group.group_id', // Group의 특정 필드 선택
+      'group.title',
+      'group.description',
+      'group.max_person',
+      'group.current_person',
+      'group.is_public',
+      'group.alarm_end_date',
+      'group.alarm_time',
+      'group.view_count',
+      'group.group_thumbnail_image_url',
+      'group.status',
+      'group.alarm_unlock_contents',
+
+      'userGroup.user_id',
+      'userGroup.music_title',
+      'userGroup.volume',
+      'userGroup.alarm_type',
+      'userGroup.is_group_master',
+
+      'user.profile_image_url',
+      'user.nick_name',
+    ])
+    .where('group.group_id = :group_id', { group_id })
+    // .andWhere('userGroup.user_id = :user_id', { user_id }) // user_id로 필터링
+    .getOne();
+
+    return groupDetails;
+  }
+
+
   // 새 그룹 생성 후 해당유저부터 새 그룹 구독시키기
   public async createGroup(createGroupDto: CreateGroupDto) {
     if(!createGroupDto.user_id) return {result: false, message: 'user_id 값이 없습니다.'}
@@ -75,7 +114,7 @@ export class GroupService {
     for (const alarmDay of createGroupDto.alarm_days) {
       const alarm = this.alarmRepo.create({
         alarm_day: alarmDay,
-        group: savedGroup
+        group_id: savedGroup.group_id
       })
       await this.alarmRepo.save(alarm);
       await this.emitAlarmQueue(savedGroup, createGroupDto, alarmDay)
