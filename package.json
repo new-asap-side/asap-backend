@@ -104,17 +104,21 @@
       "<rootDir>/test/"
     ],
     "moduleNameMapper": {
+      "^@src/admin(|/.*)$": "<rootDir>/src/admin/$1",
+      "^@src/apn(|/.*)$": "<rootDir>/src/apn/$1",
       "^@src/auth(|/.*)$": "<rootDir>/src/auth/$1",
+      "^@src/config(|/.*)$": "<rootDir>/src/config/$1",
       "^@src/database(|/.*)$": "<rootDir>/src/database/$1",
       "^@src/decorator(|/.*)$": "<rootDir>/src/decorator/$1",
       "^@src/dto(|/.*)$": "<rootDir>/src/dto/$1",
+      "^@src/event(|/.*)$": "<rootDir>/src/event/$1",
+      "^@src/fcm(|/.*)$": "<rootDir>/src/fcm/$1",
       "^@src/filter(|/.*)$": "<rootDir>/src/filter/$1",
       "^@src/jwt(|/.*)$": "<rootDir>/src/jwt/$1",
       "^@src/libs(|/.*)$": "<rootDir>/src/libs/$1",
-      "^@src/profile(|/.*)$": "<rootDir>/src/profile/$1",
       "^@src/group(|/.*)$": "<rootDir>/src/group/$1",
-      "^@src/fcm(|/.*)$": "<rootDir>/src/fcm/$1",
-      "^@src/event(|/.*)$": "<rootDir>/src/event/$1"
+      "^@src/profile(|/.*)$": "<rootDir>/src/profile/$1",
+      "^@src/S3(|/.*)$": "<rootDir>/src/S3/$1"
     }
   }
 }

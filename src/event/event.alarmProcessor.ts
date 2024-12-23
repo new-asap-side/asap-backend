@@ -31,7 +31,7 @@ export class IosAlarmProcessor {
   async handleIosAlarmJob(job: Job) {
     const { deviceToken, payload }: {deviceToken: string, payload: InotificationPayload} = job.data
 
-    await this.apnService.sendNotification(deviceToken);
+    await this.apnService.sendNotificationV2(deviceToken);
   }
 }
 

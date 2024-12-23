@@ -3,6 +3,7 @@ import { ApnConfig } from '@src/apn/apn.config';
 import * as jwt from 'jsonwebtoken';
 import { lastValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
+import apn from 'apn';
 
 @Injectable()
 export class ApnService {
@@ -12,7 +13,7 @@ export class ApnService {
   ) {
   }
 
-  private generateJWT() {
+  public generateJWT() {
     const header = {
       alg: 'ES256',
       kid: '7W7779L8K6',
@@ -24,19 +25,15 @@ export class ApnService {
     };
 
     // p8 키 읽기
-    const privateKey = this.apnConfig.getApnConfig()
+    const privateKey = this.apnConfig.get()
       .APNS_P8_FILE_STRING
-      .replace('-----BEGIN PRIVATE KEY-----', '')
-      .replace('-----END PRIVATE KEY-----', '')
-      .replace(/\n/g, '');
-
-    console.log(`privateKey: ${privateKey}`)
 
     // JWT 생성
-    const token = jwt.sign(payload, privateKey, {
-      algorithm: 'ES256',
-      header,
-    });
+    const token = jwt.sign(
+      payload,
+      privateKey,
+      { algorithm: 'ES256', header }
+    );
     console.log(`APN token: ${token}`)
 
     return token
@@ -44,27 +41,26 @@ export class ApnService {
 
   async sendNotification(deviceToken: string): Promise<void> {
     // JWT 헤더와 페이로드
-    const APNS_URL = `https://api.push.apple.com/3/device`
+    const APNS_URL = `https://api.sandbox.push.apple.com/3/device`
     const token = this.generateJWT()
     console.log('Bearer Token:', token);
 
-    const body = JSON.stringify({
+    const body = {
       aps: { "content-available" : 1 },
       'hi': 'Hello'
-    })
-    const contentLength = Buffer.byteLength(body, 'utf-8');
+    }
 
     const headers = {
-      Host: 'api.push.apple.com',
+      Host: 'api.sandbox.push.apple.com',
       Authorization: `bearer ${token}`,
       'apns-push-type': 'background',
       'apns-expiration': '0',
       'apns-priority': '5',
       'apns-topic': 'com.asap.Aljyo',
-      'Content-Length': contentLength.toString(),
     };
 
     const url = `${APNS_URL}/${deviceToken}`;
+    console.log(`url: ${url}`)
 
     try {
       const response = await lastValueFrom(
@@ -73,8 +69,34 @@ export class ApnService {
       return response.data;
     } catch (error) {
       console.error('APN raw Error: ',JSON.stringify(error))
-      // console.error('APNs Request Error:', error.response?.data || error.message);
       throw new Error('Failed to send push notification');
+    }
+  }
+
+  async sendNotificationV2(deviceToken: string): Promise<void> {
+    const options = this.apnConfig.getOption()
+
+    const apnProvider = new apn.Provider(options);
+
+    const notification = new apn.Notification({
+      aps: {
+        'content-available': 1,
+      },
+      hi: 'Hello',
+      pushType: 'background',
+      priority: 5
+    });
+
+    // 앱의 bundle id
+    notification.topic = 'com.asap.Aljyo';
+
+    try {
+      const result = await apnProvider.send(notification, deviceToken);
+      console.log('APNs result:', result);
+    } catch (err) {
+      console.error('APNs error:', err);
+    } finally {
+      apnProvider.shutdown();
     }
   }
 }

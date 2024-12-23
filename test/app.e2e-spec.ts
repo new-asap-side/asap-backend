@@ -23,6 +23,11 @@ describe('AppController (e2e)', () => {
     fcmService = app.get<FcmService>(FcmService)
   });
 
+  it('should ', () => {
+    const result = apnService.generateJWT()
+    console.log(result)
+  });
+
   it('ios apn', async () => {
     const deviceToken = ''
 
