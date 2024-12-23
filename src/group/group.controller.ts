@@ -13,11 +13,23 @@ import {
 
 @ApiTags('group')
 @Controller('group')
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard)
 export class GroupController {
   constructor(
     private readonly groupService: GroupService
   ) {}
+
+  @Get(':user_id/:group_id')
+  @ApiOperation({summary: '그룹 랭킹페이지 조회'})
+  @ApiParam({ name: 'group_id', description: '그룹 ID', required: true, type: String })
+  @ApiParam({ name: 'user_id', description: '유저 ID', required: true, type: String })
+  @ApiResponse({ status: 200, type: ReadGroupResponseDto, isArray: true })
+  async getGroupRank(
+    @Param('group_id') groupId: string,
+    @Param('user_id') userId: string,
+  ) {
+    return await this.groupService.getGroupRank(Number(groupId), Number(userId))
+  }
 
   @Get('latest')
   @ApiOperation({summary: '최신그룹 전체조회'})

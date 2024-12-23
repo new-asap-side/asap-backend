@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EntityManager, Repository } from 'typeorm';
+import { Between, EntityManager, Repository } from 'typeorm';
 import { User } from '@src/database/entity/user';
 import { Group } from '@src/database/entity/group';
 import { UserGroup } from '@src/database/entity/userGroup';
@@ -17,6 +17,7 @@ import { Alarm } from '@src/database/entity/alarm';
 import { S3Service } from '@src/S3/S3.service';
 import { GroupStatusEnum } from '@src/database/enum/groupStatusEnum';
 import { AlarmDayEnum } from '@src/database/enum/alarmDaysEnum';
+import { Rank } from '@src/database/entity/rank';
 
 @Injectable()
 export class GroupService {
@@ -31,10 +32,49 @@ export class GroupService {
     private readonly userGroupRepo: Repository<UserGroup>,
     @InjectRepository(Alarm)
     private readonly alarmRepo: Repository<Alarm>,
+    @InjectRepository(Rank)
+    private readonly rankRepo: Repository<Rank>,
     private readonly alarmQueueService: AlarmQueueService,
     private readonly s3Service: S3Service,
     private readonly manager: EntityManager
   ) {}
+
+  public async getGroupRank(group_id: number, user_id: number) {
+    // QueryBuilder 시작
+    const qb = this.rankRepo
+      .createQueryBuilder('rank')
+      // Rank → UserGroup 조인
+      .leftJoin('rank.userGroup', 'ug')
+      // UserGroup → User 조인
+      .leftJoin('ug.user', 'u')
+      // 필요한 칼럼만 select (Raw object 형태)
+      .select([
+        'u.nick_name AS nickName',
+        'rank.rank_number AS rankNumber',
+        'rank.rank_score AS rankScore',
+      ])
+      // "각 user_group_id에서 created_at이 가장 최신인 레코드"만 가져오는 SubQuery
+      .where(qb => {
+        const subQuery = qb.subQuery()
+          .select('MAX(r2.created_at)')
+          .from(Rank, 'r2')
+          .where('r2.user_group_id = rank.user_group_id')
+          .getQuery();
+
+        return `rank.created_at = ${subQuery}`;
+      })
+      // 특정 group_id, user_id 필터
+      .andWhere('ug.group_id = :group_id', { group_id })
+      // .andWhere('ug.user_id = :user_id', { user_id })
+      // (옵션) 원하는 정렬이 있다면 추가
+      .orderBy('rank.rank_number', 'ASC');
+
+    // 쿼리 실행
+    const result = await qb.getRawMany();
+    // 결과: [{ nickName: '...', rankNumber: 1, rankScore: 500 }, ...]
+
+    return result;
+  }
 
   public async getAllGroup() {
     return await this.groupRepo.find({order: { created_at: 'DESC' }})

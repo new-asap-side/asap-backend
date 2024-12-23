@@ -53,15 +53,5 @@ describe('FcmService Test', () => {
         alarm_unlock_contents: AlarmUnlockContentsEnum.card
         }, "aaaa", DeviceTypeEnum.IOS)
     });
-
-    it('should query test', async () => {
-      const result = await alarmService.queryTest(1)
-      console.log(result)
-    });
-
-    it('should query test v2', async () => {
-      const result = await alarmService.queryTestV2(2)
-      console.log(result)
-    });
   });
 });

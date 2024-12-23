@@ -59,37 +59,4 @@ export class AlarmService {
       return {result: true}
     })
   }
-
-  async queryTest(user_group_id: number) {
-    const startOfDay = new Date();
-    startOfDay.setHours(0, 0, 0, 0); // 오늘 00:00:00
-    startOfDay.setHours(startOfDay.getHours() - 9);
-
-    const endOfDay = new Date();
-    endOfDay.setHours(23, 59, 59, 999); // 오늘 23:59:59
-    endOfDay.setHours(endOfDay.getHours() - 9);
-
-    const ranks = await this.manager.find(Rank, {
-          where: {
-            user_group_id: user_group_id,
-            created_at: Between(startOfDay, endOfDay)
-          }
-        })
-
-    // const ranks = await this.manager.insert(Rank, {
-    //   user_group_id: user_group_id,
-    //   rank_score: 1000,
-    //   rank_number: 1,
-    // })
-    return ranks
-  }
-
-  async queryTestV2(user_group_id: number) {
-     const ranks = await this.manager.insert(Rank, {
-      user_group_id: user_group_id,
-      rank_score: 1000,
-      rank_number: 1,
-    })
-    return ranks
-  }
 }

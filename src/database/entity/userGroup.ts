@@ -49,5 +49,5 @@ export class UserGroup extends BaseEntity{
     group: Group;
 
     @OneToMany(() => Rank, (rank) => rank.userGroup)
-    Ranks: Rank[];
+    ranks: Rank[];
 }

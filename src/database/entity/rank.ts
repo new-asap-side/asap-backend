@@ -1,6 +1,5 @@
 import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { BaseEntity } from '@src/database/entity/base';
-import { Group } from '@src/database/entity/group';
 import { UserGroup } from '@src/database/entity/userGroup';
 
 @Entity('rank')
@@ -18,7 +17,7 @@ export class Rank extends BaseEntity{
     rank_score: number;
 
     // Relations
-    @ManyToOne(() => UserGroup, (group) => group.Ranks)
+    @ManyToOne(() => UserGroup, (group) => group.ranks)
     @JoinColumn({ name: 'user_group_id' })
-    userGroup: Group;
+    userGroup: UserGroup;
 }
