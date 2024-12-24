@@ -16,7 +16,9 @@ export class AlarmController {
   @Post('off')
   @ApiOperation({summary: '알람 해제'})
   @ApiResponse({ status: 200, type: AlarmOffResponse })
-  async getAllGroup(req: AlarmOffRequest) {
+  async getAllGroup(
+    @Body() req: AlarmOffRequest
+  ) {
     await this.alarmQueueService.emitAlarmOff(req.userId, req.groupId)
     return {result: true}
   }
