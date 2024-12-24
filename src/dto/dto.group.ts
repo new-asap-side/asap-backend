@@ -343,7 +343,7 @@ export class UserDto {
 
   @ApiProperty({
     description: '사용자 프로필 이미지 URL',
-    example: 'https://asap-data.s3.ap-southeast-2.amazonaws.com/5723357f-531e-49fa-82dc-21bc1f27ef2f.jpeg',
+    example: 'https://asap-data.s3.ap-northeast-2.amazonaws.com/5723357f-531e-49fa-82dc-21bc1f27ef2f.jpeg',
   })
   profile_image_url: string;
 }
@@ -403,7 +403,7 @@ export class GroupDetailsResponseDto {
 
   @ApiProperty({
     description: '그룹 썸네일 이미지 URL',
-    example: 'https://asap-data.s3.ap-southeast-2.amazonaws.com/1d4645c1-7803-4d82-b87b-bfff3a87473d.jpeg',
+    example: 'https://asap-data.s3.ap-northeast-2.amazonaws.com/1d4645c1-7803-4d82-b87b-bfff3a87473d.jpeg',
   })
   group_thumbnail_image_url: string;
 
