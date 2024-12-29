@@ -7,12 +7,12 @@ import {
   SaveProfileRequest,
   SaveProfileResponse,
 } from '@src/dto/dto.profile';
-import { JwtAuthGuard } from '@src/auth/auth.guard';
+import { JwtAccessGuard } from '@src/auth/auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('profile')
 @Controller('profile')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAccessGuard)
 export class ProfileController {
   constructor(
     private readonly profileService: ProfileService

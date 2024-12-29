@@ -1,13 +1,12 @@
 import { Controller, Post, Body, UseGuards, UseInterceptors, UploadedFile, Get, Delete, Param } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from '@src/auth/auth.guard';
-import { AlarmService } from '@src/alarm/alarm.service';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { JwtAccessGuard } from '@src/auth/auth.guard';
 import { AlarmOffRequest, AlarmOffResponse } from '@src/dto/dto.alarm';
 import { AlarmQueueService } from '@src/alarm/alarm.queue.service';
 
 @ApiTags('alarm')
 @Controller('alarm')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAccessGuard)
 export class AlarmController {
   constructor(
     private readonly alarmQueueService: AlarmQueueService

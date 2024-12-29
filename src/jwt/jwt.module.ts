@@ -15,7 +15,6 @@ import { RefreshTokenStrategy } from '@src/jwt/refresh-token-strategy.service';
       useFactory: async (configService: ConfigService) => {
         return {
           secret: configService.get<string>('JWT_SECRET_KEY'),  // 공통 비밀 키
-
         }
       }
     })

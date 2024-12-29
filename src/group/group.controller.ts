@@ -9,11 +9,11 @@ import {
   JoinGroupDto,
   CreateGroupResponse, JoinGroupResponse, RemovePersonalDto, GroupRankListResponseDto, GroupDetailsResponseDto, AlarmListResponseDto,
 } from '@src/dto/dto.group';
-import { JwtAuthGuard } from '@src/auth/auth.guard';
+import { JwtAccessGuard } from '@src/auth/auth.guard';
 
 @ApiTags('group')
 @Controller('group')
-// @UseGuards(JwtAuthGuard)
+@UseGuards(JwtAccessGuard)
 export class GroupController {
   constructor(
     private readonly groupService: GroupService

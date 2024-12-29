@@ -13,7 +13,7 @@ import { HttpModule } from '@nestjs/axios';
     imports: [
       HttpModule,
       DatabaseModule,
-        JwtStrategyModule
+      JwtStrategyModule
     ],
     controllers: [AuthController],
     providers: [
