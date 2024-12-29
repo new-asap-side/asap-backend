@@ -11,9 +11,11 @@ import { AlarmModule } from '@src/alarm/alarm.module';
 import { S3Service } from '@src/S3/S3.service';
 import { ApnModule } from '@src/apn/apn.module';
 import { ConfigurationModule } from '@src/config/config.module';
+import { AdminModule } from '@src/admin/admin.module';
 
 @Module({
   imports: [
+    AdminModule,
     ConfigurationModule,
     DatabaseModule,
     AuthModule,
