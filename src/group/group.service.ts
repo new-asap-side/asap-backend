@@ -39,7 +39,7 @@ export class GroupService {
     private readonly manager: EntityManager
   ) {}
 
-  public async getGroupRank(group_id: number, user_id: number) {
+  public async getGroupRank(group_id: number) {
     // QueryBuilder 시작
     const qb = this.rankRepo
       .createQueryBuilder('rank')
