@@ -19,7 +19,7 @@ export class GroupController {
     private readonly groupService: GroupService
   ) {}
 
-  @Get(':user_id/:group_id')
+  @Get(':group_id')
   @ApiOperation({summary: '그룹 랭킹페이지 조회'})
   @ApiParam({ name: 'group_id', description: '그룹 ID', required: true, type: String })
   // @ApiParam({ name: 'user_id', description: '유저 ID', required: true, type: String })
