@@ -1,9 +1,10 @@
-import { Controller, Post, Body, UseGuards, UseInterceptors, UploadedFile, Get } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, UseInterceptors, UploadedFile, Get, Delete } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
   CheckNickNameResponse,
 } from '@src/dto/dto.profile';
 import { AdminService } from '@src/admin/admin.service';
+import { DeleteUserResponse } from '@src/dto/dto.admin';
 
 @ApiTags('admin')
 @Controller('admin')
@@ -12,10 +13,10 @@ export class AdminController {
     private readonly adminService: AdminService
   ) {}
 
-  @Post('all')
-  @ApiOperation({summary: 'TODO: 유저 플로우 트래킹용'})
-  @ApiResponse({ status: 200, type: CheckNickNameResponse })
-  async checkNickName() {
-    // return await this.groupService.checkNickName()
+  @Delete('user')
+  @ApiOperation({summary: '유저 회원탈퇴'})
+  @ApiResponse({ status: 200, type: DeleteUserResponse })
+  async deleteUser(@Body() userId: number) {
+    return await this.adminService.softDeleteUser(userId)
   }
 }
