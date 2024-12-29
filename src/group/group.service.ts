@@ -89,7 +89,15 @@ export class GroupService {
       .andWhere('ug.group_id = :group_id', { group_id })
       .orderBy('rank.rank_number', 'ASC');
 
-      return await qb.getRawMany();
+    const userGroup = await this.userGroupRepo.findOneBy({ group_id });
+    if (userGroup) {
+      await this.userRepo.increment(
+        { user_id: userGroup.user_id },
+        'ranking_page_view_count',
+        1
+      );
+    }
+    return await qb.getRawMany();
   }
 
   public async getAllGroup() {
