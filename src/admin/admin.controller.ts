@@ -4,7 +4,7 @@ import {
   CheckNickNameResponse,
 } from '@src/dto/dto.profile';
 import { AdminService } from '@src/admin/admin.service';
-import { DeleteUserResponse } from '@src/dto/dto.admin';
+import { DeleteUserRequest, DeleteUserResponse } from '@src/dto/dto.admin';
 
 @ApiTags('admin')
 @Controller('admin')
@@ -16,7 +16,7 @@ export class AdminController {
   @Delete('user')
   @ApiOperation({summary: '유저 회원탈퇴'})
   @ApiResponse({ status: 200, type: DeleteUserResponse })
-  async deleteUser(@Body() userId: number) {
-    return await this.adminService.softDeleteUser(userId)
+  async deleteUser(@Body() req: DeleteUserRequest) {
+    return await this.adminService.softDeleteUser(req.userId)
   }
 }

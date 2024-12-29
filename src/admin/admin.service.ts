@@ -24,7 +24,7 @@ export class AdminService {
             throw new Error(`User with ID ${userId} not found`);
         }
         await this.userRepo.softRemove(user);
-        return {result: true}
+        return { result: true }
   }
 
   async restoreUser(userId: number): Promise<void> {
