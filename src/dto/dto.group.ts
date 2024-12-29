@@ -397,11 +397,6 @@ export class UserGroupDto {
   user: UserDto;
 }
 
-export class AlarmDayDto {
-  @ApiProperty({ description: '알람 요일', example: '월' })
-  alarm_day: string;
-}
-
 export class GroupDetailsResponseDto {
   @ApiProperty({ description: '그룹 ID', example: 5 })
   group_id: number;
@@ -442,13 +437,13 @@ export class GroupDetailsResponseDto {
   @ApiProperty({
     description: '알람 해제 콘텐츠',
     example: 'SLIDE',
-    enum: ['SLIDE', 'TAP', 'OTHER'],
+    enum: AlarmUnlockContentsEnum,
   })
-  alarm_unlock_contents: string;
+  alarm_unlock_contents: AlarmUnlockContentsEnum;
 
   @ApiProperty({ description: '유저 그룹 리스트', type: [UserGroupDto] })
   userGroups: UserGroupDto[];
 
-  @ApiProperty({ description: '알람 요일 리스트', type: [AlarmDayDto] })
-  alarm_days: AlarmDayDto[];
+  @ApiProperty({ description: '알람 요일 리스트', enum: AlarmDayEnum, isArray: true })
+  alarm_days: AlarmDayEnum[];
 }
