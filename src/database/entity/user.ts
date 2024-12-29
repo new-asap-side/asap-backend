@@ -31,4 +31,7 @@ export class User extends BaseEntity {
 
     @OneToMany(() => UserGroup, (userGroup) => userGroup.user)
     userGroups: UserGroup[];
+
+    @DeleteDateColumn({type: 'datetime'})
+    deleted_at: Date;
 }
