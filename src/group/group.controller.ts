@@ -1,6 +1,5 @@
 import { Controller, Post, Body, UseGuards, UseInterceptors, UploadedFile, Get, Delete, Param } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from '@src/auth/auth.guard';
 import { GroupService } from '@src/group/group.service';
 import {
   CreateGroupDto,
@@ -8,8 +7,9 @@ import {
   EditPersonalDto,
   GroupResponse,
   JoinGroupDto,
-  CreateGroupResponse, JoinGroupResponse, RemovePersonalDto, ReadGroupResponseDto, GroupDetailsResponseDto,
+  CreateGroupResponse, JoinGroupResponse, RemovePersonalDto, GroupRankListResponseDto, GroupDetailsResponseDto, AlarmListResponseDto,
 } from '@src/dto/dto.group';
+import { JwtAuthGuard } from '@src/auth/auth.guard';
 
 @ApiTags('group')
 @Controller('group')
@@ -19,21 +19,29 @@ export class GroupController {
     private readonly groupService: GroupService
   ) {}
 
-  @Get(':group_id')
+  @Get('user/:user_id')
+  @ApiOperation({summary: '알람 리스트 조회'})
+  @ApiParam({ name: 'user_id', description: '유저 ID', required: true, type: String })
+  @ApiResponse({ status: 200, type: AlarmListResponseDto, isArray: true })
+  async getUserGroupAndAlarmInfo(
+    @Param('user_id') userId: string,
+  ) {
+    return await this.groupService.getUserGroupAndAlarmInfo(Number(userId))
+  }
+
+  @Get('rank/:group_id')
   @ApiOperation({summary: '그룹 랭킹페이지 조회'})
   @ApiParam({ name: 'group_id', description: '그룹 ID', required: true, type: String })
-  // @ApiParam({ name: 'user_id', description: '유저 ID', required: true, type: String })
-  @ApiResponse({ status: 200, type: ReadGroupResponseDto, isArray: true })
+  @ApiResponse({ status: 200, type: GroupRankListResponseDto, isArray: true })
   async getGroupRank(
     @Param('group_id') groupId: string,
-    // @Param('user_id') userId: string,
   ) {
     return await this.groupService.getGroupRank(Number(groupId))
   }
 
   @Get('latest')
   @ApiOperation({summary: '최신그룹 전체조회'})
-  @ApiResponse({ status: 200, type: ReadGroupResponseDto, isArray: true })
+  @ApiResponse({ status: 200, type: GroupRankListResponseDto, isArray: true })
   async getAllGroup(
   ) {
     return await this.groupService.getAllGroup()
@@ -41,7 +49,7 @@ export class GroupController {
 
   @Get('popular')
   @ApiOperation({summary: '인기그룹 전체조회'})
-  @ApiResponse({ status: 200, type: ReadGroupResponseDto, isArray: true })
+  @ApiResponse({ status: 200, type: GroupRankListResponseDto, isArray: true })
   async getPopularGroup(
   ) {
     return await this.groupService.getPopularGroup()

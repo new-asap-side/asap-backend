@@ -19,7 +19,36 @@ export enum DeviceTypeEnum {
   'IOS' = 'IOS'
 }
 
-export class ReadGroupResponseDto {
+export class GroupDto {
+  @ApiProperty({ description: '그룹 제목', example: '그룹 수정 테스트입니다' })
+  title: string;
+
+  @ApiProperty({ description: '그룹 설명', example: '그룹입니다' })
+  description: string;
+
+  @ApiProperty({ description: '알람 종료 날짜', example: '2024-12-31T23:59:59Z' })
+  alarm_end_date: string;
+
+  @ApiProperty({ description: '알람 시간', example: '20:50' })
+  alarm_time: string;
+
+  @ApiProperty({
+    description: '알람 요일 목록',
+    example: ['월', '화', '수'],
+    type: [String],
+  })
+  alarm_days: string[];
+}
+
+export class AlarmListResponseDto {
+  @ApiProperty({ description: '유저가 속한 그룹 ID', example: 1 })
+  group_id: number;
+
+  @ApiProperty({ description: '그룹 상세 정보', type: GroupDto })
+  group: GroupDto;
+}
+
+export class GroupRankListResponseDto {
     @ApiProperty()
     group_id: number;
 

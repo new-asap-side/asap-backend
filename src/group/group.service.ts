@@ -39,15 +39,38 @@ export class GroupService {
     private readonly manager: EntityManager
   ) {}
 
+  public async getUserGroupAndAlarmInfo(userId: number) {
+    const result = await this.userGroupRepo
+      .createQueryBuilder('userGroup')
+      .leftJoinAndSelect('userGroup.group', 'group')
+      .leftJoinAndSelect('group.alarm_days', 'alarm') // 그룹과 알람 정보를 조인
+      .where('userGroup.user_id = :userId', { userId }) // 조건: 특정 user_id에 해당하는 그룹
+      .select([
+        'userGroup.group_id',
+        'group.title',
+        'group.description',
+        'group.alarm_end_date',
+        'group.alarm_time',
+        'alarm.alarm_day',
+      ])
+      .getMany();
+
+    const parsedData = result.map(item => ({
+      group_id: item.group_id,
+      group: {
+        ...item.group,
+        alarm_days: item.group.alarm_days.map(alarm => alarm.alarm_day) // alarm_days를 요일 string 배열로 변환
+      }
+    }));
+
+    return parsedData;
+  }
+
   public async getGroupRank(group_id: number) {
-    // QueryBuilder 시작
     const qb = this.rankRepo
       .createQueryBuilder('rank')
-      // Rank → UserGroup 조인
       .leftJoin('rank.userGroup', 'ug')
-      // UserGroup → User 조인
       .leftJoin('ug.user', 'u')
-      // 필요한 칼럼만 select (Raw object 형태)
       .select([
         'u.nick_name AS nickName',
         'rank.rank_number AS rankNumber',
@@ -63,17 +86,10 @@ export class GroupService {
 
         return `rank.created_at = ${subQuery}`;
       })
-      // 특정 group_id, user_id 필터
       .andWhere('ug.group_id = :group_id', { group_id })
-      // .andWhere('ug.user_id = :user_id', { user_id })
-      // (옵션) 원하는 정렬이 있다면 추가
       .orderBy('rank.rank_number', 'ASC');
 
-    // 쿼리 실행
-    const result = await qb.getRawMany();
-    // 결과: [{ nickName: '...', rankNumber: 1, rankScore: 500 }, ...]
-
-    return result;
+      return await qb.getRawMany();
   }
 
   public async getAllGroup() {
@@ -95,7 +111,7 @@ export class GroupService {
         .execute();
 
       // 그룹 상세 정보 조회
-      return await manager
+      const result =  await manager
         .createQueryBuilder(Group, 'group')
         .leftJoinAndSelect('group.userGroups', 'userGroup')
         .leftJoinAndSelect('group.alarm_days', 'alarmDays')
@@ -124,6 +140,10 @@ export class GroupService {
         ])
         .where('group.group_id = :group_id', { group_id })
         .getOne();
+
+      return {
+        ...result,
+        alarm_days: result.alarm_days.map(v => v.alarm_day) }
   });
 }
 
