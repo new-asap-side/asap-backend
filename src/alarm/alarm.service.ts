@@ -56,6 +56,12 @@ export class AlarmService {
         rank_score: afterRankScore
       })
 
+      await this.manager.increment(UserGroup,
+        { user_group_id: userGroup.user_group_id },
+        'alarm_unlock_count',
+        1
+      )
+
       return {result: true}
     })
   }

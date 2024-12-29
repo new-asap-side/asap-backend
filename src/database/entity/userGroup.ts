@@ -36,6 +36,9 @@ export class UserGroup extends BaseEntity{
     @Column({ default: 0 })
     view_count: number // 그룹상세 조회수
 
+    @Column({ default: 0 })
+    alarm_unlock_count: number // 알람 해제수
+
     @Column()
     is_group_master: boolean
 
