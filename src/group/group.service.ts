@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Between, EntityManager, Repository } from 'typeorm';
 import { User } from '@src/database/entity/user';
@@ -196,7 +196,6 @@ export class GroupService {
     });
     await this.userGroupRepo.save(userGroup);
 
-
     return {
       message: 'Group created successfully and user subscribed to the topic.',
       groupId: savedGroup.group_id,
@@ -207,7 +206,7 @@ export class GroupService {
   public async joinGroup(joinGroupDto: JoinGroupDto): Promise<JoinGroupResponse> {
     const user = await this.userRepo.findOneBy({ user_id: joinGroupDto.user_id });
     if (!user) {
-      throw new Error('User not found');
+      throw new NotFoundException();
     }
 
     const group = await this.groupRepo.findOne({
@@ -215,7 +214,12 @@ export class GroupService {
       relations: ['alarm_days']
     });
     if (!group) {
-      throw new Error('Group not found');
+      throw new NotFoundException();
+    }
+    if(!group.is_public && group.group_password) {
+      if(group.group_password !== joinGroupDto.group_password) {
+        throw new UnauthorizedException();
+      }
     }
 
     // Create a user-group relation
