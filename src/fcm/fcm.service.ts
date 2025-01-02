@@ -36,11 +36,8 @@ export class FcmService {
   // Send notification to a topic
   async sendNotificationToTopic(fcmToken: string, alarm_unlock_contents: AlarmUnlockContentsEnum): Promise<void> {
     const messagePayload = {
-      // notification: {
-      //   title: 'Group Alarm',
-      //   body: alarm_unlock_contents,
-      // },
       data: {
+        // TODO: 필드 임의로 정의해서 전달드리기
         title: 'Group Alarm',
         body: alarm_unlock_contents,
       },

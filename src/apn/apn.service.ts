@@ -47,7 +47,7 @@ export class ApnService {
 
     const body = {
       aps: { "content-available" : 1 },
-      'hi': 'Hello'
+      group_id: '' // TODO: 그룹ID 내려드리는걸로
     }
 
     const headers = {
