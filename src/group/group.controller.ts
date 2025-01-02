@@ -7,7 +7,13 @@ import {
   EditPersonalDto,
   GroupResponse,
   JoinGroupDto,
-  CreateGroupResponse, JoinGroupResponse, RemovePersonalDto, GroupRankListResponseDto, GroupDetailsResponseDto, AlarmListResponseDto,
+  CreateGroupResponse,
+  JoinGroupResponse,
+  RemovePersonalDto,
+  GroupRankListResponseDto,
+  GroupDetailsResponseDto,
+  AlarmListResponseDto,
+  GroupRankNumberResponseDto,
 } from '@src/dto/dto.group';
 import { JwtAccessGuard } from '@src/auth/auth.guard';
 
@@ -43,7 +49,7 @@ export class GroupController {
   @ApiOperation({summary: '특정 그룹의 특정유저 랭킹 순위 조회'})
   @ApiParam({ name: 'group_id', description: '그룹 ID', required: true, type: String })
   @ApiParam({ name: 'user_id', description: '유저 ID', required: true, type: String })
-  @ApiResponse({ status: 200, type: GroupRankListResponseDto, isArray: true })
+  @ApiResponse({ status: 200, type: GroupRankNumberResponseDto, isArray: true })
   async getGroupRankNumber(
     @Param('group_id') groupId: string,
     @Param('user_id') userId: string,

@@ -103,6 +103,11 @@ export class GroupRankListResponseDto {
     updated_at: Date;
 }
 
+export class GroupRankNumberResponseDto {
+  @ApiProperty()
+  rank_number: number
+}
+
 export class CreateAlarmDateDto {
   @ApiProperty({description: '알람 종료 날짜, YYYY-MM-DD 23:59:59'})
   @IsNotEmpty()
