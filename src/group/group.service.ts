@@ -248,21 +248,29 @@ export class GroupService {
   }
 
   public async editGroup(editGroupDto: EditGroupDto): Promise<GroupResponse> {
-    const { user_id, group_id, is_public, max_person ,description ,title, alarm_unlock_contents } = editGroupDto
-    if(!user_id || !group_id) return {result: false, message: 'user_id 혹은 group_id 값이 없습니다.'}
+    const { user_id, group_id, is_public, max_person ,description ,title, alarm_unlock_contents, base64_group_img } = editGroupDto
+    if(!user_id || !group_id) return { result: false, message: 'user_id 혹은 group_id 값이 없습니다.' }
+    if(!is_public && !editGroupDto?.group_password) return { result: false, message: '비밀번호를 설정해야힙니다.' }
 
     const userGroup = await this.userGroupRepo.findOneBy({ user_id, group_id })
     if(!userGroup.is_group_master) return { result: false, message: '그룹장이 아닙니다.'}
 
     const group = await this.groupRepo.findOneBy({group_id: group_id})
-    if(!(max_person >= group.current_person)) return { result: false, message: '최대인원 설정값은 현재인원 이상으로만 변경가능합니다.'}
+    if(!(max_person >= group.current_person)) return { result: false, message: '최대인원 설정값은 현재인원 이상으로만 변경가능합니다.' }
 
-    const { affected } = await this.groupRepo.update(
-      { group_id: group_id },
-      { is_public, max_person, description, title, alarm_unlock_contents }
-    )
-    if(affected == 0) return { result: false, message: '이전 내용과 동일합니다.' }
+    const group_thumbnail_image_url = await this.s3Service.upload(base64_group_img)
+    const updateEntity = {
+      is_public,
+      max_person,
+      description,
+      title,
+      alarm_unlock_contents,
+      group_thumbnail_image_url,
+      group_password: group.group_password
+    }
+    if(editGroupDto?.group_password) updateEntity.group_password = editGroupDto.group_password
 
+    await this.groupRepo.update({ group_id }, updateEntity)
     return { result: true, message: '수정되었습니다.' }
   }
 

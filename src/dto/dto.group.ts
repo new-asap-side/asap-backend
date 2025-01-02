@@ -298,6 +298,16 @@ export class EditGroupDto {
   @IsNotEmpty()
   @IsBoolean()
   is_public: boolean;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  @Matches(/^\d{4}$/, { message: 'must be a 4-digit number' })
+  group_password: string;
+
+  @ApiProperty({description: '그룹 썸네일 base64인코딩된 이미지'})
+  @IsString()
+  base64_group_img: string
 }
 
 export class EditPersonalDto {
