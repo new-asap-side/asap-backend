@@ -33,10 +33,22 @@ export class GroupController {
   @ApiOperation({summary: '그룹 랭킹페이지 조회'})
   @ApiParam({ name: 'group_id', description: '그룹 ID', required: true, type: String })
   @ApiResponse({ status: 200, type: GroupRankListResponseDto, isArray: true })
-  async getGroupRank(
+  async getGroupRankList(
     @Param('group_id') groupId: string,
   ) {
-    return await this.groupService.getGroupRank(Number(groupId))
+    return await this.groupService.getGroupRankList(Number(groupId))
+  }
+
+  @Get('rank/:group_id/:user_id')
+  @ApiOperation({summary: '특정 그룹의 특정유저 랭킹 순위 조회'})
+  @ApiParam({ name: 'group_id', description: '그룹 ID', required: true, type: String })
+  @ApiParam({ name: 'user_id', description: '유저 ID', required: true, type: String })
+  @ApiResponse({ status: 200, type: GroupRankListResponseDto, isArray: true })
+  async getGroupRankNumber(
+    @Param('group_id') groupId: string,
+    @Param('user_id') userId: string,
+  ) {
+    return await this.groupService.getGroupRankNumber(Number(groupId), Number(userId))
   }
 
   @Get('latest')

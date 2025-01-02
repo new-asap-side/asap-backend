@@ -66,7 +66,7 @@ export class GroupService {
     return parsedData;
   }
 
-  public async getGroupRank(group_id: number) {
+  public async getGroupRankList(group_id: number) {
     const qb = this.rankRepo
       .createQueryBuilder('rank')
       .leftJoin('rank.userGroup', 'ug')
@@ -98,6 +98,14 @@ export class GroupService {
       );
     }
     return await qb.getRawMany();
+  }
+
+  public async getGroupRankNumber(group_id: number, user_id: number) {
+    const userGroup = await this.userGroupRepo.findOneBy({group_id, user_id})
+    return await this.rankRepo.findOne({
+      where: { user_group_id: userGroup.user_group_id },
+      select: ['rank_number']
+    })
   }
 
   public async getAllGroup() {
