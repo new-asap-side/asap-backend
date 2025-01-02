@@ -49,7 +49,7 @@ export class GroupController {
   @ApiOperation({summary: '특정 그룹의 특정유저 랭킹 순위 조회'})
   @ApiParam({ name: 'group_id', description: '그룹 ID', required: true, type: String })
   @ApiParam({ name: 'user_id', description: '유저 ID', required: true, type: String })
-  @ApiResponse({ status: 200, type: GroupRankNumberResponseDto, isArray: true })
+  @ApiResponse({ status: 200, type: GroupRankNumberResponseDto, isArray: false })
   async getGroupRankNumber(
     @Param('group_id') groupId: string,
     @Param('user_id') userId: string,
