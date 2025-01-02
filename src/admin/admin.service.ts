@@ -27,6 +27,7 @@ export class AdminService {
         return { result: true }
   }
 
+  // TODO: 혹시나 필요하면 사용
   async restoreUser(userId: number): Promise<void> {
       const user = await this.userRepo.findOne({
           where: { user_id: userId },
@@ -37,5 +38,12 @@ export class AdminService {
       }
       user.deleted_at = null;
       await this.userRepo.save(user);
+  }
+
+  async getUser(userId: number) {
+    return await this.userRepo.findOne({
+      where: { user_id: userId },
+      select: ['user_id', 'profile_image_url', 'nick_name']
+    })
   }
 }

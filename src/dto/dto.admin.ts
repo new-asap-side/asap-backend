@@ -12,3 +12,23 @@ export class DeleteUserResponse {
   @IsBoolean()
   result: boolean;
 }
+
+export class GetUserRequest {
+  @ApiProperty({ example: 1, description: '유저 ID' })
+  @IsNumber()
+  userId: number;
+}
+
+export class GetUserResponse {
+  @ApiProperty({ example: 1, description: '유저 ID' })
+  user_id: number
+
+  @ApiProperty({
+    example: 'https://asap-data.s3.ap-northeast-2.amazonaws.com/fc47faf7-fbfd-4394-9640-42195888bbec.jpeg',
+    description: '유저 프로필 이미지 url'
+  })
+  profile_image_url: string
+
+  @ApiProperty({ example: '홍길동123', description: '유저 닉네임' })
+  nick_name: string
+}
