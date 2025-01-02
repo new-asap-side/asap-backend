@@ -1,4 +1,4 @@
-import { Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Between, EntityManager, Repository } from 'typeorm';
 import { User } from '@src/database/entity/user';
@@ -116,7 +116,7 @@ export class GroupService {
     return await this.groupRepo.find({order: { view_count: 'DESC' }})
   }
 
-  public async getDetailGroup(group_id: number) {
+  public async getDetailGroup(group_id: number, user_id: number) {
     return await this.manager.transaction(async (manager) => {
       // view_count 증가
       await manager
@@ -125,6 +125,13 @@ export class GroupService {
         .set({ view_count: () => 'view_count + 1' })
         .where('group_id = :group_id', { group_id })
         .execute();
+
+      const userGroup = await manager.findOne(
+        UserGroup,
+        {
+          where: {user_id, group_id },
+          select: ['user_group_id']
+        })
 
       // 그룹 상세 정보 조회
       const result =  await manager
@@ -159,7 +166,9 @@ export class GroupService {
 
       return {
         ...result,
-        alarm_days: result.alarm_days.map(v => v.alarm_day) }
+        alarm_days: result.alarm_days.map(v => v.alarm_day),
+        isJoinedUser: !!userGroup
+      }
   });
 }
 
@@ -223,6 +232,11 @@ export class GroupService {
       throw new NotFoundException();
     }
 
+    const isDuplicatedUser = await this.userGroupRepo.findOne({
+      where: { user_id: joinGroupDto.user_id, group_id: joinGroupDto.group_id },
+    });
+    if(isDuplicatedUser) throw new BadRequestException();
+
     const group = await this.groupRepo.findOne({
       where: { group_id: joinGroupDto.group_id },
       relations: ['alarm_days']
@@ -232,15 +246,18 @@ export class GroupService {
     }
     if(!group.is_public && group.group_password) {
       if(group.group_password !== joinGroupDto.group_password) {
-        throw new UnauthorizedException();
+        throw new BadRequestException();
       }
     }
 
+    await this.groupRepo.increment(
+      {group_id: joinGroupDto.group_id},
+      'current_person',
+      1
+    )
+
     // Create a user-group relation
-    const userGroup = this.userGroupRepo.create({
-      user: user,
-      group: group,
-    });
+    const userGroup = this.userGroupRepo.create({ user, group });
     await this.userGroupRepo.save(userGroup);
 
     for (const alarmDay of group.alarm_days) {

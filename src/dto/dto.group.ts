@@ -461,4 +461,7 @@ export class GroupDetailsResponseDto {
 
   @ApiProperty({ description: '알람 요일 리스트', enum: AlarmDayEnum, isArray: true })
   alarm_days: AlarmDayEnum[];
+
+  @ApiProperty({ description: '이미 참여중인 유저인지 여부' })
+  isJoinedUser: boolean
 }

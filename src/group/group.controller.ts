@@ -73,14 +73,16 @@ export class GroupController {
     return await this.groupService.getPopularGroup()
   }
 
-  @Get(':group_id')
+  @Get(':group_id/:user_id')
   @ApiOperation({ summary: '특정 그룹 상세조회' })
   @ApiParam({ name: 'group_id', description: '그룹 ID', required: true, type: String })
+  @ApiParam({ name: 'user_id', description: '유저 ID', required: true, type: String })
   @ApiResponse({ status: 200, type: GroupDetailsResponseDto })
   async getDetailGroup(
     @Param('group_id') groupId: string,
+    @Param('user_id') userId: string,
   ) {
-    return await this.groupService.getDetailGroup(Number(groupId));
+    return await this.groupService.getDetailGroup(Number(groupId), Number(userId));
   }
 
   @Post('create')
