@@ -30,6 +30,7 @@ jobs:
           port: ${{ secrets.REMOTE_SSH_PORT }}
           script: |
             whoami
+            docker prune image -f || true
             docker pull tslee1996y/asap-back:latest
             
             # 기존 서비스를 제거
