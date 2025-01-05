@@ -72,6 +72,7 @@ export class GroupService {
     .leftJoin('rank.userGroup', 'ug')
     .leftJoin('ug.user', 'u')
     .select([
+      'u.profile_image_url AS profileImgUrl',
       'u.nick_name AS nickName',
       'rank.rank_number AS rankNumber',
       'rank.rank_score AS rankScore',

@@ -49,6 +49,9 @@ export class AlarmListResponseDto {
 }
 
 export class GroupRankListResponseDto {
+  @ApiProperty({description: '유저 프로필 img url'})
+  profileImgUrl: string
+
   @ApiProperty({description: '유저 닉네임'})
   nickName: string;        // 유저 닉네임
 
