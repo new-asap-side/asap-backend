@@ -3,6 +3,7 @@ import {TypeOrmModule} from "@nestjs/typeorm";
 import {ConfigModule, ConfigService} from "@nestjs/config";
 import { entities } from '@src/database/entity/entity';
 import { ConfigurationModule } from '@src/config/config.module';
+import { CustomLogger } from '@src/libs/logger';
 
 @Module({
     imports: [
@@ -26,6 +27,7 @@ import { ConfigurationModule } from '@src/config/config.module';
                     database: config.get<string>('DB_DATABASE'),
                     synchronize: !!config.get<boolean>('DB_SYNC'),
                     entities,
+                    logger: new CustomLogger()
                 }
             },
         }),

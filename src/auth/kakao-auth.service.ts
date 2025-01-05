@@ -1,4 +1,4 @@
-import {Injectable} from "@nestjs/common";
+import { Injectable, Logger } from '@nestjs/common';
 import {firstValueFrom} from "rxjs";
 import {HttpService} from "@nestjs/axios";
 import { InjectRepository } from '@nestjs/typeorm';
@@ -9,6 +9,8 @@ import { AuthService } from '@src/auth/auth.service';
 
 @Injectable()
 export class KakaoAuthService {
+    private readonly logger = new Logger(KakaoAuthService.name);
+
     constructor(
         private readonly http: HttpService,
         @InjectRepository(User)
@@ -17,16 +19,20 @@ export class KakaoAuthService {
     ) {}
 
     public async kakaoLogin(kakaoAccessToken: string): Promise<AuthKakaoResponse> {
-        const kakao_id = await this.getKakaoId(kakaoAccessToken);
-        const user_id = await this.signUpKakaoUser(kakao_id)
-        const { accessToken, refreshToken } = this.authService.generateJWT(kakao_id, String(user_id))
-        await this.userRepo.update(user_id, {refresh_token: refreshToken})
+        try {
+            const kakao_id = await this.getKakaoId(kakaoAccessToken);
+            const user_id = await this.signUpKakaoUser(kakao_id)
+            const { accessToken, refreshToken } = this.authService.generateJWT(kakao_id, String(user_id))
+            await this.userRepo.update(user_id, {refresh_token: refreshToken})
 
-        return {
-            user_id: String(user_id),
-            kakao_id,
-            accessToken,
-            refreshToken
+            return {
+                user_id: String(user_id),
+                kakao_id,
+                accessToken,
+                refreshToken
+            }
+        } catch (e) {
+            this.logger.error(`kakaoLogin error, M=${e?.message}, S=${e?.stack}`)
         }
     }
 
