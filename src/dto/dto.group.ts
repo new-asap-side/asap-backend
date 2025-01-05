@@ -49,58 +49,14 @@ export class AlarmListResponseDto {
 }
 
 export class GroupRankListResponseDto {
-    @ApiProperty()
-    group_id: number;
+  @ApiProperty({description: '유저 닉네임'})
+  nickName: string;        // 유저 닉네임
 
-    @ApiProperty()
-    title: string;
+  @ApiProperty({description: '랭킹 등수'})
+  rankNumber: number;      // 랭킹 등수
 
-    @ApiProperty()
-    description: string;
-
-    @ApiProperty()
-    max_person: number;
-
-    @ApiProperty()
-    current_person: number;
-
-    @ApiProperty()
-    is_public: boolean;
-
-    @ApiProperty()
-    group_password: string;
-
-    @ApiProperty()
-    alarm_end_date: string;
-
-    @ApiProperty()
-    alarm_time: string;
-
-    @ApiProperty()
-    view_count: number;
-
-    @ApiProperty()
-    group_thumbnail_image_url: string;
-
-    @ApiProperty({
-      enum: GroupStatusEnum,
-      isArray: false,
-      example: GroupStatusEnum.live
-    })
-    status: GroupStatusEnum;
-
-    @ApiProperty({
-      enum: AlarmUnlockContentsEnum,
-      isArray: false,
-      example: AlarmUnlockContentsEnum.card
-    })
-    alarm_unlock_contents: AlarmUnlockContentsEnum;
-
-    @ApiProperty()
-    created_at: Date;
-
-    @ApiProperty()
-    updated_at: Date;
+  @ApiProperty({description: '랭킹 점수'})
+  rankScore: number;
 }
 
 export class GroupRankNumberResponseDto {

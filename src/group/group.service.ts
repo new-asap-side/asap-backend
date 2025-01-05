@@ -7,7 +7,7 @@ import { UserGroup } from '@src/database/entity/userGroup';
 import {
   CreateGroupDto,
   EditGroupDto,
-  EditPersonalDto,
+  EditPersonalDto, GroupRankListResponseDto,
   GroupResponse,
   JoinGroupDto,
   JoinGroupResponse, RemovePersonalDto,
@@ -66,39 +66,38 @@ export class GroupService {
     return parsedData;
   }
 
-  public async getGroupRankList(group_id: number) {
-    const qb = this.rankRepo
-      .createQueryBuilder('rank')
-      .leftJoin('rank.userGroup', 'ug')
-      .leftJoin('ug.user', 'u')
-      .select([
-        'u.nick_name AS nickName',
-        'rank.rank_number AS rankNumber',
-        'rank.rank_score AS rankScore',
-      ])
-      // "각 user_group_id에서 created_at이 가장 최신인 레코드"만 가져오는 SubQuery
-      .where(qb => {
-        const subQuery = qb.subQuery()
-          .select('MAX(r2.created_at)')
-          .from(Rank, 'r2')
-          .where('r2.user_group_id = rank.user_group_id')
-          .getQuery();
+  public async getGroupRankList(group_id: number): Promise< GroupRankListResponseDto[] > {
+  const qb = this.rankRepo
+    .createQueryBuilder('rank')
+    .leftJoin('rank.userGroup', 'ug')
+    .leftJoin('ug.user', 'u')
+    .select([
+      'u.nick_name AS nickName',
+      'rank.rank_number AS rankNumber',
+      'rank.rank_score AS rankScore',
+    ])
+    .where(qb => {
+      const subQuery = qb.subQuery()
+        .select('MAX(r2.created_at)')
+        .from(Rank, 'r2')
+        .where('r2.user_group_id = rank.user_group_id')
+        .getQuery();
+      return `rank.created_at = ${subQuery}`;
+    })
+    .andWhere('ug.group_id = :group_id', { group_id })
+    .orderBy('rank.rank_number', 'ASC');
 
-        return `rank.created_at = ${subQuery}`;
-      })
-      .andWhere('ug.group_id = :group_id', { group_id })
-      .orderBy('rank.rank_number', 'ASC');
-
-    const userGroup = await this.userGroupRepo.findOneBy({ group_id });
-    if (userGroup) {
-      await this.userRepo.increment(
-        { user_id: userGroup.user_id },
-        'ranking_page_view_count',
-        1
-      );
-    }
-    return await qb.getRawMany();
+  const userGroup = await this.userGroupRepo.findOneBy({ group_id });
+  if (userGroup) {
+    await this.userRepo.increment(
+      { user_id: userGroup.user_id },
+      'ranking_page_view_count',
+      1
+    );
   }
+
+  return await qb.getRawMany();
+}
 
   public async getGroupRankNumber(group_id: number, user_id: number) {
     const userGroup = await this.userGroupRepo.findOneBy({group_id, user_id})
