@@ -11,7 +11,7 @@ export class Rank extends BaseEntity{
     user_group_id: number;
 
     @Column({comment: '랭킹등수'})
-    rank_number: number; //
+    rank_number: number;
 
     @Column({comment: '랭킹점수'})
     rank_score: number;
