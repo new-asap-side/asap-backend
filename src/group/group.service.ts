@@ -294,7 +294,9 @@ export class GroupService {
     const group = await this.groupRepo.findOneBy({group_id: group_id})
     if(!(max_person >= group.current_person)) return { result: false, message: '최대인원 설정값은 현재인원 이상으로만 변경가능합니다.' }
 
-    const group_thumbnail_image_url = await this.s3Service.upload(base64_group_img)
+    const group_thumbnail_image_url =
+      base64_group_img === group.group_thumbnail_image_url ?
+      group.group_thumbnail_image_url : await this.s3Service.upload(base64_group_img)
     const updateEntity = {
       is_public,
       max_person,
