@@ -36,14 +36,22 @@ export class KakaoAuthService {
         }
     }
 
-    private async signUpKakaoUser(kakao_id: string) {
-        const kakaoUser = await this.userRepo.findOneBy({ kakao_id });
+    public async signUpKakaoUser(kakao_id: string) {
+        const kakaoUser = await this.userRepo.findOne({
+            where:{ kakao_id },
+            withDeleted: true
+        });
         if(!kakaoUser) {
-            const kakaoUser = this.userRepo.create({kakao_id});
-            const savedUser = await this.userRepo.save(kakaoUser);
+            const kakaoUserEntity = this.userRepo.create({kakao_id});
+            const savedUser = await this.userRepo.save(kakaoUserEntity);
             return savedUser.user_id
+        } else if(kakaoUser?.deleted_at) {
+            kakaoUser.deleted_at = null;
+            await this.userRepo.update({kakao_id}, kakaoUser);
+            return kakaoUser.user_id
+        } else {
+            return kakaoUser.user_id
         }
-        return kakaoUser.user_id
     }
 
     private async getKakaoId(kakaoAccessToken: string) {

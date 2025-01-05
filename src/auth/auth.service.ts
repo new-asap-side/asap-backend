@@ -3,7 +3,6 @@ import {firstValueFrom} from "rxjs";
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
-import { AuthKakaoResponse } from '../dto/dto.auth';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@src/database/entity/user';
 

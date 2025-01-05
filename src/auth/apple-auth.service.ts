@@ -41,17 +41,21 @@ export class AppleAuthService {
   // 유저 정보 확인 또는 생성
   private async signUpAppleUser(apple_id: string) {
     // DB에서 사용자를 찾거나, 없으면 생성
-    const user = await this.userRepo.findOne({
-      where: {
-        apple_id
-      }}
+    const appleUser = await this.userRepo.findOne({
+      where: { apple_id },
+      withDeleted: true
+    }
     );
-    if (!user) {
-      const appleUser = this.userRepo.create();
-      appleUser.apple_id = apple_id
+    if (!appleUser) {
+      const appleUser = this.userRepo.create({apple_id});
       const savedUser = await this.userRepo.save(appleUser);
       return savedUser.user_id
+    } else if(appleUser?.deleted_at) {
+      appleUser.deleted_at = null
+      await this.userRepo.update({apple_id}, appleUser)
+      return appleUser.user_id
+    } else {
+      return appleUser.user_id
     }
-    return user.user_id
   }
 }
