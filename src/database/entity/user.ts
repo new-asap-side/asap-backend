@@ -29,6 +29,9 @@ export class User extends BaseEntity {
     @Column({default: 0})
     ranking_page_view_count: number // 랭킹페이지 조회수
 
+    @Column({nullable: true})
+    user_leave_reason: string
+
     @OneToMany(() => UserGroup, (userGroup) => userGroup.user)
     userGroups: UserGroup[];
 

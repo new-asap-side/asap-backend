@@ -14,7 +14,7 @@ export class AdminController {
   @ApiOperation({summary: '유저 회원탈퇴'})
   @ApiResponse({ status: 200, type: DeleteUserResponse })
   async deleteUser(@Body() req: DeleteUserRequest) {
-    return await this.adminService.softDeleteUser(req.userId)
+    return await this.adminService.softDeleteUser(req.userId, req.userLeaveReason)
   }
 
   @Get(':user_id')

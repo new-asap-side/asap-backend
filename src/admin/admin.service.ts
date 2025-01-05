@@ -18,11 +18,15 @@ export class AdminService {
     private readonly userGroupRepo: Repository<UserGroup>,
   ) {}
 
-  async softDeleteUser(userId: number) {
+  async softDeleteUser(userId: number, userLeaveReason: string) {
         const user = await this.userRepo.findOne({ where: { user_id: userId } });
         if (!user) {
             throw new Error(`User with ID ${userId} not found`);
         }
+        await this.userRepo.update(
+          { user_id: userId },
+          { user_leave_reason: userLeaveReason }
+        )
         await this.userRepo.softRemove(user);
         return { result: true }
   }

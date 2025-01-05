@@ -1,10 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsNumber } from 'class-validator';
+import { IsBoolean, IsNumber, IsString } from 'class-validator';
 
 export class DeleteUserRequest {
   @ApiProperty({ example: 1, description: '유저 ID' })
   @IsNumber()
   userId: number;
+
+  @ApiProperty({ example: 1, description: '유저 탈퇴 사유' })
+  @IsString()
+  userLeaveReason: string;
 }
 
 export class DeleteUserResponse {
