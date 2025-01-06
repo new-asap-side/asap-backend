@@ -19,8 +19,8 @@ export class DeleteUserResponse {
 
 export class GetUserRequest {
   @ApiProperty({ example: 1, description: '유저 ID' })
-  @IsNumber()
-  userId: number;
+  @IsString()
+  userId: string;
 }
 
 export class GetUserResponse {
