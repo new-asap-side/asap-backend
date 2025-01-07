@@ -19,7 +19,7 @@ import { JwtAccessGuard } from '@src/auth/auth.guard';
 
 @ApiTags('group')
 @Controller('group')
-// @UseGuards(JwtAccessGuard)
+@UseGuards(JwtAccessGuard)
 export class GroupController {
   constructor(
     private readonly groupService: GroupService

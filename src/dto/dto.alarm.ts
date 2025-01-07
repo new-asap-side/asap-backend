@@ -7,6 +7,7 @@ export class AlarmOffResponse {
     result: boolean;
 }
 
+
 export class AlarmOffRequest {
     @ApiProperty({ example: 1, description: '유저 ID' })
     @IsNumber()
@@ -17,4 +18,12 @@ export class AlarmOffRequest {
     @IsNumber()
     @IsNotEmpty()
     groupId: number;
+}
+
+export class AlarmOffRateResponse {
+    @ApiProperty({ example: 1, description: '유저ID'})
+    userId: number
+
+    @ApiProperty({ example: 12.3, description: '알람 해제율' })
+    offRate: number
 }

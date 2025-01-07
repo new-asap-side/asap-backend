@@ -48,7 +48,6 @@ export class Group extends BaseEntity{
     @Column({type: 'enum', enum: AlarmUnlockContentsEnum})
     alarm_unlock_contents: AlarmUnlockContentsEnum;
 
-    // Relations
     @OneToMany(() => Alarm, (alarm) => alarm.alarm_day)
     alarm_days: Alarm[];
 
