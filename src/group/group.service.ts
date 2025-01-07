@@ -121,11 +121,31 @@ export class GroupService {
   }
 
   public async getAllGroup() {
-    return await this.groupRepo.find({order: { created_at: 'DESC' }})
+    const groups = await this.groupRepo.find({
+      order: { created_at: 'DESC' },
+      relations: { alarm_days: true }
+    })
+
+    return groups.map(group => {
+      return {
+        ...group,
+        alarm_days: group.alarm_days.map(v => v.alarm_day)
+      }
+    })
   }
 
   public async getPopularGroup() {
-    return await this.groupRepo.find({order: { view_count: 'DESC' }})
+    const groups =  await this.groupRepo.find({
+      order: { view_count: 'DESC' },
+      relations: { alarm_days: true }
+    })
+
+    return groups.map(group => {
+      return {
+        ...group,
+        alarm_days: group.alarm_days.map(v => v.alarm_day)
+      }
+    })
   }
 
   public async getDetailGroup(group_id: number, user_id: number) {
