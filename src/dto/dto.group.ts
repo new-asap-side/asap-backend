@@ -7,7 +7,7 @@ import {
   IsNumber,
   IsOptional,
   IsString,
-  Matches,
+  Matches, ValidateIf,
 } from 'class-validator';
 import { AlarmTypeEnum } from '@src/database/entity/userGroup';
 import { AlarmUnlockContentsEnum } from '@src/database/enum/alarmUnlockContentsEnum';
@@ -160,11 +160,13 @@ export class CreateGroupDto extends CreateAlarmDateDto {
   alarm_type: AlarmTypeEnum
 
   @ApiProperty({description: '알람 음량, 기본값 10, 최대값 100'})
+  @ValidateIf((o) => o.alarm_type !== AlarmTypeEnum.vibration)
   @IsNotEmpty()
   @IsNumber()
   alarm_volume: number
 
   @ApiProperty({description: '알람음 제목, 이거 구현방식 논의 필요할듯'})
+  @ValidateIf((o) => o.alarm_type !== AlarmTypeEnum.vibration)
   @IsNotEmpty()
   @IsString()
   music_title: string
