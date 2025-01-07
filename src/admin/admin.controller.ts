@@ -1,7 +1,7 @@
 import { Controller, Body, Get, Delete, Param } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AdminService } from '@src/admin/admin.service';
-import { DeleteUserRequest, DeleteUserResponse, GetUserRequest } from '@src/dto/dto.admin';
+import { DeleteUserRequest, DeleteUserResponse, GetUserRequest, GetUserResponse } from '@src/dto/dto.admin';
 
 @ApiTags('admin')
 @Controller('admin')
@@ -20,8 +20,8 @@ export class AdminController {
   @Get(':user_id')
   @ApiOperation({summary: '유저 정보조회'})
   @ApiParam({ name: 'user_id', description: '유저 ID', required: true, type: String })
-  @ApiResponse({ status: 200, type: DeleteUserResponse })
-  async getUser(@Param('user_id') user_id: GetUserRequest) {
+  @ApiResponse({ status: 200, type: GetUserResponse })
+  async getUser(@Param('user_id') user_id: string) {
     return await this.adminService.getUser(Number(user_id))
   }
 }
