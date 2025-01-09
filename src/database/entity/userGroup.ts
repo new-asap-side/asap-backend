@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { BaseEntity } from '@src/database/entity/base';
 import { User } from '@src/database/entity/user';
 import { Group } from '@src/database/entity/group';
@@ -53,4 +53,7 @@ export class UserGroup extends BaseEntity{
 
     @OneToMany(() => Rank, (rank) => rank.userGroup)
     ranks: Rank[];
+
+    @DeleteDateColumn({type: 'datetime'})
+    deleted_at: Date;
 }

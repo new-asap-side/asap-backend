@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { BaseEntity } from '@src/database/entity/base';
 import { UserGroup } from '@src/database/entity/userGroup';
@@ -57,4 +57,7 @@ export class Group extends BaseEntity{
 
     @OneToMany(() => Report, (reports) => reports.group)
     reports: Report[];
+
+    @DeleteDateColumn({type: 'datetime'})
+    deleted_at: Date;
 }

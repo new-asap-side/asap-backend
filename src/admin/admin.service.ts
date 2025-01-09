@@ -6,6 +6,7 @@ import { Group } from '@src/database/entity/group';
 import { UserGroup } from '@src/database/entity/userGroup';
 import { ReportGroupRequest } from '@src/dto/dto.admin';
 import { Report } from '@src/database/entity/report';
+import { Alarm } from '@src/database/entity/alarm';
 
 @Injectable()
 export class AdminService {
@@ -62,8 +63,10 @@ export class AdminService {
       await this.entityManager.transaction(async (manager)=> {
         await manager.softDelete(Group, { group_id: groupId })
         await manager.softDelete(UserGroup, { group_id: groupId })
+        await manager.softDelete(Alarm, { group_id: groupId })
       })
     }
 
+    return { result: true }
   }
 }

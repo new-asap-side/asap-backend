@@ -1,5 +1,5 @@
 import {
-    Column,
+    Column, DeleteDateColumn,
     Entity, JoinColumn, ManyToOne,
     PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -18,4 +18,7 @@ export class Alarm {
     @JoinColumn({ name: 'group_id' })
     @Column({ type: 'enum', enum: AlarmDayEnum })
     alarm_day: AlarmDayEnum;
+
+    @DeleteDateColumn({type: 'datetime'})
+    deleted_at: Date;
 }

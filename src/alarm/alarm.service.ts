@@ -54,7 +54,7 @@ export class AlarmService {
         rank_number = 8
       }
 
-      const beforeRankScore = ranks.find(v => v.user_group_id === userGroup.user_group_id).rank_score
+      const beforeRankScore = ranks.find(v => v.user_group_id === userGroup.user_group_id)?.rank_score || 0
       const afterRankScore = beforeRankScore + (1000 - 50 * (rank_number - 1))
       await this.manager.insert(Rank, {
         user_group_id: userGroup.user_group_id,

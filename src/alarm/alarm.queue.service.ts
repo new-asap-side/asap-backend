@@ -2,10 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 import dayjs from 'dayjs';
-import utc from 'dayjs/plugin/utc'; // UTC 플러그인
+import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
-import { AddAlarmJobDto, CreateAlarmDateDto, DeviceTypeEnum } from '@src/dto/dto.group';
-import { AlarmPayload } from '@src/dto/dto.fcm_apns'; // timezone 플러그인
+import { AddAlarmJobDto, DeviceTypeEnum } from '@src/dto/dto.group';
+import { AlarmPayload } from '@src/dto/dto.fcm_apns';
 
 // dayjs에 플러그인 등록
 dayjs.extend(utc);
