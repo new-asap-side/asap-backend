@@ -5,6 +5,7 @@ import { UserGroup } from '@src/database/entity/userGroup';
 import { Alarm } from '@src/database/entity/alarm';
 import { AlarmUnlockContentsEnum } from '@src/database/enum/alarmUnlockContentsEnum';
 import { GroupStatusEnum } from '@src/database/enum/groupStatusEnum';
+import { Report } from '@src/database/entity/report';
 
 @Entity('group')
 export class Group extends BaseEntity{
@@ -53,4 +54,7 @@ export class Group extends BaseEntity{
 
     @OneToMany(() => UserGroup, (userGroup) => userGroup.group)
     userGroups: UserGroup[];
+
+    @OneToMany(() => Report, (reports) => reports.group)
+    reports: Report[];
 }

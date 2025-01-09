@@ -3,7 +3,6 @@ import { Between, EntityManager, Repository } from 'typeorm';
 import { UserGroup } from '@src/database/entity/userGroup';
 import { Rank } from '@src/database/entity/rank';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from '@src/database/entity/user';
 import { AlarmOffRateResponse } from '@src/dto/dto.alarm';
 
 @Injectable()

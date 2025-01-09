@@ -5,6 +5,7 @@ import {
 } from 'typeorm';
 import { BaseEntity } from '@src/database/entity/base';
 import { UserGroup } from '@src/database/entity/userGroup';
+import { Report } from '@src/database/entity/report';
 
 @Entity('user')
 export class User extends BaseEntity {
@@ -34,6 +35,9 @@ export class User extends BaseEntity {
 
     @OneToMany(() => UserGroup, (userGroup) => userGroup.user)
     userGroups: UserGroup[];
+
+    @OneToMany(() => Report, (reports) => reports.user)
+    reports: Report[];
 
     @DeleteDateColumn({type: 'datetime'})
     deleted_at: Date;

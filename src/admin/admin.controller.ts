@@ -1,7 +1,13 @@
-import { Controller, Body, Get, Delete, Param } from '@nestjs/common';
+import { Controller, Body, Get, Delete, Param, Post } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AdminService } from '@src/admin/admin.service';
-import { DeleteUserRequest, DeleteUserResponse, GetUserRequest, GetUserResponse } from '@src/dto/dto.admin';
+import {
+  DeleteUserRequest,
+  DeleteUserResponse,
+  GetUserRequest,
+  GetUserResponse,
+  ReportGroupRequest, ReportGroupResponse,
+} from '@src/dto/dto.admin';
 
 @ApiTags('admin')
 @Controller('admin')
@@ -23,5 +29,12 @@ export class AdminController {
   @ApiResponse({ status: 200, type: GetUserResponse })
   async getUser(@Param('user_id') user_id: string) {
     return await this.adminService.getUser(Number(user_id))
+  }
+
+  @Post('Report')
+  @ApiOperation({summary: '특정 그룹 신고기능, 5회 누적시 해당 그룹 삭제'})
+  @ApiResponse({ status: 200, type: ReportGroupResponse })
+  async reportGroup(@Body() req: ReportGroupRequest) {
+    return await this.adminService.reportGroup(req)
   }
 }

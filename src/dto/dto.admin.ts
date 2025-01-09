@@ -1,12 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsNumber, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class DeleteUserRequest {
   @ApiProperty({ example: 1, description: '유저 ID' })
   @IsNumber()
   userId: number;
 
-  @ApiProperty({ example: 1, description: '유저 탈퇴 사유' })
+  @ApiProperty({ example: '맘에 안들어서요', description: '유저 탈퇴 사유' })
   @IsString()
   userLeaveReason: string;
 }
@@ -35,4 +35,22 @@ export class GetUserResponse {
 
   @ApiProperty({ example: '홍길동123', description: '유저 닉네임' })
   nick_name: string
+}
+
+export class ReportGroupRequest {
+  @ApiProperty({ example: 1, description: '신고자 user ID' })
+  @IsNumber()
+  @IsNotEmpty()
+  userId: number;
+
+  @ApiProperty({ example: 1, description: '신고당한 그룹 ID' })
+  @IsNumber()
+  @IsNotEmpty()
+  groupId: number;
+}
+
+export class ReportGroupResponse {
+  @ApiProperty({ example: true, description: '성공적으로 신고 처리 되면 true, 아니면 false' })
+  @IsBoolean()
+  result: boolean;
 }

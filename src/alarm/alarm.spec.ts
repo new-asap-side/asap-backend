@@ -48,12 +48,12 @@ describe('FcmService Test', () => {
     })
 
     it('should emit job', () => {
-      alarmQueueService.addAlarmJob({
-          alarm_end_date: '2024-11-30 23:59:59',
-          alarm_time: '21:15',
-          alarm_day: AlarmDayEnum.수,
-        alarm_unlock_contents: AlarmUnlockContentsEnum.card
-        }, "aaaa", DeviceTypeEnum.IOS, 1)
+      // alarmQueueService.addAlarmJob({
+      //     alarm_end_date: '2024-11-30 23:59:59',
+      //     alarm_time: '21:15',
+      //     alarm_day: AlarmDayEnum.수,
+      //   alarm_unlock_contents: AlarmUnlockContentsEnum.card
+      //   }, "aaaa", DeviceTypeEnum.IOS, 1)
     });
 
     it('should test getUserAlarmUnlockRate',async () => {

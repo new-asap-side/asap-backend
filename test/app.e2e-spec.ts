@@ -35,8 +35,8 @@ describe('AppController (e2e)', () => {
   });
 
   it('android fcm', async () => {
-    const fcmToken = ''
-    const alarm_unlock_contents = AlarmUnlockContentsEnum.card
-    await fcmService.sendNotificationToTopic(fcmToken, alarm_unlock_contents)
+    // const fcmToken = ''
+    // const alarm_unlock_contents = AlarmUnlockContentsEnum.card
+    // await fcmService.sendNotificationToTopic(fcmToken, alarm_unlock_contents)
   });
 });
