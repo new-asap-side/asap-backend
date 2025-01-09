@@ -4,6 +4,7 @@ import * as jwt from 'jsonwebtoken';
 import { lastValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
 import apn from 'apn';
+import { AlarmPayload } from '@src/dto/dto.fcm_apns';
 
 @Injectable()
 export class ApnService {
@@ -39,7 +40,7 @@ export class ApnService {
     return token
   }
 
-  async sendNotification(deviceToken: string): Promise<void> {
+  async sendNotification(deviceToken: string, group_id: number): Promise<void> {
     // JWT 헤더와 페이로드
     const APNS_URL = `https://api.sandbox.push.apple.com/3/device`
     const token = this.generateJWT()
@@ -47,7 +48,7 @@ export class ApnService {
 
     const body = {
       aps: { "content-available" : 1 },
-      group_id: '' // TODO: 그룹ID 내려드리는걸로
+      group_id
     }
 
     const headers = {
@@ -73,7 +74,7 @@ export class ApnService {
     }
   }
 
-  async sendNotificationV2(deviceToken: string): Promise<void> {
+  async sendNotificationV2(deviceToken: string, alarmPayload: AlarmPayload): Promise<void> {
     const options = this.apnConfig.getOption()
 
     const apnProvider = new apn.Provider(options);
@@ -82,7 +83,7 @@ export class ApnService {
       aps: {
         'content-available': 1,
       },
-      hi: 'Hello',
+      ...alarmPayload,
       pushType: 'background',
       priority: 5
     });

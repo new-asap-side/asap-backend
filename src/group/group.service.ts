@@ -18,6 +18,7 @@ import { S3Service } from '@src/S3/S3.service';
 import { GroupStatusEnum } from '@src/database/enum/groupStatusEnum';
 import { AlarmDayEnum } from '@src/database/enum/alarmDaysEnum';
 import { Rank } from '@src/database/entity/rank';
+import { AlarmPayload } from '@src/dto/dto.fcm_apns';
 
 @Injectable()
 export class GroupService {
@@ -231,14 +232,6 @@ export class GroupService {
       group_thumbnail_image_url
     });
     const savedGroup = await this.groupRepo.save(groupEntity);
-    for (const alarmDay of createGroupDto.alarm_days) {
-      const alarm = this.alarmRepo.create({
-        alarm_day: alarmDay,
-        group_id: savedGroup.group_id
-      })
-      await this.alarmRepo.save(alarm);
-      await this.emitAlarmQueue(savedGroup, createGroupDto, alarmDay)
-    }
 
     // user-group 관계 생성
     const userGroup = this.userGroupRepo.create({
@@ -249,7 +242,25 @@ export class GroupService {
       music_title: createGroupDto.music_title,
       is_group_master: true
     });
-    await this.userGroupRepo.save(userGroup);
+    const savedUserGroup = await this.userGroupRepo.save(userGroup);
+
+    for (const alarmDay of createGroupDto.alarm_days) {
+      const alarm = this.alarmRepo.create({
+        alarm_day: alarmDay,
+        group_id: savedGroup.group_id
+      })
+      await this.alarmRepo.save(alarm);
+      await this.emitAlarmQueue(savedGroup, createGroupDto, alarmDay, {
+        group_id: String(savedGroup.group_id),
+        alarm_type: savedUserGroup.alarm_type,
+        alarm_unlock_contents: savedGroup.alarm_unlock_contents,
+        group_title: savedGroup.title,
+        music_title: savedUserGroup.music_title,
+        music_volume: String(savedUserGroup.volume)
+      })
+    }
+
+
 
     return {
       message: 'Group created successfully and user subscribed to the topic.',
@@ -290,10 +301,17 @@ export class GroupService {
 
     // Create a user-group relation
     const userGroup = this.userGroupRepo.create({ user, group });
-    await this.userGroupRepo.save(userGroup);
+    const savedUserGroup = await this.userGroupRepo.save(userGroup);
 
     for (const alarmDay of group.alarm_days) {
-      await this.emitAlarmQueue(group, joinGroupDto, alarmDay.alarm_day)
+      await this.emitAlarmQueue(group, joinGroupDto, alarmDay.alarm_day, {
+        group_id: String(savedUserGroup.group_id),
+        alarm_type: savedUserGroup.alarm_type,
+        alarm_unlock_contents: group.alarm_unlock_contents,
+        group_title: group.title,
+        music_title: savedUserGroup.music_title,
+        music_volume: String(savedUserGroup.volume)
+      })
     }
 
     this.logger.log(`User ${user.user_id} joined group ${group.title} and subscribed to topic group-${group.group_id}`);
@@ -362,7 +380,7 @@ export class GroupService {
     return { result: true, message: '삭제되었습니다.' }
   }
 
-  private async emitAlarmQueue(group: Group, joinGroupDto: JoinGroupDto | CreateGroupDto, alarmDay: AlarmDayEnum) {
+  private async emitAlarmQueue(group: Group, joinGroupDto: JoinGroupDto | CreateGroupDto, alarmDay: AlarmDayEnum, alarmPayload: AlarmPayload) {
     const {alarm_end_date, alarm_time, alarm_unlock_contents} = group
       await this.alarmQueueService.addAlarmJob(
         {
@@ -372,7 +390,8 @@ export class GroupService {
           alarm_unlock_contents
         },
         joinGroupDto.device_token,
-        joinGroupDto.device_type
+        joinGroupDto.device_type,
+        alarmPayload
       )
   }
 }

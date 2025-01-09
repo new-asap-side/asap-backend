@@ -4,7 +4,8 @@ import { Queue } from 'bull';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc'; // UTC 플러그인
 import timezone from 'dayjs/plugin/timezone';
-import { AddAlarmJobDto, CreateAlarmDateDto, DeviceTypeEnum } from '@src/dto/dto.group'; // timezone 플러그인
+import { AddAlarmJobDto, CreateAlarmDateDto, DeviceTypeEnum } from '@src/dto/dto.group';
+import { AlarmPayload } from '@src/dto/dto.fcm_apns'; // timezone 플러그인
 
 // dayjs에 플러그인 등록
 dayjs.extend(utc);
@@ -30,7 +31,12 @@ export class AlarmQueueService {
   ) {}
 
   // 알람을 큐에 추가하는 메소드
-  async addAlarmJob(alarmData: AddAlarmJobDto, deviceToken: string, deviceType: DeviceTypeEnum) {
+  async addAlarmJob(
+    alarmData: AddAlarmJobDto,
+    deviceToken: string,
+    deviceType: DeviceTypeEnum,
+    alarmPayload: AlarmPayload
+  ) {
     // 알람 종료일자와 요일, 시간에 맞는 알람 날짜 계산
     const triggerDates = this.calculateAlarmTriggerDates(alarmData);
 
@@ -39,12 +45,12 @@ export class AlarmQueueService {
       if (deviceType === DeviceTypeEnum.ANDROID) {
         await this.androidAlarmQueue.add('sendAlarm', {
           fcmToken: deviceToken,
-          alarm_unlock_contents: alarmData.alarm_unlock_contents
+          alarmPayload // alarmData.alarm_unlock_contents
         }, { delay: triggerDate.diff(dayjs(), 'millisecond') }); // 알람이 울릴 때까지의 대기 시간
       } else if (deviceType === DeviceTypeEnum.IOS) {
         await this.iosAlarmQueue.add('sendIosAlarm', {
           deviceToken,
-          payload: alarmData.alarm_unlock_contents
+          alarmPayload //alarmData.alarm_unlock_contents
         }, { delay: triggerDate.diff(dayjs(), 'millisecond') }); // 알람이 울릴 때까지의 대기 시간
       }
     }

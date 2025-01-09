@@ -4,6 +4,8 @@ import { ConfigService } from '@nestjs/config';
 import admin from 'firebase-admin'
 
 import { AlarmUnlockContentsEnum } from '@src/database/enum/alarmUnlockContentsEnum';
+import { AlarmPayload } from '@src/dto/dto.fcm_apns';
+import { Message } from 'firebase-admin/lib/messaging/messaging-api';
 
 
 @Injectable()
@@ -34,12 +36,13 @@ export class FcmService {
   }
 
   // Send notification to a topic
-  async sendNotificationToTopic(fcmToken: string, alarm_unlock_contents: AlarmUnlockContentsEnum): Promise<void> {
-    const messagePayload = {
+  async sendNotificationToTopic(fcmToken: string, alarmPayload: AlarmPayload): Promise<void> {
+    const messagePayload: Message = {
       data: {
-        // TODO: 필드 임의로 정의해서 전달드리기
-        title: 'Group Alarm',
-        body: alarm_unlock_contents,
+        ...alarmPayload
+      },
+      android: {
+        priority: 'high'
       },
       token: fcmToken,
     };

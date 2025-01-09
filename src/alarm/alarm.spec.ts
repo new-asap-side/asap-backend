@@ -53,7 +53,7 @@ describe('FcmService Test', () => {
           alarm_time: '21:15',
           alarm_day: AlarmDayEnum.수,
         alarm_unlock_contents: AlarmUnlockContentsEnum.card
-        }, "aaaa", DeviceTypeEnum.IOS)
+        }, "aaaa", DeviceTypeEnum.IOS, 1)
     });
 
     it('should test getUserAlarmUnlockRate',async () => {

@@ -33,7 +33,7 @@ describe('ApnService Test', () => {
 
   it('send apns', async () => {
     const deviceToken = 'a5058f221e9b0940b23e80dd8a2515d8cdb2ffd9700e5afa8fec8e857c3a2664'
-    const result = await apnService.sendNotification(deviceToken)
+    const result = await apnService.sendNotification(deviceToken, 1)
     console.log(result)
   });
 

@@ -7,6 +7,7 @@ import dayjs from 'dayjs';
 import { ApnService } from '@src/apn/apn.service';
 import { AlarmUnlockContentsEnum } from '@src/database/enum/alarmUnlockContentsEnum';
 import { AlarmService } from '@src/alarm/alarm.service';
+import { AlarmPayload } from '@src/dto/dto.fcm_apns';
 
 @Processor('androidAlarmQueue')
 export class AndroidAlarmProcessor {
@@ -16,9 +17,9 @@ export class AndroidAlarmProcessor {
 
   @Process('sendAlarm')
   async handleAlarmJob(job: Job) {
-    const { fcmToken, alarm_unlock_contents }: {fcmToken: string, alarm_unlock_contents: AlarmUnlockContentsEnum} = job.data
+    const { fcmToken, alarmPayload }: {fcmToken: string, alarmPayload: AlarmPayload} = job.data
 
-    await this.fcmService.sendNotificationToTopic(fcmToken, alarm_unlock_contents);
+    await this.fcmService.sendNotificationToTopic(fcmToken, alarmPayload);
   }
 }
 
@@ -30,9 +31,9 @@ export class IosAlarmProcessor {
 
   @Process('sendIosAlarm')
   async handleIosAlarmJob(job: Job) {
-    const { deviceToken, payload }: {deviceToken: string, payload: InotificationPayload} = job.data
+    const { deviceToken, alarmPayload }: {deviceToken: string, alarmPayload: AlarmPayload} = job.data
 
-    await this.apnService.sendNotificationV2(deviceToken);
+    await this.apnService.sendNotificationV2(deviceToken, alarmPayload);
   }
 }
 
