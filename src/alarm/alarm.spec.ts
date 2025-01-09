@@ -8,6 +8,7 @@ import dayjs from 'dayjs';
 import { AlarmUnlockContentsEnum } from '@src/database/enum/alarmUnlockContentsEnum';
 import { AlarmService } from '@src/alarm/alarm.service';
 import { AlarmDayEnum } from '@src/database/enum/alarmDaysEnum';
+import { DatabaseModule } from '@src/database/database.module';
 
 describe('FcmService Test', () => {
   let alarmQueueService: AlarmQueueService;
@@ -21,7 +22,8 @@ describe('FcmService Test', () => {
           envFilePath: '.env.test', // 테스트 환경변수 파일 경로
           isGlobal: true,
         }),
-        AlarmModule
+        AlarmModule,
+        DatabaseModule
       ],
       providers: [AlarmQueueService, ConfigService, AlarmService],
     }).compile();
@@ -52,6 +54,11 @@ describe('FcmService Test', () => {
           alarm_day: AlarmDayEnum.수,
         alarm_unlock_contents: AlarmUnlockContentsEnum.card
         }, "aaaa", DeviceTypeEnum.IOS)
+    });
+
+    it('should test getUserAlarmUnlockRate',async () => {
+      const result = await alarmService.getUserAlarmUnlockRate(0)
+      console.log(result)
     });
   });
 });

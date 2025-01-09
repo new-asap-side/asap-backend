@@ -4,6 +4,7 @@ import { UserGroup } from '@src/database/entity/userGroup';
 import { Rank } from '@src/database/entity/rank';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '@src/database/entity/user';
+import { AlarmOffRateResponse } from '@src/dto/dto.alarm';
 
 @Injectable()
 export class AlarmService {
@@ -72,7 +73,7 @@ export class AlarmService {
     })
   }
 
-  async getUserAlarmUnlockRate(userId: number): Promise<number> {
+  async getUserAlarmUnlockRate(userId: number): Promise<AlarmOffRateResponse> {
     // 1. 특정 유저의 총 알람 횟수 (Rank 테이블에서 count)
     const totalAlarmCount = await this.rankRepo
       .createQueryBuilder('rank')
@@ -80,8 +81,19 @@ export class AlarmService {
       .where('userGroup.user_id = :userId', { userId })
       .getCount();
 
+     // 2.
+    const userGroup = await this.userGroupRepo
+      .createQueryBuilder('userGroup')
+      .select('COUNT(userGroup.user_id)', 'joinedGroupCount')
+      .where('userGroup.user_id = :userId', { userId })
+      .getRawOne();
+
     if (totalAlarmCount === 0) {
-      return 0.0; // 알람 횟수가 없으면 0% 반환
+      return {
+        userId,
+        offRate: 0.0,
+        joinedGroupCount: Number(userGroup?.joinedGroupCount) ?? 0
+      };
     }
 
     // 2. 특정 유저의 알람 해제수 합계 (UserGroup 테이블에서 sum)
@@ -95,6 +107,10 @@ export class AlarmService {
 
     // 3. Unlock Rate 계산
     const unlockRate = (Number(totalUnlockCount) / Number(totalAlarmCount)) * 100;
-    return parseFloat(unlockRate.toFixed(1)); // 소수점 1자리까지 반환
+    return {
+      userId,
+      offRate: parseFloat(unlockRate.toFixed(1)),
+      joinedGroupCount: Number(userGroup?.joinedGroupCount) ?? 0
+    }
   }
 }

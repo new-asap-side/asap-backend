@@ -26,4 +26,7 @@ export class AlarmOffRateResponse {
 
     @ApiProperty({ example: 12.3, description: '알람 해제율' })
     offRate: number
+
+    @ApiProperty({ example: 8, description: '해당유저가 참가중인 그룹수' })
+    joinedGroupCount: number
 }
