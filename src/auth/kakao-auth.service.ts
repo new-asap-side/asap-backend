@@ -1,11 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
-import {firstValueFrom} from "rxjs";
-import {HttpService} from "@nestjs/axios";
+import { firstValueFrom } from 'rxjs';
+import { HttpService } from '@nestjs/axios';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { AuthKakaoResponse } from '../dto/dto.auth';
+import { AuthKakaoResponse, KakaoLoginRequest } from '../dto/dto.auth';
 import { User } from '@src/database/entity/user';
 import { AuthService } from '@src/auth/auth.service';
+import { DeviceTypeEnum } from '@src/dto/dto.group';
 
 @Injectable()
 export class KakaoAuthService {
@@ -18,12 +19,22 @@ export class KakaoAuthService {
         private readonly authService: AuthService,
     ) {}
 
-    public async kakaoLogin(kakaoAccessToken: string): Promise<AuthKakaoResponse> {
+    public async kakaoLogin({ kakaoAccessToken, device_type, alarm_token }: KakaoLoginRequest): Promise<AuthKakaoResponse> {
         try {
             const kakao_id = await this.getKakaoId(kakaoAccessToken);
             const user_id = await this.signUpKakaoUser(kakao_id)
             const { accessToken, refreshToken } = this.authService.generateJWT(kakao_id, String(user_id))
-            await this.userRepo.update(user_id, {refresh_token: refreshToken})
+            if(device_type === DeviceTypeEnum.IOS) {
+                await this.userRepo.update(user_id, {
+                    refresh_token: refreshToken,
+                    device_token: alarm_token
+                })
+            } else if(device_type === DeviceTypeEnum.ANDROID) {
+                await this.userRepo.update(user_id, {
+                    refresh_token: refreshToken,
+                    fcm_token: alarm_token
+                })
+            }
 
             return {
                 user_id: String(user_id),

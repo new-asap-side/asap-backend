@@ -33,6 +33,12 @@ export class User extends BaseEntity {
     @Column({nullable: true})
     user_leave_reason: string
 
+    @Column({nullable: true})
+    fcm_token: string
+
+    @Column({nullable: true})
+    device_token: string
+
     @OneToMany(() => UserGroup, (userGroup) => userGroup.user)
     userGroups: UserGroup[];
 

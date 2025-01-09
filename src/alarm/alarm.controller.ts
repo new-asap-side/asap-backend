@@ -7,7 +7,7 @@ import { AlarmService } from '@src/alarm/alarm.service';
 
 @ApiTags('alarm')
 @Controller('alarm')
-// @UseGuards(JwtAccessGuard)
+@UseGuards(JwtAccessGuard)
 export class AlarmController {
   constructor(
     private readonly alarmQueueService: AlarmQueueService,

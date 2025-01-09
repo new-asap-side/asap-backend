@@ -1,11 +1,26 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { DeviceTypeEnum } from '@src/dto/dto.group';
 
 export class KakaoLoginRequest {
     @ApiProperty()
     @IsString()
     @IsNotEmpty()
     kakaoAccessToken: string;
+
+    @ApiProperty({description: 'ios의 경우 device_token을 주시고, android의 경우 fcm_token을 주십쇼!'})
+    @IsString()
+    @IsNotEmpty()
+    alarm_token: string
+
+    @ApiProperty({
+        description: 'ios, android 기기 구분자',
+        enum: DeviceTypeEnum,
+        example: DeviceTypeEnum.ANDROID
+    })
+    @IsEnum(DeviceTypeEnum)
+    @IsNotEmpty()
+    device_type: DeviceTypeEnum
 }
 
 export class AppleLoginRequest {
@@ -13,6 +28,11 @@ export class AppleLoginRequest {
     @IsString()
     @IsNotEmpty()
     identityToken: string;
+
+    @ApiProperty({description: 'ios만 사용하는 API니까 device_token주시면 됩니다!'})
+    @IsString()
+    @IsNotEmpty()
+    device_token: string
 }
 
 export class AuthTokenResponse {

@@ -18,7 +18,7 @@ export class AppleAuthService {
   ) {}
 
   // identity_token 검증
-  async appleLogin({ identityToken }: AppleLoginRequest): Promise<any> {
+  async appleLogin({ identityToken, device_token }: AppleLoginRequest): Promise<any> {
     const decodedString = Buffer.from(identityToken, 'base64').toString('utf-8');
 
     // JWT 토큰을 디코딩하여 확인
@@ -28,7 +28,7 @@ export class AppleAuthService {
     const sub = decodedToken.payload.sub as string
     const user_id = await this.signUpAppleUser(sub);
     const { accessToken, refreshToken } = this.authService.generateJWT(sub, String(user_id));
-    await this.userRepo.update(user_id, {refresh_token: refreshToken})
+    await this.userRepo.update(user_id, {refresh_token: refreshToken, device_token})
 
     return {
       user_id: String(user_id),

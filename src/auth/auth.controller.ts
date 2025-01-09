@@ -25,18 +25,14 @@ export class AuthController {
     @Post('kakao')
     @ApiOperation({summary: '카카오 로그인 및 회원가입 요청'})
     @ApiResponse({ status: 200, type: AuthKakaoResponse, description: 'kakao login success!' })
-    async getKakaoInfo(
-        @Body() req: KakaoLoginRequest,
-    ): Promise<AuthKakaoResponse> {
-        return await this.authKakao.kakaoLogin(req.kakaoAccessToken)
+    async getKakaoInfo(@Body() req: KakaoLoginRequest): Promise<AuthKakaoResponse> {
+        return await this.authKakao.kakaoLogin(req)
     }
 
     @Post('apple')
     @ApiOperation({ summary: '애플 로그인 및 회원가입 요청' })
     @ApiResponse({ status: 200, type: AuthAppleResponse, description: 'apple login success!' })
-    async appleLogin(
-        @Body() appleLoginRequest: AppleLoginRequest,
-    ): Promise<any> {
+    async appleLogin(@Body() appleLoginRequest: AppleLoginRequest): Promise<AuthAppleResponse> {
         return await this.authApple.appleLogin(appleLoginRequest);
     }
 
