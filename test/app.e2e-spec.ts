@@ -29,9 +29,8 @@ describe('AppController (e2e)', () => {
   });
 
   it('ios apn', async () => {
-    const deviceToken = ''
-
-    await apnService.sendNotification(deviceToken, 1)
+    // const deviceToken = ''
+    // await apnService.sendNotification(deviceToken, 1)
   });
 
   it('android fcm', async () => {

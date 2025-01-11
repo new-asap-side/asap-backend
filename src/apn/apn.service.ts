@@ -40,40 +40,6 @@ export class ApnService {
     return token
   }
 
-  async sendNotification(deviceToken: string, group_id: number): Promise<void> {
-    // JWT 헤더와 페이로드
-    const APNS_URL = `https://api.sandbox.push.apple.com/3/device`
-    const token = this.generateJWT()
-    console.log('Bearer Token:', token);
-
-    const body = {
-      aps: { "content-available" : 1 },
-      group_id
-    }
-
-    const headers = {
-      Host: 'api.sandbox.push.apple.com',
-      Authorization: `bearer ${token}`,
-      'apns-push-type': 'background',
-      'apns-expiration': '0',
-      'apns-priority': '5',
-      'apns-topic': 'com.asap.Aljyo',
-    };
-
-    const url = `${APNS_URL}/${deviceToken}`;
-    console.log(`url: ${url}`)
-
-    try {
-      const response = await lastValueFrom(
-        this.httpService.post(url, body, { headers }),
-      );
-      return response.data;
-    } catch (error) {
-      console.error('APN raw Error: ',JSON.stringify(error))
-      throw new Error('Failed to send push notification');
-    }
-  }
-
   async sendNotificationV2(deviceToken: string, alarmPayload: AlarmPayload): Promise<void> {
     const options = this.apnConfig.getOption()
 
