@@ -14,52 +14,27 @@ export class ApnService {
   ) {
   }
 
-  public generateJWT() {
-    const header = {
-      alg: 'ES256',
-      kid: '7W7779L8K6',
-    };
-
-    const payload = {
-      iss: 'ZP2P7SHATC', // Team ID
-      iat: Math.floor(Date.now() / 1000), // 현재 UTC 시간 (초 단위)
-    };
-
-    // p8 키 읽기
-    const privateKey = this.apnConfig.get()
-      .APNS_P8_FILE_STRING
-
-    // JWT 생성
-    const token = jwt.sign(
-      payload,
-      privateKey,
-      { algorithm: 'ES256', header }
-    );
-    console.log(`APN token: ${token}`)
-
-    return token
-  }
-
   async sendNotificationV2(deviceToken: string, alarmPayload: AlarmPayload): Promise<void> {
     const options = this.apnConfig.getOption()
-
+    console.log('options: ', options)
     const apnProvider = new apn.Provider(options);
+    console.log('apnProvider: ', apnProvider)
 
     const notification = new apn.Notification({
       aps: {
         'content-available': 1,
       },
-      ...alarmPayload,
+      payload: {
+        ...alarmPayload
+      },
       pushType: 'background',
-      priority: 5
+      priority: 5,
+      topic: 'com.asap.Aljyo'
     });
-
-    // 앱의 bundle id
-    notification.topic = 'com.asap.Aljyo';
 
     try {
       const result = await apnProvider.send(notification, deviceToken);
-      console.log('APNs result:', result);
+      console.log('APNs result:', result.failed[0].response);
     } catch (err) {
       console.error('APNs error:', err);
     } finally {

@@ -5,6 +5,8 @@ import { ApnService } from '@src/apn/apn.service';
 import { ApnConfig } from '@src/apn/apn.config';
 import { HttpModule } from '@nestjs/axios';
 import * as jwt from 'jsonwebtoken';
+import { AlarmTypeEnum } from '@src/database/entity/userGroup';
+import { AlarmUnlockContentsEnum } from '@src/database/enum/alarmUnlockContentsEnum';
 
 describe('ApnService Test', () => {
   let apnService: ApnService;
@@ -26,14 +28,18 @@ describe('ApnService Test', () => {
     configService = app.get<ConfigService>(ConfigService);
   });
 
-  it('jwt test', ()=> {
-    const result = apnService.generateJWT()
-    console.log(result)
-  })
 
   it('send apnsV2', async () => {
-    // const deviceToken = 'a5058f221e9b0940b23e80dd8a2515d8cdb2ffd9700e5afa8fec8e857c3a2664'
-    // const result = await apnService.sendNotificationV2(deviceToken)
-    // console.log(result)
+    const deviceToken = '0318b27df2a878db64590848e5bcedf98f132d4864a3a3b1e173d502bd0f7e53'
+    const alarmPayload = {
+      group_id: '1',
+      group_title: 'string',
+      music_title: 'string',
+      alarm_type: AlarmTypeEnum.vibration,
+      music_volume: '10',
+      alarm_unlock_contents: AlarmUnlockContentsEnum.slide
+    }
+    const result = await apnService.sendNotificationV2(deviceToken, alarmPayload)
+    console.log(result)
   });
 });
