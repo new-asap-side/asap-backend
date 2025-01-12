@@ -49,6 +49,9 @@ export class AuthKakaoResponse extends AuthTokenResponse{
 
     @ApiProperty({ example: '1', description: 'DB에 저장된 유저 고유 아이디 값' })
     user_id: string;
+
+    @ApiProperty({ example: true, description: '이미 가입된 유저인지 확인하는 필드' })
+    isJoinedUser: boolean
 }
 
 export class AuthAppleResponse extends AuthTokenResponse{
@@ -57,4 +60,7 @@ export class AuthAppleResponse extends AuthTokenResponse{
 
     @ApiProperty({ example: '1', description: 'DB에 저장된 유저 고유 아이디 값' })
     user_id: string;
+
+    @ApiProperty({ example: true, description: '이미 가입된 유저인지 확인하는 필드' })
+    isJoinedUser: boolean
 }

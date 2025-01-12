@@ -22,7 +22,7 @@ export class KakaoAuthService {
     public async kakaoLogin({ kakaoAccessToken, device_type, alarm_token }: KakaoLoginRequest): Promise<AuthKakaoResponse> {
         try {
             const kakao_id = await this.getKakaoId(kakaoAccessToken);
-            const user_id = await this.signUpKakaoUser(kakao_id)
+            const { user_id, isJoinedUser } = await this.signUpKakaoUser(kakao_id)
             const { accessToken, refreshToken } = this.authService.generateJWT(kakao_id, String(user_id))
             if(device_type === DeviceTypeEnum.IOS) {
                 await this.userRepo.update(user_id, {
@@ -40,7 +40,8 @@ export class KakaoAuthService {
                 user_id: String(user_id),
                 kakao_id,
                 accessToken,
-                refreshToken
+                refreshToken,
+                isJoinedUser
             }
         } catch (e) {
             this.logger.error(`kakaoLogin error, M=${e?.message}, S=${e?.stack}`)
@@ -52,16 +53,26 @@ export class KakaoAuthService {
             where:{ kakao_id },
             withDeleted: true
         });
-        if(!kakaoUser) {
+
+        if(!kakaoUser) { // 신규가입
             const kakaoUserEntity = this.userRepo.create({kakao_id});
             const savedUser = await this.userRepo.save(kakaoUserEntity);
-            return savedUser.user_id
-        } else if(kakaoUser?.deleted_at) {
+            return {
+                user_id: savedUser.user_id,
+                isJoinedUser: false
+            }
+        } else if(kakaoUser?.deleted_at) { // 탈퇴 후 재가입
             kakaoUser.deleted_at = null;
             await this.userRepo.update({kakao_id}, kakaoUser);
-            return kakaoUser.user_id
-        } else {
-            return kakaoUser.user_id
+            return {
+                user_id: kakaoUser.user_id,
+                isJoinedUser: true
+            }
+        } else { // 탈퇴 안했고, 기존유저
+            return {
+                user_id: kakaoUser.user_id,
+                isJoinedUser: true
+            }
         }
     }
 

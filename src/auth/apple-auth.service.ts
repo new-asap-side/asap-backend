@@ -26,7 +26,7 @@ export class AppleAuthService {
     if (!decodedToken) throw new BadRequestException('Invalid identityToken');
 
     const sub = decodedToken.payload.sub as string
-    const user_id = await this.signUpAppleUser(sub);
+    const { user_id, isJoinedUser } = await this.signUpAppleUser(sub);
     const { accessToken, refreshToken } = this.authService.generateJWT(sub, String(user_id));
     await this.userRepo.update(user_id, {refresh_token: refreshToken, device_token})
 
@@ -35,6 +35,7 @@ export class AppleAuthService {
       apple_id: sub,
       accessToken,
       refreshToken,
+      isJoinedUser
     };
   }
 
@@ -49,13 +50,22 @@ export class AppleAuthService {
     if (!appleUser) {
       const appleUser = this.userRepo.create({apple_id});
       const savedUser = await this.userRepo.save(appleUser);
-      return savedUser.user_id
+      return {
+        user_id: savedUser.user_id,
+        isJoinedUser: false
+      }
     } else if(appleUser?.deleted_at) {
       appleUser.deleted_at = null
       await this.userRepo.update({apple_id}, appleUser)
-      return appleUser.user_id
+      return {
+        user_id: appleUser.user_id,
+        isJoinedUser: true
+      }
     } else {
-      return appleUser.user_id
+      return {
+        user_id: appleUser.user_id,
+        isJoinedUser: true
+      }
     }
   }
 }

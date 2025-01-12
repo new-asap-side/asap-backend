@@ -34,7 +34,7 @@ export class ApnService {
 
     try {
       const result = await apnProvider.send(notification, deviceToken);
-      console.log('APNs result:', result.failed[0].response);
+      console.log('APNs result:', result);
     } catch (err) {
       console.error('APNs error:', err);
     } finally {
