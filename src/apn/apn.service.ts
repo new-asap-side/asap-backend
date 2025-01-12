@@ -1,8 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { ApnConfig } from '@src/apn/apn.config';
-import * as jwt from 'jsonwebtoken';
-import { lastValueFrom } from 'rxjs';
-import { HttpService } from '@nestjs/axios';
 import apn from 'apn';
 import { AlarmPayload } from '@src/dto/dto.fcm_apns';
 
@@ -10,15 +7,13 @@ import { AlarmPayload } from '@src/dto/dto.fcm_apns';
 export class ApnService {
   constructor(
     private apnConfig: ApnConfig,
-    private readonly httpService: HttpService
   ) {
   }
 
   async sendNotificationV2(deviceToken: string, alarmPayload: AlarmPayload): Promise<void> {
     const options = this.apnConfig.getOption()
-    console.log('options: ', options)
+    console.log('is production apns: ', options.production)
     const apnProvider = new apn.Provider(options);
-    console.log('apnProvider: ', apnProvider)
 
     const notification = new apn.Notification({
       aps: {
