@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class DeleteUserRequest {
   @ApiProperty({ example: 1, description: '유저 ID' })
@@ -47,6 +47,11 @@ export class ReportGroupRequest {
   @IsNumber()
   @IsNotEmpty()
   groupId: number;
+
+  @ApiProperty({ example: '기타에 적은 구체적인 텍스트를 저장하는 필드', description: '기타에 적은 구체적인 텍스트를 저장하는 필드' })
+  @IsOptional()
+  @IsString()
+  reportDetailText: string;
 }
 
 export class ReportGroupResponse {

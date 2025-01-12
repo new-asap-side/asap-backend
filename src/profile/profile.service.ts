@@ -26,7 +26,12 @@ export class ProfileService {
       if(!user_id || !nickName) return{
         result: false, reason: 'user_id or nickName is empty!'
       }
-      const profile_image_url = await this.s3Service.upload(profileImgBase64);
+
+      const user = await this.userRepo.findOneBy({ user_id: Number(user_id) })
+      const profile_image_url = profileImgBase64 === user.profile_image_url ?
+        user.profile_image_url :
+        await this.s3Service.upload(profileImgBase64);
+
       const { affected } = await this.userRepo.update(
         { user_id: Number(user_id) },
         { nick_name: nickName, profile_image_url }

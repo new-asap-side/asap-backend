@@ -58,6 +58,7 @@ export class AdminService {
     const report = this.reportRepo.create({
       user_id: userId,
       group_id: groupId,
+      reportDetailText: req?.reportDetailText ?? 'EMPTY'
     });
     await this.reportRepo.save(report);
 

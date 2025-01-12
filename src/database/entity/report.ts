@@ -14,6 +14,9 @@ export class Report extends BaseEntity{
     @Column()
     group_id: number;
 
+    @Column({default: 'EMPTY'})
+    reportDetailText: string;
+
     // Relations
     @ManyToOne(() => User, (user) => user.reports)
     @JoinColumn({ name: 'user_id' })
