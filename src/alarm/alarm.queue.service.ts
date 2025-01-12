@@ -45,12 +45,12 @@ export class AlarmQueueService {
       if (deviceType === DeviceTypeEnum.ANDROID) {
         await this.androidAlarmQueue.add('sendAlarm', {
           fcmToken: deviceToken,
-          alarmPayload // alarmData.alarm_unlock_contents
+          alarmPayload
         }, { delay: triggerDate.diff(dayjs(), 'millisecond') }); // 알람이 울릴 때까지의 대기 시간
       } else if (deviceType === DeviceTypeEnum.IOS) {
         await this.iosAlarmQueue.add('sendIosAlarm', {
           deviceToken,
-          alarmPayload //alarmData.alarm_unlock_contents
+          alarmPayload
         }, { delay: triggerDate.diff(dayjs(), 'millisecond') }); // 알람이 울릴 때까지의 대기 시간
       }
     }
