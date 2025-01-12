@@ -428,3 +428,64 @@ export class GroupDetailsResponseDto {
   @ApiProperty({ description: '이미 참여중인 유저인지 여부' })
   isJoinedUser: boolean
 }
+
+export class GroupResponseDto {
+  @ApiProperty({ example: '2025-01-11T04:26:57.952Z', description: '생성 일자' })
+  created_at: string;
+
+  @ApiProperty({ example: '2025-01-12T01:55:17.000Z', description: '수정 일자' })
+  updated_at: string;
+
+  @ApiProperty({ example: 26, description: '그룹 ID' })
+  group_id: number;
+
+  @ApiProperty({ example: '공개', description: '그룹 제목' })
+  title: string;
+
+  @ApiProperty({ example: '공개', description: '그룹 설명' })
+  description: string;
+
+  @ApiProperty({ example: 2, description: '최대 인원' })
+  max_person: number;
+
+  @ApiProperty({ example: 2, description: '현재 인원' })
+  current_person: number;
+
+  @ApiProperty({ example: true, description: '공개 여부' })
+  is_public: boolean;
+
+  @ApiProperty({ example: null, description: '그룹 비밀번호 (공개 그룹의 경우 null)' })
+  group_password: string | null;
+
+  @ApiProperty({ example: '2025-01-23T23:59:59Z', description: '알람 종료 날짜' })
+  alarm_end_date: string;
+
+  @ApiProperty({ example: '22:27', description: '알람 시간 (HH:mm 형식)' })
+  alarm_time: string;
+
+  @ApiProperty({ example: 5, description: '조회수' })
+  view_count: number;
+
+  @ApiProperty({
+    example:
+      'https://asap-data.s3.ap-northeast-2.amazonaws.com/4c8a425e-1c1b-4aaf-8c51-04cfb5b2317d.jpeg',
+    description: '그룹 썸네일 이미지 URL',
+  })
+  group_thumbnail_image_url: string;
+
+  @ApiProperty({ example: 'LIVE', description: '그룹 상태 (LIVE, CLOSED 등)' })
+  status: string;
+
+  @ApiProperty({ example: 'SLIDE', description: '알람 해제 콘텐츠 유형' })
+  alarm_unlock_contents: string;
+
+  @ApiProperty({ example: null, description: '삭제 일자 (삭제되지 않은 경우 null)' })
+  deleted_at: string | null;
+
+  @ApiProperty({
+    example: ['월', '토', '일'],
+    description: '알람 요일 (요일 리스트)',
+    type: [String],
+  })
+  alarm_days: string[];
+}

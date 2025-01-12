@@ -13,13 +13,13 @@ import {
   GroupRankListResponseDto,
   GroupDetailsResponseDto,
   AlarmListResponseDto,
-  GroupRankNumberResponseDto,
+  GroupRankNumberResponseDto, GroupResponseDto,
 } from '@src/dto/dto.group';
 import { JwtAccessGuard } from '@src/auth/auth.guard';
 
 @ApiTags('group')
 @Controller('group')
-@UseGuards(JwtAccessGuard)
+// @UseGuards(JwtAccessGuard)
 export class GroupController {
   constructor(
     private readonly groupService: GroupService
@@ -59,7 +59,7 @@ export class GroupController {
 
   @Get('latest')
   @ApiOperation({summary: '최신그룹 전체조회'})
-  @ApiResponse({ status: 200, type: GroupRankListResponseDto, isArray: true })
+  @ApiResponse({ status: 200, type: GroupResponseDto, isArray: true })
   async getAllGroup(
   ) {
     return await this.groupService.getAllGroup()
@@ -67,7 +67,7 @@ export class GroupController {
 
   @Get('popular')
   @ApiOperation({summary: '인기그룹 전체조회'})
-  @ApiResponse({ status: 200, type: GroupRankListResponseDto, isArray: true })
+  @ApiResponse({ status: 200, type: GroupResponseDto, isArray: true })
   async getPopularGroup(
   ) {
     return await this.groupService.getPopularGroup()
