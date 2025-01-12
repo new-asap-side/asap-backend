@@ -374,8 +374,23 @@ export class GroupService {
     const userGroup = await this.userGroupRepo.findOneBy({ user_id, group_id })
     if(!userGroup) return { result: false, message: '삭제할 할 userGroup 데이터를 찾지 못했습니다.' }
 
-    const { affected } = await this.userGroupRepo.delete({ user_id, group_id })
-    if(affected == 0) return { result: false, message: '삭제할 데이터가 없습니다.' }
+    if(userGroup?.is_group_master) {
+      await this.manager.transaction(async (manager) => {
+        const users = await manager.findBy(UserGroup, { group_id })
+        const selectedUser = users.find(user => !user.is_group_master)
+        await this.manager.update(
+          UserGroup,
+          { user_id: selectedUser.user_id, group_id },
+          { is_group_master: true }
+        )
+        await this.manager.softDelete(
+          UserGroup,
+          { user_id, group_id }
+        )
+      })
+    } else {
+      await this.userGroupRepo.softDelete({ user_id, group_id })
+    }
 
     return { result: true, message: '삭제되었습니다.' }
   }
