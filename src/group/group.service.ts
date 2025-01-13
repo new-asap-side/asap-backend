@@ -377,6 +377,10 @@ export class GroupService {
     if(userGroup?.is_group_master) {
       await this.manager.transaction(async (manager) => {
         const users = await manager.findBy(UserGroup, { group_id })
+        if(users.length === 0) {
+          await manager.softDelete(Group, {group_id})
+          return { result: true, message: '그룹에 더이상 유저가 없습니다. 그룹을 삭제하겠습니다.' };
+        }
         const selectedUser = users.find(user => !user.is_group_master)
         await this.manager.update(
           UserGroup,
