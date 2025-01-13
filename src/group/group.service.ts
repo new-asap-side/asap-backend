@@ -391,9 +391,21 @@ export class GroupService {
           UserGroup,
           { user_id, group_id }
         )
+        await this.manager.decrement(
+          Group,
+          { group_id: userGroup.group_id },
+          'current_person',
+          1
+        )
       })
     } else {
       await this.userGroupRepo.softDelete({ user_id, group_id })
+      await this.manager.decrement(
+          Group,
+          { group_id: userGroup.group_id },
+          'current_person',
+          1
+        )
     }
 
     return { result: true, message: '삭제되었습니다.' }
