@@ -102,23 +102,32 @@ export class GroupService {
 }
 
   public async getGroupRankNumber(group_id: number, user_id: number) {
-    const userGroup = await this.userGroupRepo.findOneBy({group_id, user_id})
-
+    const userGroup = await this.userGroupRepo.findOne({
+    where: { group_id, user_id },
+      withDeleted: true
+    })
     const startOfDay = new Date();
-      startOfDay.setHours(0, 0, 0, 0); // 오늘 00:00:00
-      startOfDay.setHours(startOfDay.getHours() - 9);
+    startOfDay.setHours(0, 0, 0, 0); // 오늘 00:00:00
+    startOfDay.setHours(startOfDay.getHours() - 9);
 
-      const endOfDay = new Date();
-      endOfDay.setHours(23, 59, 59, 999); // 오늘 23:59:59
-      endOfDay.setHours(endOfDay.getHours() - 9);
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59, 999); // 오늘 23:59:59
+    endOfDay.setHours(endOfDay.getHours() - 9);
 
-    return await this.rankRepo.findOne({
+    console.log(userGroup)
+    console.log(startOfDay)
+    console.log(endOfDay)
+
+    const result = await this.rankRepo.findOne({
       where: {
         user_group_id: userGroup.user_group_id,
         created_at: Between(startOfDay, endOfDay)
       },
       select: ['rank_number']
     })
+    if(!result) return { rank_number: 1 };
+
+    return result
   }
 
   public async getAllGroup() {

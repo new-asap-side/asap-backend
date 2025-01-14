@@ -35,7 +35,7 @@ export class AdminService {
           { user_id: userId },
           { user_leave_reason: userLeaveReason }
         )
-        await this.userRepo.softRemove(user);
+        await this.userRepo.softDelete(user);
         return { result: true }
   }
 
