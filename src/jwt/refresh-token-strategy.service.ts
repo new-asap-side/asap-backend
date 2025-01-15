@@ -17,6 +17,7 @@ export class RefreshTokenStrategy extends PassportStrategy(Strategy, 'jwt-refres
     });
   }
 
+  // payload에 jwt 서명할때 쓰인 객체가 들어있을꺼임
   async validate(req: Request, payload: any) {
     const refreshToken = req.get('authorization').split('Bearer ')[1];
 

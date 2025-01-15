@@ -15,10 +15,18 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  public async findByIdAndCheckRT(user_id: string, refresh_token: string): Promise<User> {
+  public async findByIdAndCheckRT(user_id: string|number, refresh_token: string): Promise<User> {
+    if(typeof user_id === 'string' && user_id.includes('.')) {
+      return await this.userRepo.findOne({
+        where: {
+          apple_id: user_id,
+          refresh_token
+        }
+      })
+    }
     return await this.userRepo.findOne({
       where: {
-        user_id: Number(user_id),
+        kakao_id: String(user_id),
         refresh_token
       }
     })
@@ -32,10 +40,10 @@ export class AuthService {
     accessToken: string,
     refreshToken: string
   } {
-    const accessToken = this.jwtService.sign({ platform_id, user_id }, {
+    const accessToken = this.jwtService.sign({ platform_id: String(platform_id), user_id:String(user_id) }, {
       expiresIn: `${this.configService.get<number>('JWT_ACCESS_TOKEN_EXPIRATION')}s`,
     });
-    const refreshToken = this.jwtService.sign({ platform_id, user_id }, {
+    const refreshToken = this.jwtService.sign({ platform_id: String(platform_id), user_id:String(user_id) }, {
       expiresIn: `${this.configService.get<number>('JWT_REFRESH_TOKEN_EXPIRATION')}s`,
     });
 

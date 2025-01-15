@@ -45,19 +45,20 @@ export class AuthController {
     })
     @UseGuards(JwtRefreshGuard)
     async refreshToken(@Req() req: Request) {
-        const { refreshToken, user_id, platform_id } = req['user']
-
+        const { refreshToken, platform_id, user_id } = req['user']
         const user = await this.authService.findByIdAndCheckRT(user_id, refreshToken);
+
         if(!user) {
-            this.logger.warn(`user_id: ${user_id}is not found`)
+            this.logger.warn(`refreshToken: ${refreshToken} is user empty`)
             throw new UnauthorizedException();
         }
+
         if(user?.refresh_token !== refreshToken) {
             this.logger.warn(`user_id: ${user_id} refresh_token is not equals`)
             throw new UnauthorizedException();
         }
 
-        const token = this.authService.generateJWT(user_id, platform_id);
+        const token = this.authService.generateJWT(platform_id, user_id);
 
         await this.authService.updateHashedRefreshToken(user.user_id, token.refreshToken);
 
