@@ -17,21 +17,22 @@ export class AuthService {
   public async findByIdAndCheckRT(user_id: string|number, refresh_token: string): Promise<User> {
     // apple 리프레쉬토큰 처리
     if(typeof user_id === 'string' && user_id.includes('.')) {
-      try {
-        return await this.userRepo.findOne({
+        const result = await this.userRepo.findOne({
         where: {
           apple_id: user_id,
           refresh_token
         }
       })
-      } catch (e) {
+      if(!result) {
         return await this.userRepo.findOne({
         where: {
           user_id: Number(user_id),
           refresh_token
-        }
-      })
+        }})
+      } else {
+        return result
       }
+
     }
     // 안드로이드 리프레쉬토큰 처리
     return await this.userRepo.findOne({
