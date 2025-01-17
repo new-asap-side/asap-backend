@@ -46,6 +46,7 @@ export class AuthController {
     @UseGuards(JwtRefreshGuard)
     async refreshToken(@Req() req: Request) {
         const { refreshToken, platform_id, user_id } = req['user']
+        console.log({ refreshToken, platform_id, user_id })
         const user = await this.authService.findByIdAndCheckRT(user_id, refreshToken);
 
         if(!user) {

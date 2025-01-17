@@ -25,7 +25,7 @@ export class AuthService {
     }
     return await this.userRepo.findOne({
       where: {
-        kakao_id: String(user_id),
+        user_id: Number(user_id),
         refresh_token
       }
     })
