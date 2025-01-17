@@ -27,7 +27,7 @@ export class AppleAuthService {
 
     const sub = decodedToken.payload.sub as string
     const { user_id, isJoinedUser } = await this.signUpAppleUser(sub);
-    const { accessToken, refreshToken } = this.authService.generateJWT(sub, String(user_id));
+    const { accessToken, refreshToken } = this.authService.generateJWT(sub, user_id);
     await this.userRepo.update(user_id, {refresh_token: refreshToken, device_token})
 
     return {

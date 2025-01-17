@@ -23,7 +23,7 @@ export class KakaoAuthService {
         try {
             const kakao_id = await this.getKakaoId(kakaoAccessToken);
             const { user_id, isJoinedUser } = await this.signUpKakaoUser(kakao_id)
-            const { accessToken, refreshToken } = this.authService.generateJWT(kakao_id, String(user_id))
+            const { accessToken, refreshToken } = this.authService.generateJWT(kakao_id, user_id)
             if(device_type === DeviceTypeEnum.IOS) {
                 await this.userRepo.update(user_id, {
                     refresh_token: refreshToken,
