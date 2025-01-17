@@ -389,7 +389,7 @@ export class GroupService {
         const users = await manager.findBy(UserGroup, { group_id })
         if(users.length === 0) {
           await manager.softDelete(Group, {group_id})
-          return { result: true, message: '그룹에 더이상 유저가 없습니다. 그룹을 삭제하겠습니다.' };
+          return { result: true, message: '그룹에 더이상 유저가 없습니다. 그룹을 삭제합니다.' };
         }
         const selectedUser = users.find(user => !user.is_group_master)
         await this.manager.update(
@@ -409,16 +409,21 @@ export class GroupService {
         )
       })
     } else {
-      await this.userGroupRepo.softDelete({ user_id, group_id })
-      await this.manager.decrement(
+      await this.manager.transaction(async (manager) => {
+        await this.manager.softDelete(
+          UserGroup,
+          { user_id, group_id }
+        )
+        await this.manager.decrement(
           Group,
           { group_id: userGroup.group_id },
           'current_person',
           1
         )
+      })
     }
 
-    await this.alarmService.removeRedisAlarmJob(userGroup.group_id)
+    await this.alarmService.removeOnlyOneAlarmJob(userGroup.group_id, userGroup.user_id)
 
     return { result: true, message: '삭제되었습니다.' }
   }

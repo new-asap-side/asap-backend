@@ -75,7 +75,7 @@ export class AdminService {
         await manager.softDelete(Alarm, { group_id: groupId })
       })
 
-      await this.alarmService.removeRedisAlarmJob(groupId)
+      await this.alarmService.removeAllAlarmJob(groupId)
     }
 
     return { result: true }

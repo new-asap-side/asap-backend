@@ -120,7 +120,7 @@ export class AlarmService {
     }
   }
 
-  async removeRedisAlarmJob(groupId: number) {
+  async removeAllAlarmJob(groupId: number) {
     const userGroups = await this.userGroupRepo.find({
         where: { group_id: groupId },
         select: ['user_id']
@@ -144,6 +144,30 @@ export class AlarmService {
           if(androidDelayedJob.data?.fcmToken === alarm_token?.fcm_token) {
             await androidDelayedJob.remove()
           }
+        }
+      }
+  }
+
+  async removeOnlyOneAlarmJob(groupId: number, userId: number) {
+    const userGroups = await this.userGroupRepo.findOne({
+        where: { group_id: groupId, user_id: userId },
+        select: ['user_id']
+      })
+
+      const alarm_token = await this.userRepo.findOne({
+        where: { user_id: userGroups.user_id },
+        select: ['device_token', 'fcm_token']
+      })
+      const iosDelayedJobs = await this.iosAlarmQueue.getDelayed()
+      for (const iosDelayedJob of iosDelayedJobs) {
+        if(iosDelayedJob.data?.deviceToken === alarm_token?.device_token) {
+          await iosDelayedJob.remove()
+        }
+      }
+      const androidDelayedJobs = await this.androidAlarmQueue.getDelayed()
+      for (const androidDelayedJob of androidDelayedJobs) {
+        if(androidDelayedJob.data?.fcmToken === alarm_token?.fcm_token) {
+          await androidDelayedJob.remove()
         }
       }
   }
