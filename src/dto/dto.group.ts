@@ -6,7 +6,7 @@ import {
   IsNotEmpty,
   IsNumber,
   IsOptional,
-  IsString,
+  IsString, Length,
   Matches, ValidateIf,
 } from 'class-validator';
 import { AlarmTypeEnum } from '@src/database/entity/userGroup';
@@ -87,6 +87,7 @@ export class CreateAlarmDateDto {
   @ApiProperty({description: '알람 시간 HH:mm', example: "21:15"})
   @IsNotEmpty()
   @IsString()
+  @Length(5, 5) // 길이가 정확히 5자인지 확인
   alarm_time: string;
 
   @ApiProperty({
