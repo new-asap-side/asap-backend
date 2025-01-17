@@ -42,16 +42,19 @@ export class AlarmQueueService {
 
     // 알람 날짜들에 대해 각각 큐에 작업을 추가
     for (const triggerDate of triggerDates) {
+      const diffTime = triggerDate.diff(dayjs(), 'millisecond')
+      console.log(`triggerDate: ${triggerDate}, diffTime: ${diffTime}, TK: ${deviceToken}`)
       if (deviceType === DeviceTypeEnum.ANDROID) {
         await this.androidAlarmQueue.add('sendAlarm', {
           fcmToken: deviceToken,
           alarmPayload
-        }, { delay: triggerDate.diff(dayjs(), 'millisecond') }); // 알람이 울릴 때까지의 대기 시간
+        }, { delay: diffTime }); // 알람이 울릴 때까지의 대기 시간
+
       } else if (deviceType === DeviceTypeEnum.IOS) {
         await this.iosAlarmQueue.add('sendIosAlarm', {
           deviceToken,
           alarmPayload
-        }, { delay: triggerDate.diff(dayjs(), 'millisecond') }); // 알람이 울릴 때까지의 대기 시간
+        }, { delay: diffTime }); // 알람이 울릴 때까지의 대기 시간
       }
     }
   }
