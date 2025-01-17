@@ -14,30 +14,9 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  public async findByIdAndCheckRT(user_id: string|number, refresh_token: string): Promise<User> {
-    // apple 리프레쉬토큰 처리
-    if(typeof user_id === 'string' && user_id.includes('.')) {
-        const result = await this.userRepo.findOne({
-        where: {
-          apple_id: user_id,
-          refresh_token
-        }
-      })
-      if(!result) {
-        return await this.userRepo.findOne({
-        where: {
-          user_id: Number(user_id),
-          refresh_token
-        }})
-      } else {
-        return result
-      }
-
-    }
-    // 안드로이드 리프레쉬토큰 처리
+  public async findByIdAndCheckRT(refresh_token: string): Promise<User> {
     return await this.userRepo.findOne({
       where: {
-        user_id: Number(user_id),
         refresh_token
       }
     })
@@ -47,7 +26,7 @@ export class AuthService {
     await this.userRepo.update(user_id, {refresh_token})
   }
 
-  public generateJWT(platform_id: string, user_id: string): {
+  public generateJWT(platform_id: string, user_id: number): {
     accessToken: string,
     refreshToken: string
   } {
