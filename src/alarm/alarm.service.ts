@@ -123,12 +123,14 @@ export class AlarmService {
   async removeAllAlarmJob(groupId: number) {
     const userGroups = await this.userGroupRepo.find({
         where: { group_id: groupId },
-        select: ['user_id']
+        select: ['user_id'],
+        withDeleted: true
       })
       const userIds = userGroups.map(v=>v.user_id)
       const alarm_tokens = await this.userRepo.find({
         where: { user_id: In(userIds) },
-        select: ['device_token', 'fcm_token']
+        select: ['device_token', 'fcm_token'],
+        withDeleted: true
       })
       const iosDelayedJobs = await this.iosAlarmQueue.getDelayed()
       for (const iosDelayedJob of iosDelayedJobs) {
@@ -151,12 +153,14 @@ export class AlarmService {
   async removeOnlyOneAlarmJob(groupId: number, userId: number) {
     const userGroups = await this.userGroupRepo.findOne({
         where: { group_id: groupId, user_id: userId },
-        select: ['user_id']
+        select: ['user_id'],
+        withDeleted: true
       })
 
       const alarm_token = await this.userRepo.findOne({
         where: { user_id: userGroups.user_id },
-        select: ['device_token', 'fcm_token']
+        select: ['device_token', 'fcm_token'],
+        withDeleted: true
       })
       const iosDelayedJobs = await this.iosAlarmQueue.getDelayed()
       for (const iosDelayedJob of iosDelayedJobs) {
