@@ -5,6 +5,7 @@ import { GroupService } from '@src/group/group.service';
 import { GroupController } from '@src/group/group.controller';
 import { AlarmModule } from '@src/alarm/alarm.module';
 import { S3Module } from '@src/S3/S3.module';
+import { AlarmService } from '@src/alarm/alarm.service';
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { S3Module } from '@src/S3/S3.module';
     S3Module
   ],
   controllers: [GroupController],
-  providers: [GroupService],
+  providers: [GroupService, AlarmService],
   exports: []
 })
 export class GroupModule {}

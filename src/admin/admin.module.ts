@@ -4,6 +4,7 @@ import { JwtStrategyModule } from '@src/jwt/jwt.module';
 import { AdminController } from '@src/admin/admin.controller';
 import { AdminService } from '@src/admin/admin.service';
 import { AlarmModule } from '@src/alarm/alarm.module';
+import { AlarmService } from '@src/alarm/alarm.service';
 
 @Module({
   imports: [
@@ -12,7 +13,7 @@ import { AlarmModule } from '@src/alarm/alarm.module';
     JwtStrategyModule
   ],
   controllers: [AdminController],
-  providers: [AdminService],
+  providers: [AdminService, AlarmService],
   exports: []
 })
 export class AdminModule {}

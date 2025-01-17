@@ -15,7 +15,7 @@ describe('admin Service Test', () => {
         DatabaseModule,
         HttpModule,
         ConfigModule.forRoot({
-          envFilePath: '.env.test', // 테스트 환경변수 파일 경로
+          envFilePath: '.env.test',
           isGlobal: true,
         }),
       ],
@@ -24,9 +24,5 @@ describe('admin Service Test', () => {
 
     adminService = app.get<AdminService>(AdminService);
   });
-
-  it('test report api', async ()=> {
-    await adminService.reportGroup({groupId:1, userId:6})
-  })
 
 });

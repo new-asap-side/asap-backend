@@ -19,6 +19,7 @@ import { GroupStatusEnum } from '@src/database/enum/groupStatusEnum';
 import { AlarmDayEnum } from '@src/database/enum/alarmDaysEnum';
 import { Rank } from '@src/database/entity/rank';
 import { AlarmPayload } from '@src/dto/dto.fcm_apns';
+import { AlarmService } from '@src/alarm/alarm.service';
 
 @Injectable()
 export class GroupService {
@@ -37,7 +38,8 @@ export class GroupService {
     private readonly rankRepo: Repository<Rank>,
     private readonly alarmQueueService: AlarmQueueService,
     private readonly s3Service: S3Service,
-    private readonly manager: EntityManager
+    private readonly manager: EntityManager,
+    private readonly alarmService: AlarmService,
   ) {}
 
   public async getUserGroupAndAlarmInfo(userId: number) {
@@ -103,8 +105,7 @@ export class GroupService {
 
   public async getGroupRankNumber(group_id: number, user_id: number) {
     const userGroup = await this.userGroupRepo.findOne({
-    where: { group_id, user_id },
-      withDeleted: true
+      where: { group_id, user_id }
     })
     const startOfDay = new Date();
     startOfDay.setHours(0, 0, 0, 0); // 오늘 00:00:00
@@ -416,6 +417,8 @@ export class GroupService {
           1
         )
     }
+
+    await this.alarmService.removeRedisAlarmJob(userGroup.group_id)
 
     return { result: true, message: '삭제되었습니다.' }
   }

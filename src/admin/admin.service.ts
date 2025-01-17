@@ -9,6 +9,7 @@ import { Report } from '@src/database/entity/report';
 import { Alarm } from '@src/database/entity/alarm';
 import { Queue } from 'bull';
 import { InjectQueue } from '@nestjs/bull';
+import { AlarmService } from '@src/alarm/alarm.service';
 
 @Injectable()
 export class AdminService {
@@ -23,7 +24,8 @@ export class AdminService {
     private readonly reportRepo: Repository<Report>,
     private readonly entityManager: EntityManager,
     @InjectQueue('androidAlarmQueue') private readonly androidAlarmQueue: Queue,
-    @InjectQueue('iosAlarmQueue') private readonly iosAlarmQueue: Queue
+    @InjectQueue('iosAlarmQueue') private readonly iosAlarmQueue: Queue,
+    private readonly alarmService: AlarmService
   ) {}
 
   async softDeleteUser(userId: number, userLeaveReason: string) {
@@ -73,31 +75,7 @@ export class AdminService {
         await manager.softDelete(Alarm, { group_id: groupId })
       })
 
-      const userGroups = await this.userGroupRepo.find({
-        where: { group_id: groupId },
-        select: ['user_id']
-      })
-      const userIds = userGroups.map(v=>v.user_id)
-      const alarm_tokens = await this.userRepo.find({
-        where: { user_id: In(userIds) },
-        select: ['device_token', 'fcm_token']
-      })
-      const iosDelayedJobs = await this.iosAlarmQueue.getDelayed()
-      for (const iosDelayedJob of iosDelayedJobs) {
-        for (const alarm_token of alarm_tokens) {
-          if(iosDelayedJob.data?.deviceToken === alarm_token?.device_token) {
-            await iosDelayedJob.remove()
-          }
-        }
-      }
-      const androidDelayedJobs = await this.androidAlarmQueue.getDelayed()
-      for (const androidDelayedJob of androidDelayedJobs) {
-        for (const alarm_token of alarm_tokens) {
-          if(androidDelayedJob.data?.fcmToken === alarm_token?.fcm_token) {
-            await androidDelayedJob.remove()
-          }
-        }
-      }
+      await this.alarmService.removeRedisAlarmJob(groupId)
     }
 
     return { result: true }

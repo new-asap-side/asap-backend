@@ -1,5 +1,4 @@
 import {Injectable} from "@nestjs/common";
-import {firstValueFrom} from "rxjs";
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
@@ -45,6 +44,7 @@ export class AuthService {
     });
     const refreshToken = this.jwtService.sign({ platform_id: String(platform_id), user_id:String(user_id) }, {
       expiresIn: `${this.configService.get<number>('JWT_REFRESH_TOKEN_EXPIRATION')}s`,
+
     });
 
     return {

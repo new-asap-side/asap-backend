@@ -1,9 +1,12 @@
 import { Injectable } from '@nestjs/common';
-import { Between, EntityManager, Repository } from 'typeorm';
+import { Between, EntityManager, In, Repository } from 'typeorm';
 import { UserGroup } from '@src/database/entity/userGroup';
 import { Rank } from '@src/database/entity/rank';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AlarmOffRateResponse } from '@src/dto/dto.alarm';
+import { InjectQueue } from '@nestjs/bull';
+import { Queue } from 'bull';
+import { User } from '@src/database/entity/user';
 
 @Injectable()
 export class AlarmService {
@@ -13,6 +16,10 @@ export class AlarmService {
     private readonly rankRepo: Repository<Rank>,
     @InjectRepository(UserGroup)
     private readonly userGroupRepo: Repository<UserGroup>,
+    @InjectRepository(User)
+    private readonly userRepo: Repository<User>,
+    @InjectQueue('androidAlarmQueue') private readonly androidAlarmQueue: Queue,
+    @InjectQueue('iosAlarmQueue') private readonly iosAlarmQueue: Queue
     ) {}
 
   async offAlarm(user_id: number, group_id: number) {
@@ -111,5 +118,33 @@ export class AlarmService {
       offRate: parseFloat(unlockRate.toFixed(1)),
       joinedGroupCount: Number(userGroup?.joinedGroupCount) ?? 0
     }
+  }
+
+  async removeRedisAlarmJob(groupId: number) {
+    const userGroups = await this.userGroupRepo.find({
+        where: { group_id: groupId },
+        select: ['user_id']
+      })
+      const userIds = userGroups.map(v=>v.user_id)
+      const alarm_tokens = await this.userRepo.find({
+        where: { user_id: In(userIds) },
+        select: ['device_token', 'fcm_token']
+      })
+      const iosDelayedJobs = await this.iosAlarmQueue.getDelayed()
+      for (const iosDelayedJob of iosDelayedJobs) {
+        for (const alarm_token of alarm_tokens) {
+          if(iosDelayedJob.data?.deviceToken === alarm_token?.device_token) {
+            await iosDelayedJob.remove()
+          }
+        }
+      }
+      const androidDelayedJobs = await this.androidAlarmQueue.getDelayed()
+      for (const androidDelayedJob of androidDelayedJobs) {
+        for (const alarm_token of alarm_tokens) {
+          if(androidDelayedJob.data?.fcmToken === alarm_token?.fcm_token) {
+            await androidDelayedJob.remove()
+          }
+        }
+      }
   }
 }
