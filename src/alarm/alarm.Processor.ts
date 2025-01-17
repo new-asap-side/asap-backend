@@ -1,11 +1,7 @@
-// alarm.processor.ts
 import { Process, Processor } from '@nestjs/bull';
 import { Job } from 'bull';
-import { CreateAlarmDateDto } from '@src/dto/dto.group';
 import { FcmService } from '@src/fcm/fcm.service';
-import dayjs from 'dayjs';
 import { ApnService } from '@src/apn/apn.service';
-import { AlarmUnlockContentsEnum } from '@src/database/enum/alarmUnlockContentsEnum';
 import { AlarmService } from '@src/alarm/alarm.service';
 import { AlarmPayload } from '@src/dto/dto.fcm_apns';
 
@@ -37,17 +33,17 @@ export class IosAlarmProcessor {
   }
 }
 
-  @Processor('AlarmQueue')
-  export class AlarmProcessor {
-    constructor(
-      private readonly alarmService: AlarmService,
-    ) {
-    }
-
-    @Process('offAlarm')
-    async handleOffAlarmJob(job: Job) {
-      const { userId, groupId }: { userId: number, groupId: number } = job.data
-      await this.alarmService.offAlarm(userId, groupId);
-    }
+@Processor('AlarmQueue')
+export class AlarmProcessor {
+  constructor(
+    private readonly alarmService: AlarmService,
+  ) {
   }
+
+  @Process('offAlarm')
+  async handleOffAlarmJob(job: Job) {
+    const { userId, groupId }: { userId: number, groupId: number } = job.data
+    await this.alarmService.offAlarm(userId, groupId);
+  }
+}
 

@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, Logger, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Between, EntityManager, Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { User } from '@src/database/entity/user';
 import { Group } from '@src/database/entity/group';
 import { UserGroup } from '@src/database/entity/userGroup';

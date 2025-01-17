@@ -1,13 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AlarmQueueService } from '@src/alarm/alarm.queue.service';
-import { DeviceTypeEnum } from '@src/dto/dto.group';
 import { AlarmModule } from '@src/alarm/alarm.module';
-import dayjs from 'dayjs';
-
-import { AlarmUnlockContentsEnum } from '@src/database/enum/alarmUnlockContentsEnum';
-import { AlarmService } from '@src/alarm/alarm.service';
-import { AlarmDayEnum } from '@src/database/enum/alarmDaysEnum';
 import { DatabaseModule } from '@src/database/database.module';
 import { GroupService } from '@src/group/group.service';
 import { S3Module } from '@src/S3/S3.module';

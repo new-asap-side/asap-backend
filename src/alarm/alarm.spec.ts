@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AlarmQueueService } from '@src/alarm/alarm.queue.service';
-import { DeviceTypeEnum } from '@src/dto/dto.group';
 import { AlarmModule } from '@src/alarm/alarm.module';
 import dayjs from 'dayjs';
 
