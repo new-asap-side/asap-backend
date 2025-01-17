@@ -389,43 +389,42 @@ export class GroupService {
         const users = await manager.findBy(UserGroup, { group_id })
         if(users.length === 0) {
           await manager.softDelete(Group, {group_id})
-          return { result: true, message: '그룹에 더이상 유저가 없습니다. 그룹을 삭제합니다.' };
+        } else if(users.length === 1) {
+          await this.removeOnlyOneUser(user_id, group_id, manager);
+          await manager.softDelete(Group, {group_id})
+        } else {
+          const selectedUser = users.find(user => !user.is_group_master)
+          await this.manager.update(
+            UserGroup,
+            { user_id: selectedUser.user_id, group_id },
+            { is_group_master: true }
+          )
+          await this.removeOnlyOneUser(user_id, group_id, manager)
         }
-        const selectedUser = users.find(user => !user.is_group_master)
-        await this.manager.update(
-          UserGroup,
-          { user_id: selectedUser.user_id, group_id },
-          { is_group_master: true }
-        )
-        await this.manager.softDelete(
-          UserGroup,
-          { user_id, group_id }
-        )
-        await this.manager.decrement(
-          Group,
-          { group_id: userGroup.group_id },
-          'current_person',
-          1
-        )
       })
     } else {
       await this.manager.transaction(async (manager) => {
-        await this.manager.softDelete(
-          UserGroup,
-          { user_id, group_id }
-        )
-        await this.manager.decrement(
-          Group,
-          { group_id: userGroup.group_id },
-          'current_person',
-          1
-        )
+        await this.removeOnlyOneUser(user_id, group_id, manager)
       })
     }
 
     await this.alarmService.removeOnlyOneAlarmJob(userGroup.group_id, userGroup.user_id)
 
     return { result: true, message: '삭제되었습니다.' }
+  }
+
+  private async removeOnlyOneUser(user_id: number, group_id: number, manager: EntityManager) {
+    await manager.softDelete(UserGroup, { user_id, group_id })
+    await manager.decrement(
+      Group,
+      { group_id },
+      'current_person',
+      1
+    )
+  }
+
+  private async changeGroupMaster() {
+
   }
 
   private async emitAlarmQueue(group: Group, joinGroupDto: JoinGroupDto | CreateGroupDto, alarmDay: AlarmDayEnum, alarmPayload: AlarmPayload) {

@@ -60,5 +60,9 @@ describe('FcmService Test', () => {
       const result = await alarmService.getUserAlarmUnlockRate(0)
       console.log(result)
     });
+
+    it('should remove alarm job', () => {
+
+    });
   });
 });
