@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { BaseEntity } from '@src/database/entity/base';
 import { UserGroup } from '@src/database/entity/userGroup';
 
@@ -8,6 +8,7 @@ export class Rank extends BaseEntity{
     rank_id: number;
 
     @Column()
+    @Index()
     user_group_id: number;
 
     @Column({comment: '랭킹등수'})

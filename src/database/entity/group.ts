@@ -1,4 +1,4 @@
-import { Column, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, DeleteDateColumn, Entity, Index, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { BaseEntity } from '@src/database/entity/base';
 import { UserGroup } from '@src/database/entity/userGroup';
@@ -22,6 +22,7 @@ export class Group extends BaseEntity{
     max_person: number;
 
     @Column({default: 1})
+    @Index()
     current_person: number;
 
     @Column()

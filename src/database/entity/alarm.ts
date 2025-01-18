@@ -1,6 +1,6 @@
 import {
     Column, DeleteDateColumn,
-    Entity, JoinColumn, ManyToOne,
+    Entity, Index, JoinColumn, ManyToOne,
     PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Group } from '@src/database/entity/group';
@@ -12,6 +12,7 @@ export class Alarm {
     alarm_id: number;
 
     @Column()
+    @Index()
     group_id: number
 
     @ManyToOne(() => Group, (group) => group.alarm_days)

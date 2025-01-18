@@ -1,6 +1,7 @@
-import { CreateDateColumn, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { CreateDateColumn, Index, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 export class BaseEntity {
+    @Index()
     @CreateDateColumn({type: 'datetime'})
     created_at: Date;
 
