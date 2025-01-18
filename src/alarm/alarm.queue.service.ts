@@ -43,6 +43,7 @@ export class AlarmQueueService {
     // 알람 날짜들에 대해 각각 큐에 작업을 추가
     for (const triggerDate of triggerDates) {
       const diffTime = triggerDate.diff(dayjs(), 'millisecond')
+      if(diffTime < 0) continue;
       console.log(`triggerDate: ${triggerDate}, diffTime: ${diffTime}, TK: ${deviceToken}`)
       if (deviceType === DeviceTypeEnum.ANDROID) {
         await this.androidAlarmQueue.add('sendAlarm', {
@@ -79,7 +80,11 @@ export class AlarmQueueService {
       const dayDiff = (targetDay - currentDate.day() + 7) % 7;
 
       // 목표 요일이 이미 지났다면, 다음 주로 넘어가도록 처리
-      let alarmDate = currentDate.add(dayDiff, 'day').set('hour', targetHour).set('minute', targetMinute).set('second', 0);
+      let alarmDate = currentDate
+        .add(dayDiff, 'day')
+        .set('hour', targetHour)
+        .set('minute', targetMinute)
+        .set('second', 0);
 
       // 종료일자에 맞춰 알람이 울려야 하므로 종료일자를 포함
       if (alarmDate.isBefore(dayjs(alarmData.alarm_end_date).tz('Asia/Seoul', true)) ||
