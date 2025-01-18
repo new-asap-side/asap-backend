@@ -9,7 +9,7 @@ function setupDocs(app) {
   const options = new DocumentBuilder()
       .setTitle('ASAP API Document')
       .setDescription('This page is an API Document about ASAP')
-      .setVersion('1.0')
+      .setVersion('1.5')
       .build();
 
   const document = SwaggerModule.createDocument(app, options);
