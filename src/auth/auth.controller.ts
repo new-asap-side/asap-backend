@@ -56,7 +56,7 @@ export class AuthController {
         const platform_id = user?.kakao_id ? user.kakao_id : user.apple_id
         const token = this.authService.generateJWT(platform_id, user.user_id);
 
-        await this.authService.updateHashedRefreshToken(user.user_id, token.refreshToken);
+        await this.authService.updateRefreshToken(user.user_id, token.refreshToken);
 
         return {
             user_id: String(user.user_id),

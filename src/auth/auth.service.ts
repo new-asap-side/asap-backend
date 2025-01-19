@@ -22,7 +22,7 @@ export class AuthService {
     })
   }
 
-  public async updateHashedRefreshToken(user_id: number, refresh_token: string): Promise<any> {
+  public async updateRefreshToken(user_id: number, refresh_token: string): Promise<any> {
     await this.userRepo.update(user_id, {refresh_token})
   }
 
