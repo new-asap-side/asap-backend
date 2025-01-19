@@ -33,10 +33,12 @@ export class AuthService {
     const accessToken = this.jwtService.sign({ platform_id: String(platform_id), user_id:String(user_id) }, {
       expiresIn: `${this.configService.get<number>('JWT_ACCESS_TOKEN_EXPIRATION')}s`,
     });
-    const refreshToken = this.jwtService.sign({ platform_id: String(platform_id), user_id:String(user_id) }, {
-      expiresIn: `${this.configService.get<number>('JWT_REFRESH_TOKEN_EXPIRATION')}s`,
-
-    });
+    const refreshToken = this.jwtService.sign(
+      { platform_id: String(platform_id), user_id:String(user_id) },
+      {
+        expiresIn: `${this.configService.get<number>('JWT_REFRESH_TOKEN_EXPIRATION')}s`,
+        secret: this.configService.get<string>('JWT_REFRESH_SECRET_KEY')
+      });
 
     return {
       accessToken,

@@ -11,7 +11,7 @@ export class RefreshTokenStrategy extends PassportStrategy(Strategy, 'jwt-refres
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: configService.get<string>('JWT_SECRET_KEY'),
+      secretOrKey: configService.get<string>('JWT_REFRESH_SECRET_KEY'),
       ignoreExpiration: false,
       passReqToCallback: true,
     });
@@ -20,7 +20,7 @@ export class RefreshTokenStrategy extends PassportStrategy(Strategy, 'jwt-refres
   // payload에 jwt 서명할때 쓰인 객체가 들어있을꺼임
   async validate(req: Request, payload: any) {
     const refreshToken = req.get('authorization').split('Bearer ')[1];
-
+    console.log(`refreshToken: ${refreshToken}, payload: ${JSON.stringify(payload)}`)
     return {
       ...payload,
       refreshToken,
