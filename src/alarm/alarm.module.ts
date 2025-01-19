@@ -10,6 +10,7 @@ import { HttpModule } from '@nestjs/axios';
 import { AlarmService } from '@src/alarm/alarm.service';
 import { DatabaseModule } from '@src/database/database.module';
 import { AlarmController } from '@src/alarm/alarm.controller';
+import { AlarmActionQueueEnum, AndroidQueueEnum, IosQueueEnum } from '@src/database/enum/queueEnum';
 
 @Module({
   imports: [
@@ -36,13 +37,13 @@ import { AlarmController } from '@src/alarm/alarm.controller';
 
     }),
     BullModule.registerQueue({
-      name: 'androidAlarmQueue',
+      name: AndroidQueueEnum.NAME,
     }),
     BullModule.registerQueue({
-      name: 'iosAlarmQueue',
+      name: IosQueueEnum.NAME,
     }),
     BullModule.registerQueue({
-      name: 'AlarmQueue',
+      name: AlarmActionQueueEnum.NAME,
     }),
   ],
   providers: [

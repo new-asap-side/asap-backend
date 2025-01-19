@@ -1,14 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EntityManager, In, Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { User } from '@src/database/entity/user';
 import { Group } from '@src/database/entity/group';
 import { UserGroup } from '@src/database/entity/userGroup';
 import { ReportGroupRequest } from '@src/dto/dto.admin';
 import { Report } from '@src/database/entity/report';
 import { Alarm } from '@src/database/entity/alarm';
-import { Queue } from 'bull';
-import { InjectQueue } from '@nestjs/bull';
 import { AlarmService } from '@src/alarm/alarm.service';
 
 @Injectable()
@@ -18,13 +16,9 @@ export class AdminService {
   constructor(
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
-    @InjectRepository(UserGroup)
-    private readonly userGroupRepo: Repository<UserGroup>,
     @InjectRepository(Report)
     private readonly reportRepo: Repository<Report>,
     private readonly entityManager: EntityManager,
-    @InjectQueue('androidAlarmQueue') private readonly androidAlarmQueue: Queue,
-    @InjectQueue('iosAlarmQueue') private readonly iosAlarmQueue: Queue,
     private readonly alarmService: AlarmService
   ) {}
 

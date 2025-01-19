@@ -6,6 +6,7 @@ import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import { AddAlarmJobDto, DeviceTypeEnum } from '@src/dto/dto.group';
 import { AlarmPayload } from '@src/dto/dto.fcm_apns';
+import { AlarmActionQueueEnum, AndroidQueueEnum, IosQueueEnum } from '@src/database/enum/queueEnum';
 
 // dayjs에 플러그인 등록
 dayjs.extend(utc);
@@ -25,9 +26,9 @@ const dayMapping: Record<string, number> = {
 @Injectable()
 export class AlarmQueueService {
   constructor(
-    @InjectQueue('androidAlarmQueue') private readonly androidAlarmQueue: Queue,
-    @InjectQueue('iosAlarmQueue') private readonly iosAlarmQueue: Queue,
-    @InjectQueue('AlarmQueue') private readonly alarmQueue: Queue
+    @InjectQueue(AndroidQueueEnum.NAME) private readonly androidAlarmQueue: Queue,
+    @InjectQueue(IosQueueEnum.NAME) private readonly iosAlarmQueue: Queue,
+    @InjectQueue(AlarmActionQueueEnum.NAME) private readonly alarmQueue: Queue
   ) {}
 
   // 알람을 큐에 추가하는 메소드
@@ -46,13 +47,13 @@ export class AlarmQueueService {
       if(diffTime < 0) continue;
       console.log(`triggerDate: ${triggerDate}, diffTime: ${diffTime}, TK: ${deviceToken}`)
       if (deviceType === DeviceTypeEnum.ANDROID) {
-        await this.androidAlarmQueue.add('sendAlarm', {
+        await this.androidAlarmQueue.add(AndroidQueueEnum.SEND, {
           fcmToken: deviceToken,
           alarmPayload
         }, { delay: diffTime }); // 알람이 울릴 때까지의 대기 시간
 
       } else if (deviceType === DeviceTypeEnum.IOS) {
-        await this.iosAlarmQueue.add('sendIosAlarm', {
+        await this.iosAlarmQueue.add(IosQueueEnum.SEND, {
           deviceToken,
           alarmPayload
         }, { delay: diffTime }); // 알람이 울릴 때까지의 대기 시간
@@ -100,6 +101,6 @@ export class AlarmQueueService {
   }
 
   async emitAlarmOff(userId: number, groupId: number) {
-    await this.alarmQueue.add('offAlarm', { userId, groupId })
+    await this.alarmQueue.add(AlarmActionQueueEnum.OFF, { userId, groupId })
   }
 }

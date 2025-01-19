@@ -7,6 +7,7 @@ import { AlarmOffRateResponse } from '@src/dto/dto.alarm';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 import { User } from '@src/database/entity/user';
+import { AndroidQueueEnum, IosQueueEnum } from '@src/database/enum/queueEnum';
 
 @Injectable()
 export class AlarmService {
@@ -18,8 +19,8 @@ export class AlarmService {
     private readonly userGroupRepo: Repository<UserGroup>,
     @InjectRepository(User)
     private readonly userRepo: Repository<User>,
-    @InjectQueue('androidAlarmQueue') private readonly androidAlarmQueue: Queue,
-    @InjectQueue('iosAlarmQueue') private readonly iosAlarmQueue: Queue
+    @InjectQueue(AndroidQueueEnum.NAME) private readonly androidAlarmQueue: Queue,
+    @InjectQueue(IosQueueEnum.NAME) private readonly iosAlarmQueue: Queue
     ) {}
 
   async offAlarm(user_id: number, group_id: number) {
