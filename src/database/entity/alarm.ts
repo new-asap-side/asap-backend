@@ -12,7 +12,6 @@ export class Alarm {
     alarm_id: number;
 
     @Column()
-    @Index()
     group_id: number
 
     @ManyToOne(() => Group, (group) => group.alarm_days)

@@ -22,7 +22,6 @@ export class Group extends BaseEntity{
     max_person: number;
 
     @Column({default: 1})
-    @Index()
     current_person: number;
 
     @Column()

@@ -8,7 +8,6 @@ export class Rank extends BaseEntity{
     rank_id: number;
 
     @Column()
-    @Index()
     user_group_id: number;
 
     @Column({comment: '랭킹등수'})

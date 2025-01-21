@@ -20,17 +20,14 @@ export enum AlarmTypeEnum {
 }
 
 @Entity('user_group')
-@Index(['user_id', 'group_id']) // 복합 인덱스 설정
 export class UserGroup extends BaseEntity{
     @PrimaryGeneratedColumn()
     user_group_id: number;
 
     @Column()
-    @Index()
     user_id: number;
 
     @Column()
-    @Index()
     group_id: number;
 
     @Column({type: 'enum', enum: AlarmTypeEnum})

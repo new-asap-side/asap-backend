@@ -13,11 +13,9 @@ export class User extends BaseEntity {
     user_id: number;
 
     @Column({ unique: true, nullable: true })
-    @Index()
     kakao_id: string;
 
     @Column({ unique: true, nullable: true })
-    @Index()
     apple_id: string;
 
     @Column({nullable: true})
@@ -27,7 +25,6 @@ export class User extends BaseEntity {
     profile_image_url: string;
 
     @Column({nullable: true})
-    @Index()
     refresh_token: string;
 
     @Column({default: 0})
