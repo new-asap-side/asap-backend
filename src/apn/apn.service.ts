@@ -16,12 +16,8 @@ export class ApnService {
     const apnProvider = new apn.Provider(options);
 
     const notification = new apn.Notification({
-      aps: {
-        'content-available': 1,
-      },
-      payload: {
-        ...alarmPayload
-      },
+      aps: { 'content-available': 1 },
+      payload: { ...alarmPayload },
       pushType: 'background',
       priority: 5,
       topic: 'com.asap.Aljyo'
