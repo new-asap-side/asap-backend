@@ -301,15 +301,23 @@ export class GroupService {
     const userGroup = this.userGroupRepo.create({ user, group });
     const savedUserGroup = await this.userGroupRepo.save(userGroup);
 
+
+    console.log(`##savedUserGroup##: ${JSON.stringify(savedUserGroup)}`)
+
     for (const alarmDay of group.alarm_days) {
-      await this.emitAlarmQueue(group, joinGroupDto, alarmDay.alarm_day, {
-        group_id: String(savedUserGroup.group_id),
-        alarm_type: savedUserGroup.alarm_type,
-        alarm_unlock_contents: group.alarm_unlock_contents,
-        group_title: group.title,
-        music_title: savedUserGroup.music_title,
-        music_volume: String(savedUserGroup.volume)
-      })
+      await this.emitAlarmQueue(
+        group,
+        joinGroupDto,
+        alarmDay.alarm_day,
+        {
+          group_id: String(savedUserGroup.group_id),
+          alarm_type: savedUserGroup.alarm_type,
+          alarm_unlock_contents: group.alarm_unlock_contents,
+          group_title: group.title,
+          music_title: savedUserGroup.music_title,
+          music_volume: String(savedUserGroup.volume)
+        }
+      )
     }
 
     this.logger.log(`User ${user.user_id} joined group ${group.title} and subscribed to topic group-${group.group_id}`);
@@ -411,11 +419,12 @@ export class GroupService {
     )
   }
 
-  private async changeGroupMaster() {
-
-  }
-
-  private async emitAlarmQueue(group: Group, joinGroupDto: JoinGroupDto | CreateGroupDto, alarmDay: AlarmDayEnum, alarmPayload: AlarmPayload) {
+  private async emitAlarmQueue(
+    group: Group,
+    joinGroupDto: JoinGroupDto | CreateGroupDto,
+    alarmDay: AlarmDayEnum,
+    alarmPayload: AlarmPayload
+  ) {
     const {alarm_end_date, alarm_time, alarm_unlock_contents} = group
       await this.alarmQueueService.addAlarmJob(
         {

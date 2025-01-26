@@ -45,7 +45,6 @@ export class AlarmQueueService {
     for (const triggerDate of triggerDates) {
       const diffTime = triggerDate.diff(dayjs(), 'millisecond')
       if(diffTime < 0) continue;
-      console.log(`triggerDate: ${triggerDate}, diffTime: ${diffTime}, TK: ${deviceToken}`)
       if (deviceType === DeviceTypeEnum.ANDROID) {
         await this.androidAlarmQueue.add(AndroidQueueEnum.SEND, {
           fcmToken: deviceToken,
