@@ -16,6 +16,10 @@ export class AccessTokenStrategy extends PassportStrategy(Strategy, 'jwt-access'
   }
 
   async validate(payload: any) {
+    console.log(`
+    [Access token validate]
+    [Payload]: ${JSON.stringify(payload)}
+    `);
     return payload;
   }
 }
