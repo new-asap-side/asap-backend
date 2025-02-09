@@ -1,16 +1,17 @@
-import { Controller, Body, Get, Delete, Param, Post } from '@nestjs/common';
+import { Controller, Body, Get, Delete, Param, Post, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AdminService } from '@src/admin/admin.service';
 import {
   DeleteUserRequest,
   DeleteUserResponse,
-  GetUserRequest,
   GetUserResponse,
   ReportGroupRequest, ReportGroupResponse,
 } from '@src/dto/dto.admin';
+import { JwtAccessGuard } from '@src/auth/auth.guard';
 
 @ApiTags('admin')
 @Controller('admin')
+@UseGuards(JwtAccessGuard)
 export class AdminController {
   constructor(
     private readonly adminService: AdminService
@@ -27,8 +28,9 @@ export class AdminController {
   @ApiOperation({summary: '유저 정보조회'})
   @ApiParam({ name: 'user_id', description: '유저 ID', required: true, type: String })
   @ApiResponse({ status: 200, type: GetUserResponse })
-  async getUser(@Param('user_id') user_id: string) {
-    return await this.adminService.getUser(Number(user_id))
+  async getUser(@Param() req: { user_id: string }) {
+    console.warn(JSON.stringify(req))
+    return await this.adminService.getUser(Number(req.user_id))
   }
 
   @Post('Report')

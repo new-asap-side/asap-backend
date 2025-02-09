@@ -38,12 +38,8 @@ export class FcmService {
   // Send notification to a topic
   async sendNotificationToTopic(fcmToken: string, alarmPayload: AlarmPayload): Promise<void> {
     const messagePayload: Message = {
-      data: {
-        ...alarmPayload
-      },
-      android: {
-        priority: 'high'
-      },
+      data: { ...alarmPayload },
+      android: { priority: 'high' },
       token: fcmToken,
     };
 
