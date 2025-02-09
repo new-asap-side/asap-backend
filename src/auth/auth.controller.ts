@@ -3,7 +3,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import {
     AppleLoginRequest, AuthAppleResponse,
     AuthKakaoResponse, AuthTokenResponse, KakaoLoginRequest,
-} from 'src/dto/dto.auth';
+} from '@src/libs/dto/dto.auth';
 import {KakaoAuthService} from '@src/auth/kakao-auth.service';
 import {ConfigService} from "@nestjs/config";
 import { AppleAuthService } from '@src/auth/apple-auth.service';

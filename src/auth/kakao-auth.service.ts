@@ -3,10 +3,10 @@ import { firstValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { AuthKakaoResponse, KakaoLoginRequest } from '../dto/dto.auth';
+import { AuthKakaoResponse, KakaoLoginRequest } from '@src/libs/dto/dto.auth';
 import { User } from '@src/database/entity/user';
 import { AuthService } from '@src/auth/auth.service';
-import { DeviceTypeEnum } from '@src/dto/dto.group';
+import { DeviceTypeEnum } from '@src/libs/dto/dto.group';
 
 @Injectable()
 export class KakaoAuthService {

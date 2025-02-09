@@ -6,7 +6,7 @@ import {
   CheckNickNameResponse,
   SaveProfileRequest,
   SaveProfileResponse,
-} from '@src/dto/dto.profile';
+} from '@src/libs/dto/dto.profile';
 import { JwtAccessGuard } from '@src/auth/auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 

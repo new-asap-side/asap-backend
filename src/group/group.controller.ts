@@ -14,7 +14,7 @@ import {
   GroupDetailsResponseDto,
   AlarmListResponseDto,
   GroupRankNumberResponseDto, GroupResponseDto,
-} from '@src/dto/dto.group';
+} from '@src/libs/dto/dto.group';
 import { JwtAccessGuard } from '@src/auth/auth.guard';
 
 @ApiTags('group')

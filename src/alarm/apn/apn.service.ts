@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { ApnConfig } from '@src/apn/apn.config';
+import { ApnConfig } from '@src/alarm/apn/apn.config';
 import apn from 'apn';
-import { AlarmPayload } from '@src/dto/dto.fcm_apns';
+import { AlarmPayload } from '@src/libs/dto/dto.fcm_apns';
 
 @Injectable()
 export class ApnService {

@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken';
-import { AppleLoginRequest } from '../dto/dto.auth';
+import { AppleLoginRequest } from '@src/libs/dto/dto.auth';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '@src/database/entity/user';

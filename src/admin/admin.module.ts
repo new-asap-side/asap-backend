@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { DatabaseModule } from '@src/database/database.module';
-import { JwtStrategyModule } from '@src/jwt/jwt.module';
+import { JwtStrategyModule } from '@src/libs/jwt/jwt.module';
 import { AdminController } from '@src/admin/admin.controller';
 import { AdminService } from '@src/admin/admin.service';
 import { AlarmModule } from '@src/alarm/alarm.module';

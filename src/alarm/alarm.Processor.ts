@@ -1,9 +1,9 @@
 import { Process, Processor } from '@nestjs/bull';
 import { Job } from 'bull';
-import { FcmService } from '@src/fcm/fcm.service';
-import { ApnService } from '@src/apn/apn.service';
+import { FcmService } from '@src/alarm/fcm/fcm.service';
+import { ApnService } from '@src/alarm/apn/apn.service';
 import { AlarmService } from '@src/alarm/alarm.service';
-import { AlarmPayload } from '@src/dto/dto.fcm_apns';
+import { AlarmPayload } from '@src/libs/dto/dto.fcm_apns';
 import { AlarmActionQueueEnum, AndroidQueueEnum, IosQueueEnum } from '@src/database/enum/queueEnum';
 
 @Processor(AndroidQueueEnum.NAME)

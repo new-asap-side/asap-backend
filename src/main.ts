@@ -2,7 +2,7 @@ import {NestFactory, Reflector} from '@nestjs/core';
 import { AppModule } from './app.module';
 import {ClassSerializerInterceptor, ValidationPipe} from "@nestjs/common";
 import {DocumentBuilder, SwaggerModule} from "@nestjs/swagger";
-import { HttpExceptionFilter } from '@src/filter/filter.http-exception';
+import { HttpExceptionFilter } from '@src/libs/filter/filter.http-exception';
 import { json } from 'express';
 
 function setupDocs(app) {

@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { AlarmQueueService } from '@src/alarm/alarm.queue.service';
-import { FcmService } from '@src/fcm/fcm.service';
+import { FcmService } from '@src/alarm/fcm/fcm.service';
 import { AlarmProcessor, AndroidAlarmProcessor, IosAlarmProcessor } from '@src/alarm/alarm.Processor';
 import { BullModule } from '@nestjs/bull';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { ApnService } from '@src/apn/apn.service';
-import { ApnConfig } from '@src/apn/apn.config';
+import { ApnService } from '@src/alarm/apn/apn.service';
+import { ApnConfig } from '@src/alarm/apn/apn.config';
 import { HttpModule } from '@nestjs/axios';
 import { AlarmService } from '@src/alarm/alarm.service';
 import { DatabaseModule } from '@src/database/database.module';
@@ -26,7 +26,7 @@ import { AlarmActionQueueEnum, AndroidQueueEnum, IosQueueEnum } from '@src/datab
             host: config.get<string>('REDIS_HOST'),
             port: 6379,
             db: 0,
-            password: config.get<string>('REDIS_PASSWORD')
+            // password: config.get<string>('REDIS_PASSWORD')
           },
           defaultJobOptions: {
             removeOnComplete: 10,

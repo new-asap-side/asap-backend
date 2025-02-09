@@ -11,14 +11,14 @@ import {
   GroupResponse,
   JoinGroupDto,
   JoinGroupResponse, RemovePersonalDto,
-} from '@src/dto/dto.group';
+} from '@src/libs/dto/dto.group';
 import { AlarmQueueService } from '@src/alarm/alarm.queue.service';
 import { Alarm } from '@src/database/entity/alarm';
 import { S3Service } from '@src/S3/S3.service';
 import { GroupStatusEnum } from '@src/database/enum/groupStatusEnum';
 import { AlarmDayEnum } from '@src/database/enum/alarmDaysEnum';
 import { Rank } from '@src/database/entity/rank';
-import { AlarmPayload } from '@src/dto/dto.fcm_apns';
+import { AlarmPayload } from '@src/libs/dto/dto.fcm_apns';
 import { AlarmService } from '@src/alarm/alarm.service';
 
 @Injectable()

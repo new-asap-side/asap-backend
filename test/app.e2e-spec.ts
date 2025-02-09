@@ -2,8 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '@src/app.module';
-import { FcmService } from '@src/fcm/fcm.service';
-import { ApnService } from '@src/apn/apn.service';
+import { FcmService } from '@src/alarm/fcm/fcm.service';
+import { ApnService } from '@src/alarm/apn/apn.service';
 import { AlarmUnlockContentsEnum } from '@src/database/enum/alarmUnlockContentsEnum';
 import { AlarmTypeEnum } from '@src/database/entity/userGroup';
 

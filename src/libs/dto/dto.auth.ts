@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
-import { DeviceTypeEnum } from '@src/dto/dto.group';
+import { DeviceTypeEnum } from '@src/libs/dto/dto.group';
 
 export class KakaoLoginRequest {
     @ApiProperty()

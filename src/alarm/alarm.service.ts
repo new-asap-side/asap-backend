@@ -3,7 +3,7 @@ import { Between, EntityManager, In, Repository } from 'typeorm';
 import { UserGroup } from '@src/database/entity/userGroup';
 import { Rank } from '@src/database/entity/rank';
 import { InjectRepository } from '@nestjs/typeorm';
-import { AlarmOffRateResponse } from '@src/dto/dto.alarm';
+import { AlarmOffRateResponse } from '@src/libs/dto/dto.alarm';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 import { User } from '@src/database/entity/user';

@@ -4,7 +4,7 @@ import { EntityManager, Repository } from 'typeorm';
 import { User } from '@src/database/entity/user';
 import { Group } from '@src/database/entity/group';
 import { UserGroup } from '@src/database/entity/userGroup';
-import { ReportGroupRequest } from '@src/dto/dto.admin';
+import { ReportGroupRequest } from '@src/libs/dto/dto.admin';
 import { Report } from '@src/database/entity/report';
 import { Alarm } from '@src/database/entity/alarm';
 import { AlarmService } from '@src/alarm/alarm.service';

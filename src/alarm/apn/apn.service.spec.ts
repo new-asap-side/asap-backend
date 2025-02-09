@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { FcmService } from '@src/fcm/fcm.service';
+import { FcmService } from '@src/alarm/fcm/fcm.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { ApnService } from '@src/apn/apn.service';
-import { ApnConfig } from '@src/apn/apn.config';
+import { ApnService } from '@src/alarm/apn/apn.service';
+import { ApnConfig } from '@src/alarm/apn/apn.config';
 import { HttpModule } from '@nestjs/axios';
 import * as jwt from 'jsonwebtoken';
 import { AlarmTypeEnum } from '@src/database/entity/userGroup';

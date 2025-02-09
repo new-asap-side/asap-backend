@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
-import { AccessTokenStrategy } from '@src/jwt/access-token-strategy.service';
-import { RefreshTokenStrategy } from '@src/jwt/refresh-token-strategy.service';
+import { AccessTokenStrategy } from '@src/libs/jwt/access-token-strategy.service';
+import { RefreshTokenStrategy } from '@src/libs/jwt/refresh-token-strategy.service';
 
 @Module({
   imports: [

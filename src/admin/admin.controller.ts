@@ -6,7 +6,7 @@ import {
   DeleteUserResponse,
   GetUserResponse,
   ReportGroupRequest, ReportGroupResponse,
-} from '@src/dto/dto.admin';
+} from '@src/libs/dto/dto.admin';
 import { JwtAccessGuard } from '@src/auth/auth.guard';
 
 @ApiTags('admin')

@@ -4,8 +4,8 @@ import { Queue } from 'bull';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
-import { AddAlarmJobDto, DeviceTypeEnum } from '@src/dto/dto.group';
-import { AlarmPayload } from '@src/dto/dto.fcm_apns';
+import { AddAlarmJobDto, DeviceTypeEnum } from '@src/libs/dto/dto.group';
+import { AlarmPayload } from '@src/libs/dto/dto.fcm_apns';
 import { AlarmActionQueueEnum, AndroidQueueEnum, IosQueueEnum } from '@src/database/enum/queueEnum';
 
 // dayjs에 플러그인 등록

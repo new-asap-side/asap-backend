@@ -1,7 +1,7 @@
 import { Controller, Post, Body, UseGuards, UseInterceptors, UploadedFile, Get, Delete, Param } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAccessGuard } from '@src/auth/auth.guard';
-import { AlarmOffRateResponse, AlarmOffRequest, AlarmOffResponse } from '@src/dto/dto.alarm';
+import { AlarmOffRateResponse, AlarmOffRequest, AlarmOffResponse } from '@src/libs/dto/dto.alarm';
 import { AlarmQueueService } from '@src/alarm/alarm.queue.service';
 import { AlarmService } from '@src/alarm/alarm.service';
 
